@@ -1,0 +1,259 @@
+/* Dopamine Toll overlay — "V1 · Stark" (the choice, centered).
+   Everything is scoped under #dopamine-toll-overlay and uses --dt-* tokens so
+   it can't read or pollute the host page's custom properties. Tokens mirror
+   assets/theme.css — keep the palettes in sync.
+
+   No web fonts are loaded (the extension makes zero network requests, and host
+   CSP would block them anyway): --dt-sans / --dt-mono fall back to the system
+   grotesque + monospace, which preserves the stark + toll-meter look. */
+
+#dopamine-toll-overlay {
+  --dt-bg:        #0a0908;
+  --dt-surface-2: #201b13;
+  --dt-line:   rgba(240, 230, 210, 0.08);
+  --dt-line-2: rgba(240, 230, 210, 0.14);
+  --dt-text:  #efe9dd;
+  --dt-dim:   #9c958a;
+  --dt-faint: #6a645b;
+  --dt-amber:     #e9a24c;
+  --dt-terra:     #cf6638;
+  --dt-amber-ink: #1a1305;
+  --dt-r:    14px;
+  --dt-r-sm: 10px;
+  --dt-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, "Cascadia Mono", Menlo, Consolas, monospace;
+  --dt-sans: "Archivo", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Alternate accent themes — blocker.js sets data-theme from the saved setting.
+   Mirror of the page themes in assets/theme.css; terracotta stays constant. */
+#dopamine-toll-overlay[data-theme="indigo"]  { --dt-amber: #8b9cff; --dt-amber-ink: #0b0c1a; }
+#dopamine-toll-overlay[data-theme="emerald"] { --dt-amber: #34d399; --dt-amber-ink: #03140d; }
+#dopamine-toll-overlay[data-theme="rose"]    { --dt-amber: #fb7185; --dt-amber-ink: #1c0609; }
+
+/* Reset host inheritance for everything inside the overlay. */
+#dopamine-toll-overlay,
+#dopamine-toll-overlay *,
+#dopamine-toll-overlay *::before,
+#dopamine-toll-overlay *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: var(--dt-sans);
+  line-height: normal;
+  letter-spacing: normal;
+}
+
+#dopamine-toll-overlay button {
+  appearance: none;
+  -webkit-appearance: none;
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+/* Full-screen warm backdrop — opaque, so the host page is fully hidden. The
+   accent-tinted glow follows the active theme; the solid first declaration is a
+   fallback if color-mix is unsupported (keeps the backdrop opaque either way). */
+#dopamine-toll-overlay .dt-backdrop {
+  position: fixed;
+  inset: 0;
+  background: var(--dt-bg);
+  background: radial-gradient(120% 90% at 50% -10%, color-mix(in srgb, var(--dt-amber) 12%, var(--dt-bg)) 0%, var(--dt-bg) 55%);
+  color: var(--dt-text);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+
+/* film grain */
+#dopamine-toll-overlay .dt-backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  opacity: 0.035;
+  mix-blend-mode: screen;
+}
+
+#dopamine-toll-overlay .dt-stage {
+  position: relative;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  padding: 48px;
+}
+#dopamine-toll-overlay .dt-col {
+  width: 100%;
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 30px;
+}
+
+/* eyebrow — domain + toll-list note */
+#dopamine-toll-overlay .dt-eyebrow {
+  font-family: var(--dt-mono);
+  font-size: 13px;
+  letter-spacing: 0.06em;
+  color: var(--dt-dim);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+#dopamine-toll-overlay .dt-eyebrow b { color: var(--dt-text); font-weight: 600; }
+#dopamine-toll-overlay .dt-dotsep { width: 4px; height: 4px; border-radius: 50%; background: var(--dt-terra); }
+
+/* north-star photo */
+#dopamine-toll-overlay .dt-photo {
+  position: relative;
+  width: 300px;
+  height: 200px;
+  border-radius: var(--dt-r);
+  overflow: hidden;
+  border: 1px solid var(--dt-line-2);
+  box-shadow: 0 24px 60px -28px rgba(0, 0, 0, 0.9);
+}
+#dopamine-toll-overlay .dt-stripes {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(135deg, #2a2114 0 12px, #211a10 12px 24px);
+}
+#dopamine-toll-overlay .dt-photo-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+#dopamine-toll-overlay .dt-tint {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, color-mix(in srgb, var(--dt-amber) 18%, transparent), color-mix(in srgb, var(--dt-terra) 10%, transparent));
+  mix-blend-mode: overlay;
+}
+
+/* the phrase */
+#dopamine-toll-overlay .dt-phrase {
+  font-size: 34px;
+  line-height: 1.18;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+  max-width: 560px;
+}
+#dopamine-toll-overlay .dt-you {
+  display: block;
+  font-family: var(--dt-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dt-faint);
+  margin-top: 18px;
+}
+
+/* countdown */
+#dopamine-toll-overlay .dt-toll {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+#dopamine-toll-overlay .dt-label {
+  font-family: var(--dt-mono);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--dt-dim);
+}
+#dopamine-toll-overlay .dt-clock {
+  font-family: var(--dt-mono);
+  font-weight: 700;
+  font-size: 72px;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--dt-amber);
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 40px color-mix(in srgb, var(--dt-amber) 25%, transparent);
+}
+#dopamine-toll-overlay .dt-meter {
+  width: 280px;
+  height: 3px;
+  border-radius: 3px;
+  background: var(--dt-surface-2);
+  overflow: hidden;
+}
+#dopamine-toll-overlay .dt-meter > i {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, var(--dt-terra), var(--dt-amber));
+}
+
+/* actions */
+#dopamine-toll-overlay .dt-actions {
+  display: flex;
+  gap: 14px;
+  margin-top: 2px;
+}
+#dopamine-toll-overlay .dt-btn {
+  font-family: var(--dt-sans);
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: var(--dt-r-sm);
+  padding: 15px 22px;
+  border: 1px solid transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  min-width: 188px;
+  transition: transform 0.12s ease, background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+}
+#dopamine-toll-overlay .dt-btn small {
+  font-family: var(--dt-mono);
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: lowercase;
+  opacity: 0.7;
+}
+#dopamine-toll-overlay .dt-primary {
+  background: var(--dt-amber);
+  color: var(--dt-amber-ink);
+}
+#dopamine-toll-overlay .dt-primary small { opacity: 0.55; }
+#dopamine-toll-overlay .dt-primary:hover { transform: translateY(-1px); }
+
+/* locked = the "open anyway" choice while the countdown runs */
+#dopamine-toll-overlay .dt-locked {
+  color: var(--dt-faint);
+  border-color: var(--dt-line);
+  cursor: not-allowed;
+}
+#dopamine-toll-overlay .dt-locked small { color: var(--dt-terra); opacity: 1; }
+
+/* ghost = the same button once the toll is paid and it unlocks */
+#dopamine-toll-overlay .dt-ghost {
+  background: transparent;
+  color: var(--dt-dim);
+  border-color: var(--dt-line-2);
+}
+#dopamine-toll-overlay .dt-ghost small { opacity: 0.7; }
+#dopamine-toll-overlay .dt-ghost:hover {
+  transform: translateY(-1px);
+  color: var(--dt-amber);
+  border-color: var(--dt-amber);
+}
+
+@media (max-width: 540px) {
+  #dopamine-toll-overlay .dt-phrase { font-size: 26px; }
+  #dopamine-toll-overlay .dt-clock { font-size: 58px; }
+  #dopamine-toll-overlay .dt-actions { flex-direction: column; width: 100%; max-width: 320px; }
+  #dopamine-toll-overlay .dt-btn { width: 100%; }
+}

@@ -1,0 +1,80 @@
+/* Dopamine Toll — shared design tokens for the extension's own pages
+   (popup + options). Warm near-black + amber/terracotta · Archivo + JetBrains Mono.
+
+   Web fonts are intentionally NOT @imported: the extension makes zero network
+   requests by design (see README "Privacy"). Archivo / JetBrains Mono render if
+   the OS has them; otherwise the system grotesque + mono fallbacks below carry
+   the look. The injected overlay (content/blocker.css) keeps its own copy of
+   these tokens scoped under #dopamine-toll-overlay — keep the two in sync. */
+
+:root {
+  /* warm near-black surfaces */
+  --bg:        #0a0908;
+  --bg-2:      #0f0d0b;
+  --surface:   #16130e;
+  --surface-2: #201b13;
+  --surface-3: #2a2419;
+
+  /* hairlines (warm) */
+  --line:   rgba(240, 230, 210, 0.08);
+  --line-2: rgba(240, 230, 210, 0.14);
+
+  /* text (warm off-white) */
+  --text:  #efe9dd;
+  --dim:   #9c958a;
+  --faint: #6a645b;
+
+  /* accent — amber / terracotta */
+  --amber:      #e9a24c; /* warm amber (primary) */
+  --amber-soft: #f0bd78;
+  --terra:      #cf6638; /* deeper terracotta (cost / warning) */
+  --amber-ink:  #1a1305; /* text on amber */
+
+  --r:    14px; /* card radius */
+  --r-sm: 10px; /* control radius */
+
+  --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, "Cascadia Mono", Menlo, Consolas, monospace;
+  --sans: "Archivo", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  color-scheme: dark;
+}
+
+/* Alternate accent themes — applied via <html data-theme="…">. Only the primary
+   accent changes; the warm near-black surfaces and the terracotta "cost" signal
+   stay constant, so the palette reads as one family. Mirrored under
+   #dopamine-toll-overlay[data-theme] in content/blocker.css for the overlay. */
+:root[data-theme="indigo"]  { --amber: #8b9cff; --amber-soft: #b3c0ff; --amber-ink: #0b0c1a; }
+:root[data-theme="emerald"] { --amber: #34d399; --amber-soft: #6ee7b7; --amber-ink: #03140d; }
+:root[data-theme="rose"]    { --amber: #fb7185; --amber-soft: #fda4af; --amber-ink: #1c0609; }
+
+* { box-sizing: border-box; }
+
+/* faint film-grain overlay — pure CSS data URL, no network request */
+.grain { position: relative; }
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  opacity: 0.035;
+  mix-blend-mode: screen;
+}
+
+/* the countdown-gauge mark — an open amber ring with a gap, the primary logo
+   glyph. Size via --mk so the same atom serves the popup (16px) and the
+   settings masthead (.lg, 26px). */
+.mark {
+  --mk: 16px;
+  width: var(--mk);
+  height: var(--mk);
+  border: 2.5px solid var(--amber);
+  border-right-color: transparent;
+  border-radius: 50%;
+  transform: rotate(-20deg);
+  flex: none;
+}
+.mark.lg {
+  --mk: 26px;
+  border-width: 3px;
+}

@@ -1,0 +1,117 @@
+/* Dopamine Toll — toolbar popup. Tokens come from ../assets/theme.css. */
+
+html, body { margin: 0; }
+/* Chrome sizes the popup window to the body's intrinsic width, so the width must
+   live on the body itself. The popup fills the whole window edge-to-edge — no
+   floating card / outer frame — for a leaner look. */
+body {
+  width: 300px;
+  background: var(--bg-2);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.popup {
+  padding: 16px;
+  color: var(--text);
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+.name {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+/* enable toggle */
+.toggle {
+  width: 42px;
+  height: 24px;
+  border-radius: 12px;
+  background: var(--surface-3);
+  position: relative;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  flex: none;
+}
+.toggle::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--faint);
+  transition: left 0.2s ease, background 0.2s ease;
+}
+.toggle.on { background: var(--amber); }
+.toggle.on::after { left: 21px; background: var(--amber-ink); }
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 13px;
+}
+.row {
+  background: #060504;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  padding: 11px 13px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.row .l { font-size: 13px; color: var(--dim); }
+.row .r { font-family: var(--mono); font-size: 13px; font-weight: 600; }
+.row .r.amber { color: var(--amber); }
+
+/* current-tab status */
+.status { flex-direction: column; align-items: flex-start; gap: 5px; }
+.status .head2 { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.status .dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--faint);
+  flex: none;
+}
+.status.armed .dot { background: var(--amber); }
+.status.open .dot { background: var(--terra); box-shadow: 0 0 10px var(--terra); }
+.status .meta {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--faint);
+  letter-spacing: 0.03em;
+}
+.status.open .meta { color: var(--terra); }
+
+/* daily stat line */
+.stat { background: transparent; border: none; padding: 2px 2px 0; }
+.stat .l { font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; color: var(--faint); }
+.stat .l b { color: var(--amber-soft); font-weight: 600; }
+
+.openbtn {
+  width: 100%;
+  margin-top: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line-2);
+  color: var(--text);
+  border-radius: var(--r-sm);
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 13.5px;
+  padding: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.openbtn:hover { border-color: var(--amber); color: var(--amber-soft); }
