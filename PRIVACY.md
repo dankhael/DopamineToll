@@ -51,4 +51,4 @@ new effective date.
 
 ## Contact
 
-Questions about this policy: **danilokhael@gmail.com**
+Questions about this policy: **eraserheadsoftware@gmail.com**
