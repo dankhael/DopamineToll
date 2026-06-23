@@ -7,8 +7,8 @@
 
   const OVERLAY_ID = "dopamine-toll-overlay";
   const FALLBACK_PHRASES = [
-    "seu futuro eu vai agradecer",
-    "foco. disciplina. resultados."
+    "your future self will thank you",
+    "focus. discipline. results."
   ];
 
   let lastHref = location.href;

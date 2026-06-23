@@ -9,10 +9,10 @@
 const DEFAULT_CONFIG = {
   blockedDomains: ["twitter.com", "x.com", "instagram.com", "tiktok.com", "youtube.com/shorts"],
   phrases: [
-    "seu futuro eu vai agradecer",
-    "você tem objetivos maiores que isso",
-    "foco. disciplina. resultados.",
-    "cada minuto aqui é um minuto a menos no que importa"
+    "your future self will thank you",
+    "you have bigger goals than this",
+    "focus. discipline. results.",
+    "every minute here is a minute away from what matters"
   ],
   lockDuration: 30,
   unlockDuration: 10,
