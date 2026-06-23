@@ -3,8 +3,9 @@
   "name": "Dopamine Toll",
   "version": "1.0.0",
   "description": "Anti-procrastination overlay that intercepts blocked domains with a motivational gate.",
-  "permissions": ["storage", "tabs", "webNavigation", "scripting"],
+  "permissions": ["storage", "webNavigation"],
   "host_permissions": ["<all_urls>"],
+  "minimum_chrome_version": "111",
   "background": {
     "service_worker": "background/service-worker.js",
     "type": "module"

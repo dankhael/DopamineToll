@@ -14,7 +14,6 @@ const DEFAULT_CONFIG = {
     "foco. disciplina. resultados.",
     "cada minuto aqui é um minuto a menos no que importa"
   ],
-  goalImages: [],
   lockDuration: 30,
   unlockDuration: 10,
   enabled: true,
@@ -105,13 +104,11 @@ chrome.runtime.onInstalled.addListener(async () => {
   }
   if (Object.keys(patch).length) await chrome.storage.sync.set(patch);
 
-  if (patch.goalImages !== undefined) {
+  // North star photos live in local storage (too large for sync); seed an empty
+  // array on first install so readers never hit `undefined`.
+  const local = await chrome.storage.local.get("goalImages");
+  if (!Array.isArray(local.goalImages)) {
     await chrome.storage.local.set({ goalImages: [] });
-  } else {
-    const local = await chrome.storage.local.get("goalImages");
-    if (!Array.isArray(local.goalImages)) {
-      await chrome.storage.local.set({ goalImages: [] });
-    }
   }
   await refreshThemeIcon();
 });
@@ -238,7 +235,12 @@ chrome.tabs.onRemoved.addListener((tabId) => {
   cleanupTab(tabId).catch(() => {});
 });
 
-chrome.webNavigation.onCommitted.addListener(async (details) => {
+// Fires on full document navigations (onCommitted) and on SPA route changes that
+// keep the same document (onHistoryStateUpdated — i.e. history.pushState /
+// replaceState). The content script runs in an isolated world and so cannot patch
+// the page's own history methods; catching pushState here in the background is what
+// keeps the gate SPA-aware on Twitter / Reddit / YouTube / Instagram.
+async function handleNavigation(details) {
   if (details.frameId !== 0) return;
   let url;
   try {
@@ -264,7 +266,10 @@ chrome.webNavigation.onCommitted.addListener(async (details) => {
   } catch {
     // Content script may not yet be ready; it will request status on its own.
   }
-});
+}
+
+chrome.webNavigation.onCommitted.addListener(handleNavigation);
+chrome.webNavigation.onHistoryStateUpdated.addListener(handleNavigation);
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   (async () => {

@@ -334,20 +334,13 @@
     })[c]);
   }
 
-  // SPA navigation hooks.
-  function hookHistory() {
-    const origPush = history.pushState;
-    const origReplace = history.replaceState;
-    history.pushState = function (...args) {
-      const r = origPush.apply(this, args);
-      onUrlChanged();
-      return r;
-    };
-    history.replaceState = function (...args) {
-      const r = origReplace.apply(this, args);
-      onUrlChanged();
-      return r;
-    };
+  // SPA navigation hooks. pushState / replaceState can't be patched from here: the
+  // content script's isolated world has its own `history` wrapper, so the page's
+  // own pushState calls never reach a patch installed here. Those route changes are
+  // caught in the background via webNavigation.onHistoryStateUpdated instead.
+  // popstate and hashchange are real DOM events that do reach this world, so we
+  // still re-check on them directly for an instant local response (back/forward, #).
+  function watchSpaNavigation() {
     window.addEventListener("popstate", onUrlChanged);
     window.addEventListener("hashchange", onUrlChanged);
   }
@@ -364,11 +357,12 @@
       currentDomain = msg.domain;
       ensureBodyReady().then(() => injectOverlay(msg.domain));
       sendResponse({ ok: true });
+      return true;
     }
-    return true;
+    return false;
   });
 
-  hookHistory();
+  watchSpaNavigation();
   // Initial check.
   checkAndMaybeShow();
   document.addEventListener("DOMContentLoaded", checkAndMaybeShow);

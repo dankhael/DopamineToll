@@ -26,9 +26,10 @@ cue stay constant). The popup fills its window with no outer frame.
 
 ## Features
 
-- **SPA-aware** — hooks `history.pushState`, `replaceState`, `popstate`, and
-  `hashchange` so client-side route changes (Twitter, Reddit, YouTube, Instagram)
-  re-trigger the overlay.
+- **SPA-aware** — the background listens on `webNavigation.onHistoryStateUpdated`
+  for `pushState` / `replaceState` route changes, and the content script listens for
+  `popstate` / `hashchange`, so client-side navigation (Twitter, Reddit, YouTube,
+  Instagram) re-triggers the overlay.
 - **DOM-resilient** — overlay is mounted on `documentElement` at
   `z-index: 2147483647` and a `MutationObserver` re-injects it if the host page or
   DevTools removes it.
@@ -180,15 +181,13 @@ tests are manual interaction tests in a real browser. The checklist:
 
 - `storage` — settings (`sync`), north star photos + daily tally (`local`), per-tab
   unlocks (`session`).
-- `tabs` — `chrome.tabs.remove` for the **Close tab** button, `tabs.query` in
-  the popup.
-- `webNavigation` — `onCommitted` to detect navigation to blocked domains *before*
-  the page paints (ahead of where a content-script-only approach would react).
-- `scripting` — declared for forward compatibility; current build does not call
-  `chrome.scripting.executeScript` because the static content script covers all
-  matches.
+- `webNavigation` — `onCommitted` + `onHistoryStateUpdated` to detect navigation to
+  blocked domains *before* the page paints (and on SPA route changes), ahead of
+  where a content-script-only approach would react.
 - `host_permissions: <all_urls>` — required so the content script and
-  `webNavigation` see every site.
+  `webNavigation` see every site. It also makes `tab.url` readable from
+  `chrome.tabs.query`, so the popup needs no separate `tabs` permission, and
+  `chrome.tabs.remove` / `onRemoved` / `sendMessage` don't require it either.
 
 ## Known limitations
 

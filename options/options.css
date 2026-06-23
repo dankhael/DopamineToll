@@ -215,6 +215,23 @@ textarea.input { resize: none; min-height: 64px; line-height: 1.5; }
 .theme-opt[data-theme="emerald"] .sw { background: #34d399; }
 .theme-opt[data-theme="rose"] .sw    { background: #fb7185; }
 
+/* support — ko-fi */
+.kofi {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  background: var(--amber);
+  color: var(--amber-ink);
+  border-radius: var(--r-sm);
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 14px;
+  padding: 12px 20px;
+  text-decoration: none;
+}
+.kofi:hover { background: var(--amber-soft); }
+.kofi-cup { font-size: 16px; line-height: 1; }
+
 /* save toast */
 #toast {
   position: fixed;
