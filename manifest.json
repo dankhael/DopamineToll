@@ -13,8 +13,8 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content/blocker.js"],
-      "css": ["content/blocker.css"],
+      "js": ["content/friction.js", "content/blocker.js"],
+      "css": ["content/blocker.css", "content/friction.css"],
       "run_at": "document_start",
       "all_frames": false
     }

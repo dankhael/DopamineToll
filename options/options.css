@@ -185,6 +185,34 @@ textarea.input { resize: none; min-height: 64px; line-height: 1.5; }
 .endnote .dotsep { width: 4px; height: 4px; border-radius: 50%; background: var(--terra); flex: none; }
 .warn { color: var(--terra); font-size: 12px; margin-top: 10px; }
 
+/* friction reminders — on/off switch (mirrors popup.css .toggle) */
+.toggle {
+  width: 42px;
+  height: 24px;
+  border-radius: 12px;
+  background: var(--surface-3);
+  border: none;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  flex: none;
+  display: block;
+  padding: 0;
+}
+.toggle::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--faint);
+  transition: left 0.2s ease, background 0.2s ease;
+}
+.toggle.on { background: var(--amber); }
+.toggle.on::after { left: 21px; background: var(--amber-ink); }
+
 /* theme picker */
 .themes { display: flex; gap: 10px; flex-wrap: wrap; }
 .theme-opt {

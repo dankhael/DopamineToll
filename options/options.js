@@ -7,6 +7,7 @@ const MAX_DIM = 600;
 // Stepper controls for "The toll". min/max preserve the original ranges.
 const LOCK_STEP = { key: "lockDuration", valId: "lock-val", decId: "lock-dec", incId: "lock-inc", min: 10, max: 120, step: 5, def: 30 };
 const UNLOCK_STEP = { key: "unlockDuration", valId: "unlock-val", decId: "unlock-dec", incId: "unlock-inc", min: 1, max: 30, step: 1, def: 10 };
+const FRICTION_STEP = { key: "frictionMinutes", valId: "friction-val", decId: "friction-dec", incId: "friction-inc", min: 1, max: 60, step: 1, def: 5 };
 
 const THEMES = ["amber", "indigo", "emerald", "rose"];
 const THEME_ACCENT = {
@@ -338,6 +339,33 @@ function wireStepper(cfg) {
   $(cfg.incId).addEventListener("click", () => bumpStepper(cfg, +1));
 }
 
+// ---------- Friction reminders ----------
+async function renderFrictionToggle() {
+  const { frictionEnabled } = await chrome.storage.sync.get("frictionEnabled");
+  const on = frictionEnabled !== false;
+  const btn = $("friction-toggle");
+  btn.classList.toggle("on", on);
+  btn.setAttribute("aria-checked", String(on));
+}
+
+async function toggleFrictionReminders() {
+  const { frictionEnabled } = await chrome.storage.sync.get("frictionEnabled");
+  await chrome.storage.sync.set({ frictionEnabled: frictionEnabled === false });
+  toast();
+  renderFrictionToggle();
+}
+
+function wireFrictionToggle() {
+  const btn = $("friction-toggle");
+  btn.addEventListener("click", toggleFrictionReminders);
+  btn.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      toggleFrictionReminders();
+    }
+  });
+}
+
 // ---------- Theme ----------
 function applyTheme(name) {
   document.documentElement.dataset.theme = name;
@@ -391,6 +419,8 @@ function init() {
 
   wireStepper(LOCK_STEP);
   wireStepper(UNLOCK_STEP);
+  wireStepper(FRICTION_STEP);
+  wireFrictionToggle();
   wireThemes();
 
   renderDomains();
@@ -398,6 +428,8 @@ function init() {
   renderStars();
   loadStepper(LOCK_STEP);
   loadStepper(UNLOCK_STEP);
+  loadStepper(FRICTION_STEP);
+  renderFrictionToggle();
   renderTheme();
 }
 

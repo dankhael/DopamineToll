@@ -16,6 +16,8 @@ const DEFAULT_CONFIG = {
   ],
   lockDuration: 30,
   unlockDuration: 10,
+  frictionEnabled: true,
+  frictionMinutes: 5,
   enabled: true,
   theme: "amber"
 };

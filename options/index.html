@@ -77,6 +77,30 @@
       <div class="endnote"><span class="dotsep"></span>When the window ends, the toll returns — every time.</div>
     </div>
 
+    <!-- friction reminders -->
+    <div class="card">
+      <h2>Friction reminders</h2>
+      <p class="hint">While a toll site is open, a small pop-up shows one of your phrases and how long you've been on the tab. Time only counts while the tab is in front of you.</p>
+      <div class="toll-grid">
+        <div class="ctrl">
+          <div class="k">Reminders</div>
+          <div class="d">Show the pop-up while you're on a toll site.</div>
+          <button class="toggle" id="friction-toggle" role="switch" aria-checked="true" aria-label="toggle friction reminders"></button>
+        </div>
+        <div class="ctrl">
+          <div class="k">Every</div>
+          <div class="d">Minutes on the tab between pop-ups.</div>
+          <div class="stepper">
+            <div class="num"><span id="friction-val">5</span><span>min</span></div>
+            <div class="pm">
+              <button id="friction-dec" aria-label="decrease reminder interval">−</button>
+              <button id="friction-inc" aria-label="increase reminder interval">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- theme -->
     <div class="card">
       <h2>Theme</h2>

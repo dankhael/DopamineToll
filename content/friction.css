@@ -1,0 +1,99 @@
+/* Dopamine Toll friction reminder toast. Everything is scoped under
+   #dopamine-toll-friction and uses --dtf-* tokens so it can't read or pollute
+   the host page's custom properties. Palette mirrors content/blocker.css /
+   assets/theme.css — keep them in sync. */
+
+#dopamine-toll-friction {
+  --dtf-bg:    #14100a;
+  --dtf-line:  rgba(240, 230, 210, 0.14);
+  --dtf-text:  #efe9dd;
+  --dtf-dim:   #9c958a;
+  --dtf-faint: #6a645b;
+  --dtf-amber: #e9a24c;
+  --dtf-terra: #cf6638;
+  --dtf-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, "Cascadia Mono", Menlo, Consolas, monospace;
+  --dtf-sans: "Archivo", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Alternate accent themes — friction.js sets data-theme from the saved setting. */
+#dopamine-toll-friction[data-theme="indigo"]  { --dtf-amber: #8b9cff; }
+#dopamine-toll-friction[data-theme="emerald"] { --dtf-amber: #34d399; }
+#dopamine-toll-friction[data-theme="rose"]    { --dtf-amber: #fb7185; }
+
+/* Reset host inheritance for everything inside the toast. */
+#dopamine-toll-friction,
+#dopamine-toll-friction *,
+#dopamine-toll-friction *::before,
+#dopamine-toll-friction *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: var(--dtf-sans);
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: left;
+}
+
+#dopamine-toll-friction .dtf-card {
+  position: relative;
+  width: 300px;
+  background: var(--dtf-bg);
+  border: 1px solid var(--dtf-line);
+  border-radius: 14px;
+  padding: 14px 36px 14px 16px;
+  color: var(--dtf-text);
+  box-shadow: 0 18px 50px -20px rgba(0, 0, 0, 0.85);
+  -webkit-font-smoothing: antialiased;
+  animation: dtf-slide-in 0.25s ease;
+}
+
+@keyframes dtf-slide-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+#dopamine-toll-friction .dtf-eyebrow {
+  font-family: var(--dtf-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--dtf-faint);
+  margin-bottom: 7px;
+}
+
+#dopamine-toll-friction .dtf-phrase {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.35;
+  margin-bottom: 9px;
+}
+
+#dopamine-toll-friction .dtf-time {
+  font-family: var(--dtf-mono);
+  font-size: 12px;
+  color: var(--dtf-dim);
+  font-variant-numeric: tabular-nums;
+}
+#dopamine-toll-friction .dtf-time b {
+  color: var(--dtf-amber);
+  font-weight: 700;
+}
+
+#dopamine-toll-friction .dtf-close {
+  appearance: none;
+  -webkit-appearance: none;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--dtf-faint);
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+}
+#dopamine-toll-friction .dtf-close:hover { color: var(--dtf-terra); }

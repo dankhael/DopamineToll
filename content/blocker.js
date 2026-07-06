@@ -57,6 +57,13 @@
     return arr[Math.floor(Math.random() * arr.length)];
   }
 
+  // Feed the friction reminder script (content/friction.js, loaded before this
+  // one) the gate state so it only counts tab time while the toll is paid and
+  // the site is actually in use.
+  function reportGateState(onTollSite, gateUp) {
+    window.__dopamineTollFriction?.setGateState({ onTollSite, gateUp });
+  }
+
   // Seconds → "MM:SS" for the toll clock.
   function fmtClock(totalSeconds) {
     const s = Math.max(0, Math.floor(totalSeconds));
@@ -91,10 +98,12 @@
     const resp = await send({ type: "CHECK_DOMAIN", hostname, pathname });
     if (!resp || !resp.blocked) {
       removeOverlay();
+      reportGateState(false, false);
       return;
     }
     if (resp.unlocked) {
       removeOverlay();
+      reportGateState(true, false);
       return;
     }
     currentDomain = resp.domain;
@@ -201,6 +210,7 @@
   }
 
   async function injectOverlay(domain) {
+    reportGateState(true, true);
     const cfg = await loadConfig();
     const phrase = pickRandom(cfg.phrases) || FALLBACK_PHRASES[0];
     const imgSrc = imageSrc(pickRandom(cfg.goalImages));
@@ -296,6 +306,7 @@
       if (resp && resp.ok) {
         scheduleRelock(resp.unlockedUntil);
         removeOverlay();
+        reportGateState(true, false);
       }
     });
 
