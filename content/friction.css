@@ -1,9 +1,11 @@
-/* Dopamine Toll friction reminder toast. Everything is scoped under
-   #dopamine-toll-friction and uses --dtf-* tokens so it can't read or pollute
-   the host page's custom properties. Palette mirrors content/blocker.css /
+/* Dopamine Toll friction reminders. Each reminder is an independent card scoped
+   under .dopamine-toll-friction (a class, not an id, so many can be on screen at
+   once — they escalate over time and each must be closed by hand; see
+   content/friction.js). Uses --dtf-* tokens so it can't read or pollute the host
+   page's custom properties. Palette mirrors content/blocker.css /
    assets/theme.css — keep them in sync. */
 
-#dopamine-toll-friction {
+.dopamine-toll-friction {
   --dtf-bg:    #14100a;
   --dtf-line:  rgba(240, 230, 210, 0.14);
   --dtf-text:  #efe9dd;
@@ -16,15 +18,15 @@
 }
 
 /* Alternate accent themes — friction.js sets data-theme from the saved setting. */
-#dopamine-toll-friction[data-theme="indigo"]  { --dtf-amber: #8b9cff; }
-#dopamine-toll-friction[data-theme="emerald"] { --dtf-amber: #34d399; }
-#dopamine-toll-friction[data-theme="rose"]    { --dtf-amber: #fb7185; }
+.dopamine-toll-friction[data-theme="indigo"]  { --dtf-amber: #8b9cff; }
+.dopamine-toll-friction[data-theme="emerald"] { --dtf-amber: #34d399; }
+.dopamine-toll-friction[data-theme="rose"]    { --dtf-amber: #fb7185; }
 
-/* Reset host inheritance for everything inside the toast. */
-#dopamine-toll-friction,
-#dopamine-toll-friction *,
-#dopamine-toll-friction *::before,
-#dopamine-toll-friction *::after {
+/* Reset host inheritance for everything inside a card. */
+.dopamine-toll-friction,
+.dopamine-toll-friction *,
+.dopamine-toll-friction *::before,
+.dopamine-toll-friction *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -34,7 +36,55 @@
   text-align: left;
 }
 
-#dopamine-toll-friction .dtf-card {
+/* The card drops from above the viewport, tumbling under gravity, and settles at
+   its landing spot (left/top set inline in friction.js) to clutter the page.
+   Per-keyframe easing sells the physics: the fall accelerates, then two damped
+   bounces ease out and fall back. Centering on the landing point lives in the
+   transform (translate(-50%,-50%)); the fall offset and rotation compose on top.
+   --dtf-spin (start rotation) and --dtf-tilt (resting angle) are set per card so
+   a pile scatters instead of landing identically. */
+.dopamine-toll-friction {
+  animation: dtf-drop 1.5s linear forwards;
+  will-change: transform;
+}
+
+@keyframes dtf-drop {
+  0% {
+    transform: translate(-50%, calc(-50% - 80vh)) rotate(var(--dtf-spin, -215deg));
+    animation-timing-function: cubic-bezier(0.55, 0, 0.9, 0.42); /* gravity: accelerate down */
+  }
+  58% {
+    transform: translate(-50%, calc(-50% + 16px)) rotate(9deg);   /* first impact, overshoots past the landing point */
+    animation-timing-function: cubic-bezier(0.28, 0, 0.4, 1);     /* bounce up, decelerating */
+  }
+  73% {
+    transform: translate(-50%, calc(-50% - 24px)) rotate(-6deg);  /* top of the first bounce */
+    animation-timing-function: cubic-bezier(0.5, 0, 0.7, 1);      /* fall back, accelerating */
+  }
+  86% {
+    transform: translate(-50%, calc(-50% + 9px)) rotate(3.5deg);  /* second, smaller impact */
+    animation-timing-function: cubic-bezier(0.3, 0, 0.5, 1);
+  }
+  94% {
+    transform: translate(-50%, calc(-50% - 7px)) rotate(-1.5deg); /* top of the second bounce */
+    animation-timing-function: ease-in;
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(var(--dtf-tilt, 0deg)); /* at rest, tilted */
+  }
+}
+
+/* Dismiss (the ✕): let it fall the rest of the way off the bottom instead of
+   blinking out. Higher specificity than the drop rule so it wins once added. */
+.dopamine-toll-friction.dtf-leaving {
+  animation: dtf-leave 0.45s cubic-bezier(0.5, 0, 1, 0.6) forwards;
+}
+@keyframes dtf-leave {
+  0%   { transform: translate(-50%, -50%) rotate(var(--dtf-tilt, 0deg)); opacity: 1; }
+  100% { transform: translate(-50%, calc(-50% + 90vh)) rotate(calc(var(--dtf-tilt, 0deg) + 42deg)); opacity: 0; }
+}
+
+.dopamine-toll-friction .dtf-card {
   position: relative;
   width: 300px;
   background: var(--dtf-bg);
@@ -42,17 +92,11 @@
   border-radius: 14px;
   padding: 14px 36px 14px 16px;
   color: var(--dtf-text);
-  box-shadow: 0 18px 50px -20px rgba(0, 0, 0, 0.85);
+  box-shadow: 0 22px 60px -18px rgba(0, 0, 0, 0.9);
   -webkit-font-smoothing: antialiased;
-  animation: dtf-slide-in 0.25s ease;
 }
 
-@keyframes dtf-slide-in {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: none; }
-}
-
-#dopamine-toll-friction .dtf-eyebrow {
+.dopamine-toll-friction .dtf-eyebrow {
   font-family: var(--dtf-mono);
   font-size: 10px;
   font-weight: 500;
@@ -62,25 +106,25 @@
   margin-bottom: 7px;
 }
 
-#dopamine-toll-friction .dtf-phrase {
+.dopamine-toll-friction .dtf-phrase {
   font-size: 14px;
   font-weight: 600;
   line-height: 1.35;
   margin-bottom: 9px;
 }
 
-#dopamine-toll-friction .dtf-time {
+.dopamine-toll-friction .dtf-time {
   font-family: var(--dtf-mono);
   font-size: 12px;
   color: var(--dtf-dim);
   font-variant-numeric: tabular-nums;
 }
-#dopamine-toll-friction .dtf-time b {
+.dopamine-toll-friction .dtf-time b {
   color: var(--dtf-amber);
   font-weight: 700;
 }
 
-#dopamine-toll-friction .dtf-close {
+.dopamine-toll-friction .dtf-close {
   appearance: none;
   -webkit-appearance: none;
   position: absolute;
@@ -96,4 +140,14 @@
   line-height: 1;
   cursor: pointer;
 }
-#dopamine-toll-friction .dtf-close:hover { color: var(--dtf-terra); }
+.dopamine-toll-friction .dtf-close:hover { color: var(--dtf-terra); }
+
+/* Respect reduced-motion: skip the tumble, just fade in at the landing spot. */
+@media (prefers-reduced-motion: reduce) {
+  .dopamine-toll-friction { animation: dtf-appear 0.2s ease forwards; }
+  .dopamine-toll-friction.dtf-leaving { animation: dtf-appear 0.2s ease reverse forwards; }
+  @keyframes dtf-appear {
+    from { transform: translate(-50%, -50%) rotate(var(--dtf-tilt, 0deg)) scale(0.94); opacity: 0; }
+    to   { transform: translate(-50%, -50%) rotate(var(--dtf-tilt, 0deg)) scale(1); opacity: 1; }
+  }
+}

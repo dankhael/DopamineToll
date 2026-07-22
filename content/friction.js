@@ -1,16 +1,25 @@
 // Dopamine Toll friction reminders. Loads before blocker.js (see manifest).
-// While an unlocked toll-list site is in front of the user, a small corner
-// toast pops up every `frictionMinutes` of active time, showing one of their
-// phrases and how long this tab has held their attention. Time accrues only
-// while the tab is visible and its window focused — same pause-on-blur rule
-// as the toll clock in blocker.js.
+// While an unlocked toll-list site is in front of the user, warning cards drop
+// in from the top of the page, tumbling under gravity (see content/friction.css)
+// and landing at random spots to clutter the view. Each shows one of their
+// phrases and how long this tab has held their attention.
+//
+// Escalation: every `frictionMinutes` of active time drops a fresh wave, and
+// each wave holds one more card than the last (1, then 2, then 3, …). Cards do
+// NOT auto-dismiss — every one must be closed by hand, so ignoring them makes
+// the mess grow. Everything resets when the user leaves the toll-list site.
+//
+// Time accrues only while the tab is visible and its window focused — same
+// pause-on-blur rule as the toll clock in blocker.js.
 
 (() => {
   if (window.__dopamineTollFrictionLoaded) return;
   window.__dopamineTollFrictionLoaded = true;
 
-  const TOAST_ID = "dopamine-toll-friction";
-  const TOAST_VISIBLE_MS = 12_000;
+  const WARNING_CLASS = "dopamine-toll-friction";
+  const MAX_CONCURRENT = 40;   // safety cap so ignored waves can't flood the DOM
+  const WAVE_STAGGER_MS = 180; // rain a wave's cards in one after another
+  const LEAVE_MS = 450;        // must match the dtf-leave duration in friction.css
   const FALLBACK_PHRASES = [
     "your future self will thank you",
     "focus. discipline. results."
@@ -20,9 +29,9 @@
   let onTollSite = false;
   let gateUp = false;
   let secondsOnTab = 0;
-  let secondsSinceToast = 0;
+  let secondsSinceWave = 0;
+  let waveCount = 0; // escalation counter; wave N drops N cards
   let ticker = null;
-  let toastHideTimer = null;
 
   async function loadFrictionConfig() {
     try {
@@ -50,10 +59,10 @@
 
   function tickSecond() {
     secondsOnTab += 1;
-    secondsSinceToast += 1;
-    if (secondsSinceToast >= frictionConfig.minutes * 60) {
-      secondsSinceToast = 0;
-      showFrictionToast();
+    secondsSinceWave += 1;
+    if (secondsSinceWave >= frictionConfig.minutes * 60) {
+      secondsSinceWave = 0;
+      dropWave();
     }
   }
 
@@ -80,26 +89,48 @@
     return arr[Math.floor(Math.random() * arr.length)];
   }
 
-  function removeToast() {
-    if (toastHideTimer) {
-      clearTimeout(toastHideTimer);
-      toastHideTimer = null;
-    }
-    const el = document.getElementById(TOAST_ID);
-    if (el && el.parentNode) el.parentNode.removeChild(el);
+  function randBetween(min, max) {
+    return min + Math.random() * (max - min);
   }
 
-  function buildToast(phrase) {
-    const toast = document.createElement("div");
-    toast.id = TOAST_ID;
-    toast.dataset.theme = frictionConfig.theme;
-    // Inline critical positioning so host CSS resets can't kill it.
-    toast.setAttribute(
+  function countWarnings() {
+    return document.getElementsByClassName(WARNING_CLASS).length;
+  }
+
+  function canSpawn() {
+    return frictionConfig.enabled && onTollSite && !gateUp && countWarnings() < MAX_CONCURRENT;
+  }
+
+  // Immediate removal of every card — used when leaving the site or disabling.
+  function removeAllWarnings() {
+    const nodes = document.getElementsByClassName(WARNING_CLASS);
+    // Live collection: walk from the end while removing.
+    for (let i = nodes.length - 1; i >= 0; i--) nodes[i].remove();
+  }
+
+  // User dismiss (the ✕): let this specific card fall off the bottom, then drop it.
+  function dismissWarning(el) {
+    el.classList.add("dtf-leaving");
+    setTimeout(() => el.remove(), LEAVE_MS);
+  }
+
+  // Random landing spot, resting tilt, and start spin so a pile of cards
+  // scatters across the page instead of stacking in one place. The physics live
+  // in friction.css; these per-instance values feed it through CSS variables.
+  function buildWarning(phrase) {
+    const el = document.createElement("div");
+    el.className = WARNING_CLASS;
+    el.dataset.theme = frictionConfig.theme;
+    const x = randBetween(18, 82).toFixed(1);
+    const y = randBetween(22, 78).toFixed(1);
+    const tilt = randBetween(-7, 7).toFixed(1);
+    const spin = ((Math.random() < 0.5 ? -1 : 1) * randBetween(160, 250)).toFixed(0);
+    el.setAttribute(
       "style",
-      "position:fixed!important;right:20px!important;bottom:20px!important;z-index:2147483647!important;"
+      `position:fixed!important;left:${x}%!important;top:${y}%!important;` +
+        `z-index:2147483647!important;--dtf-tilt:${tilt}deg;--dtf-spin:${spin}deg;`
     );
-    // Static markup only — the phrase is user text, so it goes in via textContent.
-    toast.innerHTML = `
+    el.innerHTML = `
       <div class="dtf-card">
         <div class="dtf-eyebrow">dopamine toll</div>
         <div class="dtf-phrase"></div>
@@ -107,32 +138,43 @@
         <button class="dtf-close" aria-label="dismiss">✕</button>
       </div>
     `;
-    toast.querySelector(".dtf-phrase").textContent = phrase;
-    toast.querySelector(".dtf-time > b").textContent = fmtElapsed(secondsOnTab);
-    toast.querySelector(".dtf-close").addEventListener("click", removeToast);
-    return toast;
+    el.querySelector(".dtf-phrase").textContent = phrase;
+    el.querySelector(".dtf-time > b").textContent = fmtElapsed(secondsOnTab);
+    el.querySelector(".dtf-close").addEventListener("click", () => dismissWarning(el));
+    return el;
   }
 
-  function showFrictionToast() {
-    removeToast();
+  function spawnWarning() {
+    if (!canSpawn()) return;
     const phrase = pickRandom(frictionConfig.phrases) || FALLBACK_PHRASES[0];
-    (document.body || document.documentElement).appendChild(buildToast(phrase));
-    toastHideTimer = setTimeout(removeToast, TOAST_VISIBLE_MS);
+    (document.body || document.documentElement).appendChild(buildWarning(phrase));
+  }
+
+  // Each interval drops one more card than the last — friction that grows the
+  // longer the user stays. Stagger the spawns so a wave rains down.
+  function dropWave() {
+    waveCount += 1;
+    for (let i = 0; i < waveCount; i++) {
+      setTimeout(spawnWarning, i * WAVE_STAGGER_MS);
+    }
+  }
+
+  function resetOnLeave() {
+    secondsOnTab = 0;
+    secondsSinceWave = 0;
+    waveCount = 0;
+    removeAllWarnings();
   }
 
   // blocker.js reports the gate's state through this hook; the clock only runs
   // while the toll is paid and the site is actually usable. Leaving the
-  // toll-list site resets the tab clock.
+  // toll-list site clears the pile and resets the escalation.
   window.__dopamineTollFriction = {
     setGateState(next) {
       const wasOnTollSite = onTollSite;
       onTollSite = !!next.onTollSite;
       gateUp = !!next.gateUp;
-      if (wasOnTollSite && !onTollSite) {
-        secondsOnTab = 0;
-        secondsSinceToast = 0;
-        removeToast();
-      }
+      if (wasOnTollSite && !onTollSite) resetOnLeave();
       syncTicker();
     }
   };
@@ -140,7 +182,10 @@
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area !== "sync") return;
     if (changes.frictionEnabled || changes.frictionMinutes || changes.phrases || changes.theme) {
-      loadFrictionConfig().then(syncTicker);
+      loadFrictionConfig().then(() => {
+        if (!frictionConfig.enabled) removeAllWarnings();
+        syncTicker();
+      });
     }
   });
 
