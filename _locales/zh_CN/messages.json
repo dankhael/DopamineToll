@@ -1,0 +1,125 @@
+{
+  "appName": { "message": "Dopamine Toll" },
+  "appDesc": { "message": "对抗拖延的覆盖层，用激励性关卡拦截被屏蔽的网站。" },
+
+  "popupEnableAria": { "message": "启用 Dopamine Toll" },
+  "popupTollList": { "message": "过路费清单" },
+  "popupChecking": { "message": "正在检查标签页…" },
+  "popupOpenSettings": { "message": "打开设置" },
+  "popupNoTab": { "message": "没有活动标签页" },
+  "popupInternalPage": { "message": "内部页面" },
+  "popupNotOnList": { "message": "不在你的过路费清单中" },
+  "popupWindowOpen": {
+    "message": "在你的过路费清单中 · 开放中 $TIME$",
+    "placeholders": { "time": { "content": "$1" } }
+  },
+  "popupTollArmed": { "message": "在你的过路费清单中 · 过路费已就绪" },
+  "popupStat": {
+    "message": "今天 — <b>离开 $WALKED$ 次</b> · 付费 $PAID$ 次",
+    "placeholders": { "walked": { "content": "$1" }, "paid": { "content": "$2" } }
+  },
+
+  "optionsTitle": { "message": "Dopamine Toll — 设置" },
+  "optionsSubtitle": { "message": "你的设置会自动保存。<b>每次你到达清单中的网站时都会收取过路费。</b>" },
+  "optionsTollListH2": { "message": "过路费清单" },
+  "optionsTollListHint": { "message": "在打开前收取过路费的网站。添加路径可只拦截某个板块 — 例如 <code>youtube.com/shorts</code> 只对 Shorts 收费，而不影响 YouTube 的其余部分。" },
+  "optionsDomainPlaceholder": { "message": "example.com 或 youtube.com/shorts" },
+  "optionsAdd": { "message": "添加" },
+  "optionsNorthStarH2": { "message": "你的北极星" },
+  "optionsNorthStarHint": { "message": "你会在过路费界面看到的图片 — 你说过你想要的东西。每次随机显示一张。" },
+  "optionsPhrasesH2": { "message": "你对自己说过的话" },
+  "optionsPhrasesHint": { "message": "用你自己的话写下。每次收取过路费时，都会在照片下方显示一句。" },
+  "optionsPhrasePlaceholder": { "message": "写一句能打动你的话…" },
+  "optionsTollH2": { "message": "过路费" },
+  "optionsTollHint": { "message": "在你和刷屏之间设置多少阻力。" },
+  "optionsCountdownK": { "message": "倒计时" },
+  "optionsCountdownD": { "message": "“仍然打开”按钮解锁前的等待时间。" },
+  "optionsSec": { "message": "秒" },
+  "optionsMin": { "message": "分" },
+  "optionsCountdownDecAria": { "message": "减少倒计时" },
+  "optionsCountdownIncAria": { "message": "增加倒计时" },
+  "optionsUnlockK": { "message": "开放时段" },
+  "optionsUnlockD": { "message": "支付过路费后，网站保持打开的时长。" },
+  "optionsUnlockDecAria": { "message": "减少开放时段" },
+  "optionsUnlockIncAria": { "message": "增加开放时段" },
+  "optionsTollEndnote": { "message": "时段结束后，过路费会再次出现 — 每一次都是。" },
+  "optionsFrictionH2": { "message": "阻力提醒" },
+  "optionsFrictionHint": { "message": "当过路费网站打开时，一个小弹窗会显示你的一句话以及你在该标签页停留的时长。只有标签页在你面前时才计时。" },
+  "optionsRemindersK": { "message": "提醒" },
+  "optionsRemindersD": { "message": "当你在过路费网站上时显示弹窗。" },
+  "optionsFrictionToggleAria": { "message": "切换阻力提醒" },
+  "optionsEveryK": { "message": "每隔" },
+  "optionsEveryD": { "message": "两次弹窗之间的标签页停留分钟数。" },
+  "optionsFrictionDecAria": { "message": "减少提醒间隔" },
+  "optionsFrictionIncAria": { "message": "增加提醒间隔" },
+  "optionsThemeH2": { "message": "主题" },
+  "optionsThemeHint": { "message": "为过路费界面、弹窗和本页面重新配色。" },
+  "themeAmber": { "message": "琥珀" },
+  "themeIndigo": { "message": "靛蓝" },
+  "themeEmerald": { "message": "翡翠" },
+  "themeRose": { "message": "玫红" },
+  "optionsSupportH2": { "message": "支持" },
+  "optionsSupportHint": { "message": "如果这个过路费让你远离刷屏，你可以请我喝杯咖啡。完全自愿 — 谢谢。" },
+  "optionsBuyCoffee": { "message": "请我喝杯咖啡" },
+  "optionsSaved": { "message": "已保存" },
+  "optionsRemove": { "message": "移除" },
+  "optionsEmptyDomains": { "message": "过路费清单还是空的 — 在上方添加一个网站" },
+  "optionsEmptyPhrases": { "message": "还没有句子 — 写点能打动你的话" },
+  "optionsInvalidHostname": { "message": "主机名无效" },
+  "optionsAlreadyListed": { "message": "已在清单中" },
+  "optionsAddPhoto": { "message": "添加照片" },
+  "optionsPhotoLabel": {
+    "message": "照片 $NUM$",
+    "placeholders": { "num": { "content": "$1" } }
+  },
+  "optionsLimitReached": {
+    "message": "已达上限 — 最多 $MAX$ 张照片",
+    "placeholders": { "max": { "content": "$1" } }
+  },
+  "optionsCompressWarn": {
+    "message": "压缩后的照片为 $KB$KB（超过 $MAX$KB）— 已保存，但建议换用更小的",
+    "placeholders": { "kb": { "content": "$1" }, "max": { "content": "$2" } }
+  },
+  "optionsUploadFailed": {
+    "message": "上传失败：$ERR$",
+    "placeholders": { "err": { "content": "$1" } }
+  },
+  "optionsDecodeError": { "message": "无法解码图片" },
+
+  "overlayNorthStarAlt": { "message": "你的北极星" },
+  "overlayOnList": { "message": "在你的过路费清单中" },
+  "overlayYouToYourself": { "message": "— 你对自己说" },
+  "overlayChooseIn": { "message": "稍后可以选择" },
+  "overlayChooseNow": { "message": "现在可以选择" },
+  "overlayCloseTab": { "message": "关闭标签页" },
+  "overlayBeProductive": { "message": "去做正事" },
+  "overlayOpenAnyway": {
+    "message": "仍然打开 · $MIN$ 分钟",
+    "placeholders": { "min": { "content": "$1" } }
+  },
+  "overlayUnlocksIn": {
+    "message": "$SEC$ 秒后解锁",
+    "placeholders": { "sec": { "content": "$1" } }
+  },
+  "overlayBeLazy": { "message": "偷个懒" },
+
+  "frictionEyebrow": { "message": "dopamine toll" },
+  "frictionTimeOnTab": {
+    "message": "在此标签页 <b>$TIME$</b>",
+    "placeholders": { "time": { "content": "$1" } }
+  },
+  "frictionDismissAria": { "message": "关闭" },
+  "frictionElapsedMin": {
+    "message": "$MIN$ 分钟",
+    "placeholders": { "min": { "content": "$1" } }
+  },
+  "frictionElapsedHour": {
+    "message": "$HOURS$ 小时 $MINS$ 分",
+    "placeholders": { "hours": { "content": "$1" }, "mins": { "content": "$2" } }
+  },
+
+  "defaultPhrase1": { "message": "未来的你会感谢现在的你" },
+  "defaultPhrase2": { "message": "你有比这更大的目标" },
+  "defaultPhrase3": { "message": "专注。自律。结果。" },
+  "defaultPhrase4": { "message": "在这里的每一分钟，都是远离重要之事的一分钟" }
+}

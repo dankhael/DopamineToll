@@ -2,29 +2,30 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Dopamine Toll</title>
+  <title data-i18n="appName">Dopamine Toll</title>
   <link rel="stylesheet" href="../assets/theme.css">
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
   <div class="popup">
     <div class="top">
-      <div class="name"><span class="mark"></span>Dopamine Toll</div>
-      <div class="toggle" id="toggle" role="switch" tabindex="0" aria-label="Enable Dopamine Toll"></div>
+      <div class="name"><span class="mark"></span><span data-i18n="appName">Dopamine Toll</span></div>
+      <div class="toggle" id="toggle" role="switch" tabindex="0" data-i18n-label="popupEnableAria" aria-label="Enable Dopamine Toll"></div>
     </div>
 
     <div class="rows">
-      <div class="row"><span class="l">toll list</span><span class="r amber" id="count">…</span></div>
+      <div class="row"><span class="l" data-i18n="popupTollList">toll list</span><span class="r amber" id="count">…</span></div>
       <div class="row status" id="status">
-        <div class="head2"><span class="dot"></span><span id="status-host">checking tab…</span></div>
+        <div class="head2"><span class="dot"></span><span id="status-host" data-i18n="popupChecking">checking tab…</span></div>
         <div class="meta" id="status-meta"></div>
       </div>
-      <div class="row stat"><span class="l" id="stat">today — <b>walked away 0×</b> · paid 0×</span></div>
+      <div class="row stat"><span class="l" id="stat"></span></div>
     </div>
 
-    <button class="openbtn" id="open-options">Open settings</button>
+    <button class="openbtn" id="open-options" data-i18n="popupOpenSettings">Open settings</button>
   </div>
 
+  <script src="../shared/i18n.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>

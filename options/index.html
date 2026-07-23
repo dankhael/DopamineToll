@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Dopamine Toll — settings</title>
+  <title data-i18n="optionsTitle">Dopamine Toll — settings</title>
   <link rel="icon" type="image/png" id="favicon" href="../assets/icon128.png">
   <link rel="stylesheet" href="../assets/theme.css">
   <link rel="stylesheet" href="options.css">
@@ -11,25 +11,25 @@
   <div class="wrap">
     <div class="masthead">
       <div class="mark lg"></div>
-      <h1>Dopamine Toll</h1>
+      <h1 data-i18n="appName">Dopamine Toll</h1>
     </div>
-    <p class="sub">Your settings save automatically. <b>The toll runs every time you reach a listed site.</b></p>
+    <p class="sub" data-i18n-html="optionsSubtitle">Your settings save automatically. <b>The toll runs every time you reach a listed site.</b></p>
 
     <!-- toll list -->
     <div class="card">
-      <h2>Toll list</h2>
-      <p class="hint">Sites that charge a toll before they open. Add a path to gate one section — e.g. <code>youtube.com/shorts</code> tolls Shorts but not the rest of YouTube.</p>
+      <h2 data-i18n="optionsTollListH2">Toll list</h2>
+      <p class="hint" data-i18n-html="optionsTollListHint">Sites that charge a toll before they open. Add a path to gate one section — e.g. <code>youtube.com/shorts</code> tolls Shorts but not the rest of YouTube.</p>
       <div class="addrow">
-        <input class="input" id="domain-input" placeholder="example.com or youtube.com/shorts">
-        <button class="add" id="domain-add">Add</button>
+        <input class="input" id="domain-input" data-i18n-placeholder="optionsDomainPlaceholder" placeholder="example.com or youtube.com/shorts">
+        <button class="add" id="domain-add" data-i18n="optionsAdd">Add</button>
       </div>
       <div class="list" id="domain-list"></div>
     </div>
 
     <!-- north star -->
     <div class="card">
-      <h2>Your north star</h2>
-      <p class="hint">The picture you'll see on the toll screen — what you said you wanted. One shows at a time, picked at random.</p>
+      <h2 data-i18n="optionsNorthStarH2">Your north star</h2>
+      <p class="hint" data-i18n="optionsNorthStarHint">The picture you'll see on the toll screen — what you said you wanted. One shows at a time, picked at random.</p>
       <div class="stars" id="stars"></div>
       <input type="file" id="file-input" accept="image/*" style="display:none">
       <div class="warn" id="upload-warn" style="display:none"></div>
@@ -37,64 +37,64 @@
 
     <!-- phrases -->
     <div class="card">
-      <h2>Things you told yourself</h2>
-      <p class="hint">Written in your own words. One appears under the photo each time the toll runs.</p>
+      <h2 data-i18n="optionsPhrasesH2">Things you told yourself</h2>
+      <p class="hint" data-i18n="optionsPhrasesHint">Written in your own words. One appears under the photo each time the toll runs.</p>
       <div class="addrow">
-        <textarea class="input" id="phrase-input" placeholder="write a phrase that hits…"></textarea>
-        <button class="add" id="phrase-add">Add</button>
+        <textarea class="input" id="phrase-input" data-i18n-placeholder="optionsPhrasePlaceholder" placeholder="write a phrase that hits…"></textarea>
+        <button class="add" id="phrase-add" data-i18n="optionsAdd">Add</button>
       </div>
       <div class="list" id="phrase-list"></div>
     </div>
 
     <!-- the toll timings -->
     <div class="card">
-      <h2>The toll</h2>
-      <p class="hint">How much friction stands between you and the scroll.</p>
+      <h2 data-i18n="optionsTollH2">The toll</h2>
+      <p class="hint" data-i18n="optionsTollHint">How much friction stands between you and the scroll.</p>
       <div class="toll-grid">
         <div class="ctrl">
-          <div class="k">Countdown</div>
-          <div class="d">The wait before the “open anyway” button unlocks.</div>
+          <div class="k" data-i18n="optionsCountdownK">Countdown</div>
+          <div class="d" data-i18n="optionsCountdownD">The wait before the “open anyway” button unlocks.</div>
           <div class="stepper">
-            <div class="num"><span id="lock-val">30</span><span>sec</span></div>
+            <div class="num"><span id="lock-val">30</span><span data-i18n="optionsSec">sec</span></div>
             <div class="pm">
-              <button id="lock-dec" aria-label="decrease countdown">−</button>
-              <button id="lock-inc" aria-label="increase countdown">+</button>
+              <button id="lock-dec" data-i18n-label="optionsCountdownDecAria" aria-label="decrease countdown">−</button>
+              <button id="lock-inc" data-i18n-label="optionsCountdownIncAria" aria-label="increase countdown">+</button>
             </div>
           </div>
         </div>
         <div class="ctrl">
-          <div class="k">Unlock window</div>
-          <div class="d">How long the site stays open once you pay the toll.</div>
+          <div class="k" data-i18n="optionsUnlockK">Unlock window</div>
+          <div class="d" data-i18n="optionsUnlockD">How long the site stays open once you pay the toll.</div>
           <div class="stepper">
-            <div class="num"><span id="unlock-val">10</span><span>min</span></div>
+            <div class="num"><span id="unlock-val">10</span><span data-i18n="optionsMin">min</span></div>
             <div class="pm">
-              <button id="unlock-dec" aria-label="decrease unlock window">−</button>
-              <button id="unlock-inc" aria-label="increase unlock window">+</button>
+              <button id="unlock-dec" data-i18n-label="optionsUnlockDecAria" aria-label="decrease unlock window">−</button>
+              <button id="unlock-inc" data-i18n-label="optionsUnlockIncAria" aria-label="increase unlock window">+</button>
             </div>
           </div>
         </div>
       </div>
-      <div class="endnote"><span class="dotsep"></span>When the window ends, the toll returns — every time.</div>
+      <div class="endnote"><span class="dotsep"></span><span data-i18n="optionsTollEndnote">When the window ends, the toll returns — every time.</span></div>
     </div>
 
     <!-- friction reminders -->
     <div class="card">
-      <h2>Friction reminders</h2>
-      <p class="hint">While a toll site is open, a small pop-up shows one of your phrases and how long you've been on the tab. Time only counts while the tab is in front of you.</p>
+      <h2 data-i18n="optionsFrictionH2">Friction reminders</h2>
+      <p class="hint" data-i18n="optionsFrictionHint">While a toll site is open, a small pop-up shows one of your phrases and how long you've been on the tab. Time only counts while the tab is in front of you.</p>
       <div class="toll-grid">
         <div class="ctrl">
-          <div class="k">Reminders</div>
-          <div class="d">Show the pop-up while you're on a toll site.</div>
-          <button class="toggle" id="friction-toggle" role="switch" aria-checked="true" aria-label="toggle friction reminders"></button>
+          <div class="k" data-i18n="optionsRemindersK">Reminders</div>
+          <div class="d" data-i18n="optionsRemindersD">Show the pop-up while you're on a toll site.</div>
+          <button class="toggle" id="friction-toggle" role="switch" aria-checked="true" data-i18n-label="optionsFrictionToggleAria" aria-label="toggle friction reminders"></button>
         </div>
         <div class="ctrl">
-          <div class="k">Every</div>
-          <div class="d">Minutes on the tab between pop-ups.</div>
+          <div class="k" data-i18n="optionsEveryK">Every</div>
+          <div class="d" data-i18n="optionsEveryD">Minutes on the tab between pop-ups.</div>
           <div class="stepper">
-            <div class="num"><span id="friction-val">5</span><span>min</span></div>
+            <div class="num"><span id="friction-val">5</span><span data-i18n="optionsMin">min</span></div>
             <div class="pm">
-              <button id="friction-dec" aria-label="decrease reminder interval">−</button>
-              <button id="friction-inc" aria-label="increase reminder interval">+</button>
+              <button id="friction-dec" data-i18n-label="optionsFrictionDecAria" aria-label="decrease reminder interval">−</button>
+              <button id="friction-inc" data-i18n-label="optionsFrictionIncAria" aria-label="increase reminder interval">+</button>
             </div>
           </div>
         </div>
@@ -103,28 +103,29 @@
 
     <!-- theme -->
     <div class="card">
-      <h2>Theme</h2>
-      <p class="hint">Recolors the toll screen, the popup, and this page.</p>
+      <h2 data-i18n="optionsThemeH2">Theme</h2>
+      <p class="hint" data-i18n="optionsThemeHint">Recolors the toll screen, the popup, and this page.</p>
       <div class="themes" id="themes">
-        <button class="theme-opt" data-theme="amber"><span class="sw"></span>Amber</button>
-        <button class="theme-opt" data-theme="indigo"><span class="sw"></span>Indigo</button>
-        <button class="theme-opt" data-theme="emerald"><span class="sw"></span>Emerald</button>
-        <button class="theme-opt" data-theme="rose"><span class="sw"></span>Rose</button>
+        <button class="theme-opt" data-theme="amber"><span class="sw"></span><span data-i18n="themeAmber">Amber</span></button>
+        <button class="theme-opt" data-theme="indigo"><span class="sw"></span><span data-i18n="themeIndigo">Indigo</span></button>
+        <button class="theme-opt" data-theme="emerald"><span class="sw"></span><span data-i18n="themeEmerald">Emerald</span></button>
+        <button class="theme-opt" data-theme="rose"><span class="sw"></span><span data-i18n="themeRose">Rose</span></button>
       </div>
     </div>
 
     <!-- support -->
     <div class="card">
-      <h2>Support</h2>
-      <p class="hint">If the toll keeps you off the scroll, you can buy me a coffee. Entirely optional — thank you.</p>
+      <h2 data-i18n="optionsSupportH2">Support</h2>
+      <p class="hint" data-i18n="optionsSupportHint">If the toll keeps you off the scroll, you can buy me a coffee. Entirely optional — thank you.</p>
       <a class="kofi" href="https://ko-fi.com/dankhael" target="_blank" rel="noopener noreferrer">
-        <span class="kofi-cup">☕</span>Buy me a coffee
+        <span class="kofi-cup">☕</span><span data-i18n="optionsBuyCoffee">Buy me a coffee</span>
       </a>
     </div>
   </div>
 
-  <div id="toast">Saved</div>
+  <div id="toast" data-i18n="optionsSaved">Saved</div>
 
+  <script src="../shared/i18n.js"></script>
   <script src="options.js"></script>
 </body>
 </html>

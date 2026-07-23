@@ -75,8 +75,8 @@ try {
   }
 } catch {}
 
-function toast(msg = "Saved") {
-  toastEl.textContent = msg;
+function toast(msg) {
+  toastEl.textContent = msg || DTI18n.t("optionsSaved");
   toastEl.classList.add("show");
   if (toastTimer) clearTimeout(toastTimer);
   toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1100);
@@ -122,13 +122,21 @@ function normalizeBlockedEntry(input) {
   return host + path;
 }
 
+// Localized "empty state" row shared by the domain and phrase lists.
+function renderEmpty(listEl, messageKey) {
+  const empty = document.createElement("div");
+  empty.className = "empty";
+  empty.textContent = DTI18n.t(messageKey);
+  listEl.appendChild(empty);
+}
+
 // ---------- Toll list (domains) ----------
 async function renderDomains() {
   const { blockedDomains = [] } = await chrome.storage.sync.get("blockedDomains");
   const list = $("domain-list");
   list.innerHTML = "";
   if (blockedDomains.length === 0) {
-    list.innerHTML = `<div class="empty">nothing on your toll list yet — add a site above</div>`;
+    renderEmpty(list, "optionsEmptyDomains");
     return;
   }
   for (const entry of blockedDomains) {
@@ -137,7 +145,7 @@ async function renderDomains() {
     const path = slash === -1 ? "" : entry.slice(slash);
     const li = document.createElement("div");
     li.className = "item dom";
-    li.innerHTML = `<span class="val"></span><button class="remove">remove</button>`;
+    li.innerHTML = `<span class="val"></span><button class="remove">${DTI18n.t("optionsRemove")}</button>`;
     const val = li.querySelector(".val");
     val.textContent = host;
     if (path) {
@@ -160,12 +168,12 @@ async function addDomain() {
   const input = $("domain-input");
   const cleaned = normalizeBlockedEntry(input.value);
   if (!cleaned) {
-    toast("invalid hostname");
+    toast(DTI18n.t("optionsInvalidHostname"));
     return;
   }
   const { blockedDomains = [] } = await chrome.storage.sync.get("blockedDomains");
   if (blockedDomains.includes(cleaned)) {
-    toast("already on the list");
+    toast(DTI18n.t("optionsAlreadyListed"));
     input.value = "";
     return;
   }
@@ -181,13 +189,13 @@ async function renderPhrases() {
   const list = $("phrase-list");
   list.innerHTML = "";
   if (phrases.length === 0) {
-    list.innerHTML = `<div class="empty">no phrases yet — write something that hits</div>`;
+    renderEmpty(list, "optionsEmptyPhrases");
     return;
   }
   phrases.forEach((p, i) => {
     const li = document.createElement("div");
     li.className = "item";
-    li.innerHTML = `<span class="val"></span><button class="remove">remove</button>`;
+    li.innerHTML = `<span class="val"></span><button class="remove">${DTI18n.t("optionsRemove")}</button>`;
     li.querySelector(".val").textContent = p;
     li.querySelector(".remove").addEventListener("click", async () => {
       const next = phrases.filter((_, j) => j !== i);
@@ -213,8 +221,9 @@ async function addPhrase() {
 // ---------- North star photos ----------
 // Stored as {name, src}; legacy entries are bare base64 strings.
 function normImage(entry, i) {
-  if (typeof entry === "string") return { name: `photo ${i + 1}`, src: entry };
-  return { name: entry.name || `photo ${i + 1}`, src: entry.src };
+  const fallbackName = DTI18n.t("optionsPhotoLabel", [String(i + 1)]);
+  if (typeof entry === "string") return { name: fallbackName, src: entry };
+  return { name: entry.name || fallbackName, src: entry.src };
 }
 
 async function renderStars() {
@@ -226,10 +235,12 @@ async function renderStars() {
     const { name, src } = normImage(entry, i);
     const star = document.createElement("div");
     star.className = "star filled";
-    star.innerHTML = `<img alt=""><span class="lbl"></span><button class="del" title="remove">✕</button>`;
+    star.innerHTML = `<img alt=""><span class="lbl"></span><button class="del">✕</button>`;
     star.querySelector("img").src = src;
     star.querySelector(".lbl").textContent = name;
-    star.querySelector(".del").addEventListener("click", async () => {
+    const del = star.querySelector(".del");
+    del.title = DTI18n.t("optionsRemove");
+    del.addEventListener("click", async () => {
       const next = goalImages.filter((_, j) => j !== i);
       await chrome.storage.local.set({ goalImages: next });
       toast();
@@ -241,7 +252,7 @@ async function renderStars() {
   if (goalImages.length < MAX_IMAGES) {
     const add = document.createElement("div");
     add.className = "star add";
-    add.innerHTML = `<span class="plus">+</span><span class="lbl">add photo</span>`;
+    add.innerHTML = `<span class="plus">+</span><span class="lbl">${DTI18n.t("optionsAddPhoto")}</span>`;
     add.addEventListener("click", () => $("file-input").click());
     grid.appendChild(add);
   }
@@ -260,7 +271,7 @@ function loadImageElement(src) {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => resolve(img);
-    img.onerror = () => reject(new Error("could not decode image"));
+    img.onerror = () => reject(new Error(DTI18n.t("optionsDecodeError")));
     img.src = src;
   });
 }
@@ -288,7 +299,7 @@ async function handleUpload(file) {
   const { goalImages = [] } = await chrome.storage.local.get("goalImages");
   if (goalImages.length >= MAX_IMAGES) {
     warn.style.display = "block";
-    warn.textContent = `limit reached — max ${MAX_IMAGES} photos`;
+    warn.textContent = DTI18n.t("optionsLimitReached", [String(MAX_IMAGES)]);
     return;
   }
 
@@ -300,14 +311,16 @@ async function handleUpload(file) {
     const bytes = Math.floor((compressed.length - "data:image/jpeg;base64,".length) * 0.75);
     if (bytes > MAX_IMAGE_BYTES) {
       warn.style.display = "block";
-      warn.textContent = `compressed photo is ${(bytes / 1024).toFixed(0)}KB (>300KB) — saved anyway, but consider a smaller one`;
+      const kb = String((bytes / 1024).toFixed(0));
+      const maxKb = String(Math.round(MAX_IMAGE_BYTES / 1024));
+      warn.textContent = DTI18n.t("optionsCompressWarn", [kb, maxKb]);
     }
     await chrome.storage.local.set({ goalImages: [...goalImages, { name: file.name, src: compressed }] });
     toast();
     renderStars();
   } catch (err) {
     warn.style.display = "block";
-    warn.textContent = `upload failed: ${err.message || err}`;
+    warn.textContent = DTI18n.t("optionsUploadFailed", [String(err.message || err)]);
   }
 }
 
@@ -401,6 +414,7 @@ function wireThemes() {
 
 // ---------- Wire-up ----------
 function init() {
+  DTI18n.applyI18n();
   $("domain-add").addEventListener("click", addDomain);
   $("domain-input").addEventListener("keydown", (e) => {
     if (e.key === "Enter") addDomain();

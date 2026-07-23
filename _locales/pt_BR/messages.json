@@ -1,0 +1,125 @@
+{
+  "appName": { "message": "Dopamine Toll" },
+  "appDesc": { "message": "Camada anti-procrastinação que intercepta sites bloqueados com um pedágio motivacional." },
+
+  "popupEnableAria": { "message": "Ativar o Dopamine Toll" },
+  "popupTollList": { "message": "lista de pedágio" },
+  "popupChecking": { "message": "verificando a aba…" },
+  "popupOpenSettings": { "message": "Abrir configurações" },
+  "popupNoTab": { "message": "nenhuma aba ativa" },
+  "popupInternalPage": { "message": "página interna" },
+  "popupNotOnList": { "message": "fora da sua lista de pedágio" },
+  "popupWindowOpen": {
+    "message": "na sua lista de pedágio · janela aberta $TIME$",
+    "placeholders": { "time": { "content": "$1" } }
+  },
+  "popupTollArmed": { "message": "na sua lista de pedágio · pedágio armado" },
+  "popupStat": {
+    "message": "hoje — <b>desistiu $WALKED$×</b> · pagou $PAID$×",
+    "placeholders": { "walked": { "content": "$1" }, "paid": { "content": "$2" } }
+  },
+
+  "optionsTitle": { "message": "Dopamine Toll — configurações" },
+  "optionsSubtitle": { "message": "Suas configurações são salvas automaticamente. <b>O pedágio é cobrado toda vez que você chega a um site da lista.</b>" },
+  "optionsTollListH2": { "message": "Lista de pedágio" },
+  "optionsTollListHint": { "message": "Sites que cobram um pedágio antes de abrir. Adicione um caminho para bloquear só uma seção — ex.: <code>youtube.com/shorts</code> cobra pedágio nos Shorts, mas não no resto do YouTube." },
+  "optionsDomainPlaceholder": { "message": "exemplo.com ou youtube.com/shorts" },
+  "optionsAdd": { "message": "Adicionar" },
+  "optionsNorthStarH2": { "message": "Sua estrela-guia" },
+  "optionsNorthStarHint": { "message": "A imagem que você verá na tela de pedágio — o que você disse que queria. Uma aparece por vez, escolhida ao acaso." },
+  "optionsPhrasesH2": { "message": "Coisas que você disse a si mesmo" },
+  "optionsPhrasesHint": { "message": "Escritas com suas próprias palavras. Uma aparece sob a foto sempre que o pedágio é cobrado." },
+  "optionsPhrasePlaceholder": { "message": "escreva uma frase que te acerte…" },
+  "optionsTollH2": { "message": "O pedágio" },
+  "optionsTollHint": { "message": "Quanto atrito existe entre você e a rolagem." },
+  "optionsCountdownK": { "message": "Contagem regressiva" },
+  "optionsCountdownD": { "message": "A espera antes de o botão “abrir mesmo assim” liberar." },
+  "optionsSec": { "message": "seg" },
+  "optionsMin": { "message": "min" },
+  "optionsCountdownDecAria": { "message": "diminuir contagem regressiva" },
+  "optionsCountdownIncAria": { "message": "aumentar contagem regressiva" },
+  "optionsUnlockK": { "message": "Janela de acesso" },
+  "optionsUnlockD": { "message": "Por quanto tempo o site fica aberto depois que você paga o pedágio." },
+  "optionsUnlockDecAria": { "message": "diminuir janela de acesso" },
+  "optionsUnlockIncAria": { "message": "aumentar janela de acesso" },
+  "optionsTollEndnote": { "message": "Quando a janela acaba, o pedágio volta — toda vez." },
+  "optionsFrictionH2": { "message": "Lembretes de atrito" },
+  "optionsFrictionHint": { "message": "Enquanto um site com pedágio está aberto, um pequeno pop-up mostra uma das suas frases e há quanto tempo você está na aba. O tempo só conta enquanto a aba está à sua frente." },
+  "optionsRemindersK": { "message": "Lembretes" },
+  "optionsRemindersD": { "message": "Mostrar o pop-up enquanto você está em um site com pedágio." },
+  "optionsFrictionToggleAria": { "message": "alternar lembretes de atrito" },
+  "optionsEveryK": { "message": "A cada" },
+  "optionsEveryD": { "message": "Minutos na aba entre um pop-up e outro." },
+  "optionsFrictionDecAria": { "message": "diminuir intervalo dos lembretes" },
+  "optionsFrictionIncAria": { "message": "aumentar intervalo dos lembretes" },
+  "optionsThemeH2": { "message": "Tema" },
+  "optionsThemeHint": { "message": "Recolore a tela de pedágio, o popup e esta página." },
+  "themeAmber": { "message": "Âmbar" },
+  "themeIndigo": { "message": "Índigo" },
+  "themeEmerald": { "message": "Esmeralda" },
+  "themeRose": { "message": "Rosa" },
+  "optionsSupportH2": { "message": "Apoie" },
+  "optionsSupportHint": { "message": "Se o pedágio te mantém longe da rolagem, você pode me pagar um café. Totalmente opcional — obrigado." },
+  "optionsBuyCoffee": { "message": "Me pague um café" },
+  "optionsSaved": { "message": "Salvo" },
+  "optionsRemove": { "message": "remover" },
+  "optionsEmptyDomains": { "message": "nada na sua lista de pedágio ainda — adicione um site acima" },
+  "optionsEmptyPhrases": { "message": "nenhuma frase ainda — escreva algo que te acerte" },
+  "optionsInvalidHostname": { "message": "nome de host inválido" },
+  "optionsAlreadyListed": { "message": "já está na lista" },
+  "optionsAddPhoto": { "message": "adicionar foto" },
+  "optionsPhotoLabel": {
+    "message": "foto $NUM$",
+    "placeholders": { "num": { "content": "$1" } }
+  },
+  "optionsLimitReached": {
+    "message": "limite atingido — máx. $MAX$ fotos",
+    "placeholders": { "max": { "content": "$1" } }
+  },
+  "optionsCompressWarn": {
+    "message": "a foto comprimida tem $KB$KB (acima de $MAX$KB) — salva mesmo assim, mas considere uma menor",
+    "placeholders": { "kb": { "content": "$1" }, "max": { "content": "$2" } }
+  },
+  "optionsUploadFailed": {
+    "message": "falha no envio: $ERR$",
+    "placeholders": { "err": { "content": "$1" } }
+  },
+  "optionsDecodeError": { "message": "não foi possível decodificar a imagem" },
+
+  "overlayNorthStarAlt": { "message": "sua estrela-guia" },
+  "overlayOnList": { "message": "na sua lista de pedágio" },
+  "overlayYouToYourself": { "message": "— você, para você mesmo" },
+  "overlayChooseIn": { "message": "você pode escolher em" },
+  "overlayChooseNow": { "message": "você já pode escolher" },
+  "overlayCloseTab": { "message": "Fechar aba" },
+  "overlayBeProductive": { "message": "seja produtivo" },
+  "overlayOpenAnyway": {
+    "message": "Abrir mesmo assim · $MIN$ min",
+    "placeholders": { "min": { "content": "$1" } }
+  },
+  "overlayUnlocksIn": {
+    "message": "libera em $SEC$s",
+    "placeholders": { "sec": { "content": "$1" } }
+  },
+  "overlayBeLazy": { "message": "seja preguiçoso" },
+
+  "frictionEyebrow": { "message": "dopamine toll" },
+  "frictionTimeOnTab": {
+    "message": "<b>$TIME$</b> nesta aba",
+    "placeholders": { "time": { "content": "$1" } }
+  },
+  "frictionDismissAria": { "message": "dispensar" },
+  "frictionElapsedMin": {
+    "message": "$MIN$ min",
+    "placeholders": { "min": { "content": "$1" } }
+  },
+  "frictionElapsedHour": {
+    "message": "$HOURS$h $MINS$m",
+    "placeholders": { "hours": { "content": "$1" }, "mins": { "content": "$2" } }
+  },
+
+  "defaultPhrase1": { "message": "seu eu do futuro vai agradecer" },
+  "defaultPhrase2": { "message": "você tem objetivos maiores do que isso" },
+  "defaultPhrase3": { "message": "foco. disciplina. resultados." },
+  "defaultPhrase4": { "message": "cada minuto aqui é um minuto longe do que importa" }
+}

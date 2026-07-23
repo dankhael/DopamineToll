@@ -6,21 +6,25 @@
 //   - Clean up unlock state when tabs close.
 //   - Paint the toolbar icon in the active theme's accent.
 
-const DEFAULT_CONFIG = {
-  blockedDomains: ["twitter.com", "x.com", "instagram.com", "tiktok.com", "youtube.com/shorts"],
-  phrases: [
-    "your future self will thank you",
-    "you have bigger goals than this",
-    "focus. discipline. results.",
-    "every minute here is a minute away from what matters"
-  ],
-  lockDuration: 30,
-  unlockDuration: 10,
-  frictionEnabled: true,
-  frictionMinutes: 5,
-  enabled: true,
-  theme: "amber"
-};
+// Built fresh (not a top-level const) so the seeded phrases pick up the
+// browser locale via chrome.i18n at install time. Everything else is static.
+function defaultConfig() {
+  return {
+    blockedDomains: ["twitter.com", "x.com", "instagram.com", "tiktok.com", "youtube.com/shorts"],
+    phrases: [
+      chrome.i18n.getMessage("defaultPhrase1"),
+      chrome.i18n.getMessage("defaultPhrase2"),
+      chrome.i18n.getMessage("defaultPhrase3"),
+      chrome.i18n.getMessage("defaultPhrase4")
+    ],
+    lockDuration: 30,
+    unlockDuration: 10,
+    frictionEnabled: true,
+    frictionMinutes: 5,
+    enabled: true,
+    theme: "amber"
+  };
+}
 
 const SESSION_KEY = "unlocks"; // { [tabId:domain]: unlockedUntilEpochMs }
 
@@ -99,9 +103,10 @@ async function refreshThemeIcon() {
 }
 
 chrome.runtime.onInstalled.addListener(async () => {
-  const existing = await chrome.storage.sync.get(Object.keys(DEFAULT_CONFIG));
+  const config = defaultConfig();
+  const existing = await chrome.storage.sync.get(Object.keys(config));
   const patch = {};
-  for (const [k, v] of Object.entries(DEFAULT_CONFIG)) {
+  for (const [k, v] of Object.entries(config)) {
     if (existing[k] === undefined) patch[k] = v;
   }
   if (Object.keys(patch).length) await chrome.storage.sync.set(patch);

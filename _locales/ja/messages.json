@@ -1,0 +1,125 @@
+{
+  "appName": { "message": "Dopamine Toll" },
+  "appDesc": { "message": "先延ばしを防ぐオーバーレイ。ブロック対象のサイトを、やる気を促すゲートで遮ります。" },
+
+  "popupEnableAria": { "message": "Dopamine Toll を有効にする" },
+  "popupTollList": { "message": "通行料リスト" },
+  "popupChecking": { "message": "タブを確認中…" },
+  "popupOpenSettings": { "message": "設定を開く" },
+  "popupNoTab": { "message": "アクティブなタブがありません" },
+  "popupInternalPage": { "message": "内部ページ" },
+  "popupNotOnList": { "message": "通行料リストにありません" },
+  "popupWindowOpen": {
+    "message": "通行料リスト・開放中 $TIME$",
+    "placeholders": { "time": { "content": "$1" } }
+  },
+  "popupTollArmed": { "message": "通行料リスト・通行料あり" },
+  "popupStat": {
+    "message": "今日 — <b>離脱 $WALKED$回</b>・支払い $PAID$回",
+    "placeholders": { "walked": { "content": "$1" }, "paid": { "content": "$2" } }
+  },
+
+  "optionsTitle": { "message": "Dopamine Toll — 設定" },
+  "optionsSubtitle": { "message": "設定は自動的に保存されます。<b>リストにあるサイトに着くたびに通行料が発生します。</b>" },
+  "optionsTollListH2": { "message": "通行料リスト" },
+  "optionsTollListHint": { "message": "開く前に通行料を課すサイト。パスを追加すると一部だけを対象にできます。例：<code>youtube.com/shorts</code> はショートだけに通行料を課し、YouTube の他の部分はそのままです。" },
+  "optionsDomainPlaceholder": { "message": "example.com または youtube.com/shorts" },
+  "optionsAdd": { "message": "追加" },
+  "optionsNorthStarH2": { "message": "あなたの北極星" },
+  "optionsNorthStarHint": { "message": "通行料の画面に表示される画像 — あなたが望んだもの。一度に1枚、ランダムに表示されます。" },
+  "optionsPhrasesH2": { "message": "自分に言い聞かせた言葉" },
+  "optionsPhrasesHint": { "message": "あなた自身の言葉で。通行料が発生するたびに、写真の下に1つ表示されます。" },
+  "optionsPhrasePlaceholder": { "message": "心に刺さる言葉を書く…" },
+  "optionsTollH2": { "message": "通行料" },
+  "optionsTollHint": { "message": "あなたとスクロールの間に、どれだけの摩擦を置くか。" },
+  "optionsCountdownK": { "message": "カウントダウン" },
+  "optionsCountdownD": { "message": "「それでも開く」ボタンが解除されるまでの待ち時間。" },
+  "optionsSec": { "message": "秒" },
+  "optionsMin": { "message": "分" },
+  "optionsCountdownDecAria": { "message": "カウントダウンを減らす" },
+  "optionsCountdownIncAria": { "message": "カウントダウンを増やす" },
+  "optionsUnlockK": { "message": "開放ウィンドウ" },
+  "optionsUnlockD": { "message": "通行料を支払った後、サイトが開いたままになる時間。" },
+  "optionsUnlockDecAria": { "message": "開放ウィンドウを減らす" },
+  "optionsUnlockIncAria": { "message": "開放ウィンドウを増やす" },
+  "optionsTollEndnote": { "message": "ウィンドウが終わると、通行料が戻ってきます — 毎回。" },
+  "optionsFrictionH2": { "message": "摩擦リマインダー" },
+  "optionsFrictionHint": { "message": "通行料サイトを開いている間、小さなポップアップにあなたの言葉と、そのタブに滞在した時間が表示されます。時間はタブが手前にあるときだけカウントされます。" },
+  "optionsRemindersK": { "message": "リマインダー" },
+  "optionsRemindersD": { "message": "通行料サイトにいる間、ポップアップを表示する。" },
+  "optionsFrictionToggleAria": { "message": "摩擦リマインダーを切り替える" },
+  "optionsEveryK": { "message": "間隔" },
+  "optionsEveryD": { "message": "ポップアップの間隔（タブ滞在の分数）。" },
+  "optionsFrictionDecAria": { "message": "リマインダー間隔を減らす" },
+  "optionsFrictionIncAria": { "message": "リマインダー間隔を増やす" },
+  "optionsThemeH2": { "message": "テーマ" },
+  "optionsThemeHint": { "message": "通行料画面、ポップアップ、そしてこのページの色を変えます。" },
+  "themeAmber": { "message": "アンバー" },
+  "themeIndigo": { "message": "インディゴ" },
+  "themeEmerald": { "message": "エメラルド" },
+  "themeRose": { "message": "ローズ" },
+  "optionsSupportH2": { "message": "サポート" },
+  "optionsSupportHint": { "message": "通行料がスクロールから遠ざけてくれたなら、コーヒーを一杯おごってください。完全に任意です — ありがとう。" },
+  "optionsBuyCoffee": { "message": "コーヒーをおごる" },
+  "optionsSaved": { "message": "保存しました" },
+  "optionsRemove": { "message": "削除" },
+  "optionsEmptyDomains": { "message": "通行料リストはまだ空です — 上でサイトを追加してください" },
+  "optionsEmptyPhrases": { "message": "言葉がまだありません — 心に刺さる何かを書いてください" },
+  "optionsInvalidHostname": { "message": "無効なホスト名" },
+  "optionsAlreadyListed": { "message": "すでにリストにあります" },
+  "optionsAddPhoto": { "message": "写真を追加" },
+  "optionsPhotoLabel": {
+    "message": "写真 $NUM$",
+    "placeholders": { "num": { "content": "$1" } }
+  },
+  "optionsLimitReached": {
+    "message": "上限に達しました — 写真は最大 $MAX$ 枚",
+    "placeholders": { "max": { "content": "$1" } }
+  },
+  "optionsCompressWarn": {
+    "message": "圧縮後の写真は $KB$KB（$MAX$KB 超）— 保存しましたが、より小さいものをおすすめします",
+    "placeholders": { "kb": { "content": "$1" }, "max": { "content": "$2" } }
+  },
+  "optionsUploadFailed": {
+    "message": "アップロード失敗：$ERR$",
+    "placeholders": { "err": { "content": "$1" } }
+  },
+  "optionsDecodeError": { "message": "画像をデコードできませんでした" },
+
+  "overlayNorthStarAlt": { "message": "あなたの北極星" },
+  "overlayOnList": { "message": "通行料リストにあります" },
+  "overlayYouToYourself": { "message": "— 自分自身へ" },
+  "overlayChooseIn": { "message": "選べるようになるまで" },
+  "overlayChooseNow": { "message": "今、選べます" },
+  "overlayCloseTab": { "message": "タブを閉じる" },
+  "overlayBeProductive": { "message": "生産的に" },
+  "overlayOpenAnyway": {
+    "message": "それでも開く・$MIN$ 分",
+    "placeholders": { "min": { "content": "$1" } }
+  },
+  "overlayUnlocksIn": {
+    "message": "$SEC$秒で解除",
+    "placeholders": { "sec": { "content": "$1" } }
+  },
+  "overlayBeLazy": { "message": "怠けよう" },
+
+  "frictionEyebrow": { "message": "dopamine toll" },
+  "frictionTimeOnTab": {
+    "message": "このタブで <b>$TIME$</b>",
+    "placeholders": { "time": { "content": "$1" } }
+  },
+  "frictionDismissAria": { "message": "閉じる" },
+  "frictionElapsedMin": {
+    "message": "$MIN$ 分",
+    "placeholders": { "min": { "content": "$1" } }
+  },
+  "frictionElapsedHour": {
+    "message": "$HOURS$時間 $MINS$分",
+    "placeholders": { "hours": { "content": "$1" }, "mins": { "content": "$2" } }
+  },
+
+  "defaultPhrase1": { "message": "未来の自分が感謝する" },
+  "defaultPhrase2": { "message": "あなたにはもっと大きな目標がある" },
+  "defaultPhrase3": { "message": "集中。規律。結果。" },
+  "defaultPhrase4": { "message": "ここでの1分は、大切なことから離れた1分" }
+}

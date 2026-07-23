@@ -1,0 +1,9 @@
+{
+  "name": "dopamine-toll",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Dev tooling for the Dopamine Toll extension. Not shipped — see package.ps1 for what ends up in the Web Store zip.",
+  "scripts": {
+    "test": "node --test"
+  }
+}

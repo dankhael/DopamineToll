@@ -1,0 +1,125 @@
+{
+  "appName": { "message": "Dopamine Toll" },
+  "appDesc": { "message": "Anti-Prokrastinations-Overlay, das blockierte Websites mit einer motivierenden Maut-Schranke abfängt." },
+
+  "popupEnableAria": { "message": "Dopamine Toll aktivieren" },
+  "popupTollList": { "message": "Maut-Liste" },
+  "popupChecking": { "message": "Tab wird geprüft…" },
+  "popupOpenSettings": { "message": "Einstellungen öffnen" },
+  "popupNoTab": { "message": "kein aktiver Tab" },
+  "popupInternalPage": { "message": "interne Seite" },
+  "popupNotOnList": { "message": "nicht auf deiner Maut-Liste" },
+  "popupWindowOpen": {
+    "message": "auf deiner Maut-Liste · Fenster offen $TIME$",
+    "placeholders": { "time": { "content": "$1" } }
+  },
+  "popupTollArmed": { "message": "auf deiner Maut-Liste · Maut aktiv" },
+  "popupStat": {
+    "message": "heute — <b>abgewandt $WALKED$×</b> · bezahlt $PAID$×",
+    "placeholders": { "walked": { "content": "$1" }, "paid": { "content": "$2" } }
+  },
+
+  "optionsTitle": { "message": "Dopamine Toll — Einstellungen" },
+  "optionsSubtitle": { "message": "Deine Einstellungen werden automatisch gespeichert. <b>Die Maut wird jedes Mal fällig, wenn du eine gelistete Seite erreichst.</b>" },
+  "optionsTollListH2": { "message": "Maut-Liste" },
+  "optionsTollListHint": { "message": "Seiten, die vor dem Öffnen eine Maut verlangen. Füge einen Pfad hinzu, um nur einen Bereich zu sperren — z. B. verlangt <code>youtube.com/shorts</code> Maut für Shorts, aber nicht für den Rest von YouTube." },
+  "optionsDomainPlaceholder": { "message": "beispiel.com oder youtube.com/shorts" },
+  "optionsAdd": { "message": "Hinzufügen" },
+  "optionsNorthStarH2": { "message": "Dein Nordstern" },
+  "optionsNorthStarHint": { "message": "Das Bild, das du auf dem Maut-Bildschirm siehst — das, was du dir vorgenommen hast. Es wird eines nach dem anderen gezeigt, zufällig ausgewählt." },
+  "optionsPhrasesH2": { "message": "Was du dir selbst gesagt hast" },
+  "optionsPhrasesHint": { "message": "In deinen eigenen Worten. Bei jeder Maut erscheint einer davon unter dem Foto." },
+  "optionsPhrasePlaceholder": { "message": "schreib einen Satz, der trifft…" },
+  "optionsTollH2": { "message": "Die Maut" },
+  "optionsTollHint": { "message": "Wie viel Reibung zwischen dir und dem Scrollen steht." },
+  "optionsCountdownK": { "message": "Countdown" },
+  "optionsCountdownD": { "message": "Die Wartezeit, bevor der Button „trotzdem öffnen“ freigeschaltet wird." },
+  "optionsSec": { "message": "Sek." },
+  "optionsMin": { "message": "Min." },
+  "optionsCountdownDecAria": { "message": "Countdown verringern" },
+  "optionsCountdownIncAria": { "message": "Countdown erhöhen" },
+  "optionsUnlockK": { "message": "Freigabe-Fenster" },
+  "optionsUnlockD": { "message": "Wie lange die Seite geöffnet bleibt, nachdem du die Maut bezahlt hast." },
+  "optionsUnlockDecAria": { "message": "Freigabe-Fenster verringern" },
+  "optionsUnlockIncAria": { "message": "Freigabe-Fenster erhöhen" },
+  "optionsTollEndnote": { "message": "Wenn das Fenster endet, kehrt die Maut zurück — jedes Mal." },
+  "optionsFrictionH2": { "message": "Reibungs-Erinnerungen" },
+  "optionsFrictionHint": { "message": "Solange eine Maut-Seite geöffnet ist, zeigt ein kleines Pop-up einen deiner Sätze und wie lange du schon auf dem Tab bist. Die Zeit zählt nur, wenn der Tab vor dir ist." },
+  "optionsRemindersK": { "message": "Erinnerungen" },
+  "optionsRemindersD": { "message": "Das Pop-up anzeigen, während du auf einer Maut-Seite bist." },
+  "optionsFrictionToggleAria": { "message": "Reibungs-Erinnerungen umschalten" },
+  "optionsEveryK": { "message": "Alle" },
+  "optionsEveryD": { "message": "Minuten auf dem Tab zwischen den Pop-ups." },
+  "optionsFrictionDecAria": { "message": "Erinnerungsintervall verringern" },
+  "optionsFrictionIncAria": { "message": "Erinnerungsintervall erhöhen" },
+  "optionsThemeH2": { "message": "Design" },
+  "optionsThemeHint": { "message": "Färbt den Maut-Bildschirm, das Popup und diese Seite neu ein." },
+  "themeAmber": { "message": "Bernstein" },
+  "themeIndigo": { "message": "Indigo" },
+  "themeEmerald": { "message": "Smaragd" },
+  "themeRose": { "message": "Rosé" },
+  "optionsSupportH2": { "message": "Unterstützen" },
+  "optionsSupportHint": { "message": "Wenn die Maut dich vom Scrollen abhält, kannst du mir einen Kaffee spendieren. Völlig freiwillig — danke." },
+  "optionsBuyCoffee": { "message": "Spendier mir einen Kaffee" },
+  "optionsSaved": { "message": "Gespeichert" },
+  "optionsRemove": { "message": "entfernen" },
+  "optionsEmptyDomains": { "message": "noch nichts auf deiner Maut-Liste — füge oben eine Seite hinzu" },
+  "optionsEmptyPhrases": { "message": "noch keine Sätze — schreib etwas, das trifft" },
+  "optionsInvalidHostname": { "message": "ungültiger Hostname" },
+  "optionsAlreadyListed": { "message": "schon auf der Liste" },
+  "optionsAddPhoto": { "message": "Foto hinzufügen" },
+  "optionsPhotoLabel": {
+    "message": "Foto $NUM$",
+    "placeholders": { "num": { "content": "$1" } }
+  },
+  "optionsLimitReached": {
+    "message": "Limit erreicht — max. $MAX$ Fotos",
+    "placeholders": { "max": { "content": "$1" } }
+  },
+  "optionsCompressWarn": {
+    "message": "komprimiertes Foto ist $KB$KB (über $MAX$KB) — trotzdem gespeichert, aber nimm lieber ein kleineres",
+    "placeholders": { "kb": { "content": "$1" }, "max": { "content": "$2" } }
+  },
+  "optionsUploadFailed": {
+    "message": "Upload fehlgeschlagen: $ERR$",
+    "placeholders": { "err": { "content": "$1" } }
+  },
+  "optionsDecodeError": { "message": "Bild konnte nicht dekodiert werden" },
+
+  "overlayNorthStarAlt": { "message": "dein Nordstern" },
+  "overlayOnList": { "message": "auf deiner Maut-Liste" },
+  "overlayYouToYourself": { "message": "— du, zu dir selbst" },
+  "overlayChooseIn": { "message": "du kannst wählen in" },
+  "overlayChooseNow": { "message": "du kannst jetzt wählen" },
+  "overlayCloseTab": { "message": "Tab schließen" },
+  "overlayBeProductive": { "message": "sei produktiv" },
+  "overlayOpenAnyway": {
+    "message": "Trotzdem öffnen · $MIN$ Min.",
+    "placeholders": { "min": { "content": "$1" } }
+  },
+  "overlayUnlocksIn": {
+    "message": "freigeschaltet in $SEC$ s",
+    "placeholders": { "sec": { "content": "$1" } }
+  },
+  "overlayBeLazy": { "message": "sei faul" },
+
+  "frictionEyebrow": { "message": "dopamine toll" },
+  "frictionTimeOnTab": {
+    "message": "<b>$TIME$</b> auf diesem Tab",
+    "placeholders": { "time": { "content": "$1" } }
+  },
+  "frictionDismissAria": { "message": "schließen" },
+  "frictionElapsedMin": {
+    "message": "$MIN$ Min.",
+    "placeholders": { "min": { "content": "$1" } }
+  },
+  "frictionElapsedHour": {
+    "message": "$HOURS$ Std. $MINS$ Min.",
+    "placeholders": { "hours": { "content": "$1" }, "mins": { "content": "$2" } }
+  },
+
+  "defaultPhrase1": { "message": "dein zukünftiges Ich wird dir danken" },
+  "defaultPhrase2": { "message": "du hast größere Ziele als das" },
+  "defaultPhrase3": { "message": "Fokus. Disziplin. Ergebnisse." },
+  "defaultPhrase4": { "message": "jede Minute hier ist eine Minute weg von dem, was zählt" }
+}

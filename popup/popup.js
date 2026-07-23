@@ -35,7 +35,8 @@ function setStatus({ host, meta, state }) {
 async function refreshStat() {
   const { tollStats } = await chrome.storage.local.get("tollStats");
   const fresh = tollStats && tollStats.date === todayKey() ? tollStats : { walkedAway: 0, paid: 0 };
-  $("stat").innerHTML = `today — <b>walked away ${fresh.walkedAway || 0}×</b> · paid ${fresh.paid || 0}×`;
+  // Message carries the <b> wrapper and word order; counts are the substitutions.
+  $("stat").innerHTML = DTI18n.t("popupStat", [String(fresh.walkedAway || 0), String(fresh.paid || 0)]);
 }
 
 async function refresh() {
@@ -50,7 +51,7 @@ async function refresh() {
 
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   if (!tab || !tab.url) {
-    setStatus({ host: "—", meta: "no active tab" });
+    setStatus({ host: "—", meta: DTI18n.t("popupNoTab") });
     return;
   }
   let hostname = "";
@@ -60,11 +61,11 @@ async function refresh() {
     hostname = url.hostname;
     pathname = url.pathname;
   } catch {
-    setStatus({ host: "—", meta: "internal page" });
+    setStatus({ host: "—", meta: DTI18n.t("popupInternalPage") });
     return;
   }
   if (!hostname) {
-    setStatus({ host: "—", meta: "internal page" });
+    setStatus({ host: "—", meta: DTI18n.t("popupInternalPage") });
     return;
   }
 
@@ -75,20 +76,21 @@ async function refresh() {
     pathname
   });
   if (!resp || !resp.blocked) {
-    setStatus({ host: hostname, meta: "not on your toll list" });
+    setStatus({ host: hostname, meta: DTI18n.t("popupNotOnList") });
     return;
   }
   if (resp.unlocked) {
     const remainingMs = (resp.unlockedUntil || 0) - Date.now();
     const mins = Math.max(0, Math.floor(remainingMs / 60000));
     const secs = Math.max(0, Math.floor((remainingMs % 60000) / 1000));
+    const clock = `${mins}:${String(secs).padStart(2, "0")}`;
     setStatus({
       host: resp.domain,
-      meta: `on your toll list · window open ${mins}:${String(secs).padStart(2, "0")}`,
+      meta: DTI18n.t("popupWindowOpen", [clock]),
       state: "open"
     });
   } else {
-    setStatus({ host: resp.domain, meta: "on your toll list · toll armed", state: "armed" });
+    setStatus({ host: resp.domain, meta: DTI18n.t("popupTollArmed"), state: "armed" });
   }
 }
 
@@ -111,6 +113,7 @@ $("open-options").addEventListener("click", () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
+  DTI18n.applyI18n();
   applyThemeFromStorage();
   refresh();
 });

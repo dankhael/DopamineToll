@@ -7,8 +7,11 @@ $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent $MyInvocation.MyCommand.Path
 
 # The loadable extension = manifest at the ZIP root + these asset folders. Anything
-# not listed here is deliberately excluded from what ships to users.
-$include = @("manifest.json", "assets", "background", "content", "options", "popup")
+# not listed here is deliberately excluded from what ships to users (e.g. package.json,
+# the test/ suite, gen-icons.ps1). "_locales" and "shared" are required at runtime:
+# _locales holds the chrome.i18n catalogs, shared/i18n.js is a content script + popup
+# and options dependency.
+$include = @("manifest.json", "_locales", "shared", "assets", "background", "content", "options", "popup")
 
 # Expand the includes into a flat file list, verifying each top-level entry exists so a
 # future rename can't silently ship an incomplete package.

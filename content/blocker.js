@@ -6,9 +6,11 @@
   window.__dopamineTollLoaded = true;
 
   const OVERLAY_ID = "dopamine-toll-overlay";
+  // Shown only when the user has no phrases of their own; localized to the
+  // browser locale via _locales (see shared/i18n.js, loaded before this script).
   const FALLBACK_PHRASES = [
-    "your future self will thank you",
-    "focus. discipline. results."
+    DTI18n.t("defaultPhrase1"),
+    DTI18n.t("defaultPhrase3")
   ];
 
   let lastHref = location.href;
@@ -64,13 +66,10 @@
     window.__dopamineTollFriction?.setGateState({ onTollSite, gateUp });
   }
 
-  // Seconds → "MM:SS" for the toll clock.
-  function fmtClock(totalSeconds) {
-    const s = Math.max(0, Math.floor(totalSeconds));
-    const mm = String(Math.floor(s / 60)).padStart(2, "0");
-    const ss = String(s % 60).padStart(2, "0");
-    return `${mm}:${ss}`;
-  }
+  // Pure formatters live in shared/format.js (loaded before this script) so
+  // they can be unit-tested in Node. Aliased here to keep the call sites terse.
+  const fmtClock = DTFormat.fmtClock;
+  const escapeHTML = DTFormat.escapeHTML;
 
   // goalImages entries are either a legacy base64 string or {name, src}.
   function imageSrc(entry) {
@@ -163,7 +162,7 @@
       remaining -= 1;
       if (remaining > 0) {
         clockEl.textContent = fmtClock(remaining);
-        lazyNote.textContent = `unlocks in ${remaining}s`;
+        lazyNote.textContent = DTI18n.t("overlayUnlocksIn", [String(remaining)]);
         return;
       }
       stopTicker();
@@ -231,33 +230,35 @@
     );
 
     // With a north star uploaded, the photo shows it; otherwise a striped
-    // placeholder card.
+    // placeholder card. Localized copy comes from _locales; it is our own text
+    // (no user HTML) so it is interpolated directly, while `domain`, `phrase`,
+    // and `imgSrc` stay escaped.
     const photoFill = imgSrc
-      ? `<img class="dt-photo-img" src="${escapeHTML(imgSrc)}" alt="your north star">`
+      ? `<img class="dt-photo-img" src="${escapeHTML(imgSrc)}" alt="${escapeHTML(DTI18n.t("overlayNorthStarAlt"))}">`
       : `<div class="dt-stripes"></div>`;
 
     overlay.innerHTML = `
       <div class="dt-backdrop">
         <div class="dt-stage">
           <div class="dt-col" role="dialog" aria-modal="true">
-            <div class="dt-eyebrow"><b>${escapeHTML(domain)}</b><span class="dt-dotsep"></span>on your toll list</div>
+            <div class="dt-eyebrow"><b>${escapeHTML(domain)}</b><span class="dt-dotsep"></span>${DTI18n.t("overlayOnList")}</div>
 
             <div class="dt-photo">
               ${photoFill}
               <div class="dt-tint"></div>
             </div>
 
-            <div class="dt-phrase">${escapeHTML(phrase)}<span class="dt-you">— you, to yourself</span></div>
+            <div class="dt-phrase">${escapeHTML(phrase)}<span class="dt-you">${DTI18n.t("overlayYouToYourself")}</span></div>
 
             <div class="dt-toll">
-              <div class="dt-label">you can choose in</div>
+              <div class="dt-label">${DTI18n.t("overlayChooseIn")}</div>
               <div class="dt-clock">${fmtClock(lockSeconds)}</div>
               <div class="dt-meter"><i></i></div>
             </div>
 
             <div class="dt-actions">
-              <button class="dt-btn dt-primary" data-dt-action="productive">Close tab<small>be productive</small></button>
-              <button class="dt-btn dt-locked" data-dt-action="lazy" disabled>Open anyway · ${unlockMinutes} min<small>unlocks in ${lockSeconds}s</small></button>
+              <button class="dt-btn dt-primary" data-dt-action="productive">${DTI18n.t("overlayCloseTab")}<small>${DTI18n.t("overlayBeProductive")}</small></button>
+              <button class="dt-btn dt-locked" data-dt-action="lazy" disabled>${DTI18n.t("overlayOpenAnyway", [String(unlockMinutes)])}<small>${DTI18n.t("overlayUnlocksIn", [String(lockSeconds)])}</small></button>
             </div>
           </div>
         </div>
@@ -275,11 +276,11 @@
 
     // Flip the gate to its unlocked state once the toll is fully paid.
     const onUnlock = () => {
-      labelEl.textContent = "you can choose now";
+      labelEl.textContent = DTI18n.t("overlayChooseNow");
       lazyBtn.disabled = false;
       lazyBtn.classList.remove("dt-locked");
       lazyBtn.classList.add("dt-ghost");
-      lazyNote.textContent = "be lazy";
+      lazyNote.textContent = DTI18n.t("overlayBeLazy");
     };
 
     // The toll only counts down while this tab/window has the user's attention —
@@ -333,16 +334,6 @@
     setTimeout(() => {
       checkAndMaybeShow();
     }, ms + 250);
-  }
-
-  function escapeHTML(s) {
-    return String(s).replace(/[&<>"']/g, (c) => ({
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#39;"
-    })[c]);
   }
 
   // SPA navigation hooks. pushState / replaceState can't be patched from here: the

@@ -1,0 +1,203 @@
+{
+  "appName": {
+    "message": "Dopamine Toll",
+    "description": "Extension name shown in Chrome and the Web Store. Brand name — keep as-is unless the language needs a transliteration."
+  },
+  "appDesc": {
+    "message": "Anti-procrastination overlay that intercepts blocked domains with a motivational gate.",
+    "description": "Extension description in the Web Store."
+  },
+
+  "popupEnableAria": {
+    "message": "Enable Dopamine Toll",
+    "description": "aria-label for the on/off toggle in the toolbar popup."
+  },
+  "popupTollList": {
+    "message": "toll list",
+    "description": "Popup row label: number of listed sites."
+  },
+  "popupChecking": {
+    "message": "checking tab…",
+    "description": "Placeholder status shown before the active tab is resolved."
+  },
+  "popupOpenSettings": {
+    "message": "Open settings",
+    "description": "Popup button that opens the options page."
+  },
+  "popupNoTab": {
+    "message": "no active tab",
+    "description": "Popup status when there is no active tab."
+  },
+  "popupInternalPage": {
+    "message": "internal page",
+    "description": "Popup status for chrome:// and other non-http pages."
+  },
+  "popupNotOnList": {
+    "message": "not on your toll list",
+    "description": "Popup status when the current site is not gated."
+  },
+  "popupWindowOpen": {
+    "message": "on your toll list · window open $TIME$",
+    "description": "Popup status while the unlock window is counting down. $TIME$ is a M:SS clock.",
+    "placeholders": { "time": { "content": "$1", "example": "3:20" } }
+  },
+  "popupTollArmed": {
+    "message": "on your toll list · toll armed",
+    "description": "Popup status when the site is gated and the toll will fire."
+  },
+  "popupStat": {
+    "message": "today — <b>walked away $WALKED$×</b> · paid $PAID$×",
+    "description": "Daily tally in the popup. Keep the <b> tags and the × sign.",
+    "placeholders": {
+      "walked": { "content": "$1", "example": "2" },
+      "paid": { "content": "$2", "example": "1" }
+    }
+  },
+
+  "optionsTitle": {
+    "message": "Dopamine Toll — settings",
+    "description": "Browser tab title of the settings page."
+  },
+  "optionsSubtitle": {
+    "message": "Your settings save automatically. <b>The toll runs every time you reach a listed site.</b>",
+    "description": "Settings page subtitle. Keep the <b> tags."
+  },
+  "optionsTollListH2": { "message": "Toll list" },
+  "optionsTollListHint": {
+    "message": "Sites that charge a toll before they open. Add a path to gate one section — e.g. <code>youtube.com/shorts</code> tolls Shorts but not the rest of YouTube.",
+    "description": "Hint under the Toll list heading. Keep the <code> tags and the domain example literal."
+  },
+  "optionsDomainPlaceholder": { "message": "example.com or youtube.com/shorts" },
+  "optionsAdd": { "message": "Add" },
+  "optionsNorthStarH2": { "message": "Your north star" },
+  "optionsNorthStarHint": {
+    "message": "The picture you'll see on the toll screen — what you said you wanted. One shows at a time, picked at random."
+  },
+  "optionsPhrasesH2": { "message": "Things you told yourself" },
+  "optionsPhrasesHint": {
+    "message": "Written in your own words. One appears under the photo each time the toll runs."
+  },
+  "optionsPhrasePlaceholder": { "message": "write a phrase that hits…" },
+  "optionsTollH2": { "message": "The toll" },
+  "optionsTollHint": { "message": "How much friction stands between you and the scroll." },
+  "optionsCountdownK": { "message": "Countdown" },
+  "optionsCountdownD": { "message": "The wait before the “open anyway” button unlocks." },
+  "optionsSec": {
+    "message": "sec",
+    "description": "Short unit label for seconds, shown next to the countdown number."
+  },
+  "optionsMin": {
+    "message": "min",
+    "description": "Short unit label for minutes, shown next to the unlock-window and reminder-interval numbers."
+  },
+  "optionsCountdownDecAria": { "message": "decrease countdown" },
+  "optionsCountdownIncAria": { "message": "increase countdown" },
+  "optionsUnlockK": { "message": "Unlock window" },
+  "optionsUnlockD": { "message": "How long the site stays open once you pay the toll." },
+  "optionsUnlockDecAria": { "message": "decrease unlock window" },
+  "optionsUnlockIncAria": { "message": "increase unlock window" },
+  "optionsTollEndnote": { "message": "When the window ends, the toll returns — every time." },
+  "optionsFrictionH2": { "message": "Friction reminders" },
+  "optionsFrictionHint": {
+    "message": "While a toll site is open, a small pop-up shows one of your phrases and how long you've been on the tab. Time only counts while the tab is in front of you."
+  },
+  "optionsRemindersK": { "message": "Reminders" },
+  "optionsRemindersD": { "message": "Show the pop-up while you're on a toll site." },
+  "optionsFrictionToggleAria": { "message": "toggle friction reminders" },
+  "optionsEveryK": {
+    "message": "Every",
+    "description": "Label before the reminder interval value, reads as 'Every 5 min'."
+  },
+  "optionsEveryD": { "message": "Minutes on the tab between pop-ups." },
+  "optionsFrictionDecAria": { "message": "decrease reminder interval" },
+  "optionsFrictionIncAria": { "message": "increase reminder interval" },
+  "optionsThemeH2": { "message": "Theme" },
+  "optionsThemeHint": { "message": "Recolors the toll screen, the popup, and this page." },
+  "themeAmber": { "message": "Amber" },
+  "themeIndigo": { "message": "Indigo" },
+  "themeEmerald": { "message": "Emerald" },
+  "themeRose": { "message": "Rose" },
+  "optionsSupportH2": { "message": "Support" },
+  "optionsSupportHint": {
+    "message": "If the toll keeps you off the scroll, you can buy me a coffee. Entirely optional — thank you."
+  },
+  "optionsBuyCoffee": { "message": "Buy me a coffee" },
+  "optionsSaved": {
+    "message": "Saved",
+    "description": "Toast shown after a setting is saved."
+  },
+  "optionsRemove": {
+    "message": "remove",
+    "description": "Button that removes a domain or phrase from a list."
+  },
+  "optionsEmptyDomains": { "message": "nothing on your toll list yet — add a site above" },
+  "optionsEmptyPhrases": { "message": "no phrases yet — write something that hits" },
+  "optionsInvalidHostname": { "message": "invalid hostname" },
+  "optionsAlreadyListed": { "message": "already on the list" },
+  "optionsAddPhoto": { "message": "add photo" },
+  "optionsPhotoLabel": {
+    "message": "photo $NUM$",
+    "description": "Fallback caption for an uploaded photo without a filename.",
+    "placeholders": { "num": { "content": "$1", "example": "1" } }
+  },
+  "optionsLimitReached": {
+    "message": "limit reached — max $MAX$ photos",
+    "placeholders": { "max": { "content": "$1", "example": "8" } }
+  },
+  "optionsCompressWarn": {
+    "message": "compressed photo is $KB$KB (over $MAX$KB) — saved anyway, but consider a smaller one",
+    "placeholders": {
+      "kb": { "content": "$1", "example": "420" },
+      "max": { "content": "$2", "example": "300" }
+    }
+  },
+  "optionsUploadFailed": {
+    "message": "upload failed: $ERR$",
+    "placeholders": { "err": { "content": "$1", "example": "could not decode image" } }
+  },
+  "optionsDecodeError": { "message": "could not decode image" },
+
+  "overlayNorthStarAlt": { "message": "your north star" },
+  "overlayOnList": { "message": "on your toll list" },
+  "overlayYouToYourself": { "message": "— you, to yourself" },
+  "overlayChooseIn": { "message": "you can choose in" },
+  "overlayChooseNow": { "message": "you can choose now" },
+  "overlayCloseTab": { "message": "Close tab" },
+  "overlayBeProductive": { "message": "be productive" },
+  "overlayOpenAnyway": {
+    "message": "Open anyway · $MIN$ min",
+    "placeholders": { "min": { "content": "$1", "example": "10" } }
+  },
+  "overlayUnlocksIn": {
+    "message": "unlocks in $SEC$s",
+    "placeholders": { "sec": { "content": "$1", "example": "30" } }
+  },
+  "overlayBeLazy": { "message": "be lazy" },
+
+  "frictionEyebrow": {
+    "message": "dopamine toll",
+    "description": "Small brand label at the top of a friction reminder card."
+  },
+  "frictionTimeOnTab": {
+    "message": "<b>$TIME$</b> on this tab",
+    "description": "Friction card line showing time on the tab. Keep the <b> tags; reorder freely for your language.",
+    "placeholders": { "time": { "content": "$1", "example": "7 min" } }
+  },
+  "frictionDismissAria": { "message": "dismiss" },
+  "frictionElapsedMin": {
+    "message": "$MIN$ min",
+    "placeholders": { "min": { "content": "$1", "example": "7" } }
+  },
+  "frictionElapsedHour": {
+    "message": "$HOURS$h $MINS$m",
+    "placeholders": {
+      "hours": { "content": "$1", "example": "1" },
+      "mins": { "content": "$2", "example": "05" }
+    }
+  },
+
+  "defaultPhrase1": { "message": "your future self will thank you" },
+  "defaultPhrase2": { "message": "you have bigger goals than this" },
+  "defaultPhrase3": { "message": "focus. discipline. results." },
+  "defaultPhrase4": { "message": "every minute here is a minute away from what matters" }
+}

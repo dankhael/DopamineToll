@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "Dopamine Toll",
+  "name": "__MSG_appName__",
   "version": "1.0.0",
-  "description": "Anti-procrastination overlay that intercepts blocked domains with a motivational gate.",
+  "description": "__MSG_appDesc__",
+  "default_locale": "en",
   "permissions": ["storage", "webNavigation"],
   "host_permissions": ["<all_urls>"],
   "minimum_chrome_version": "111",
@@ -13,7 +14,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content/friction.js", "content/blocker.js"],
+      "js": ["shared/i18n.js", "shared/format.js", "content/friction.js", "content/blocker.js"],
       "css": ["content/blocker.css", "content/friction.css"],
       "run_at": "document_start",
       "all_frames": false

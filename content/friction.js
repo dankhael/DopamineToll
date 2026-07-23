@@ -20,9 +20,11 @@
   const MAX_CONCURRENT = 40;   // safety cap so ignored waves can't flood the DOM
   const WAVE_STAGGER_MS = 180; // rain a wave's cards in one after another
   const LEAVE_MS = 450;        // must match the dtf-leave duration in friction.css
+  // Used until the user writes their own phrases; localized via _locales
+  // (shared/i18n.js is loaded before this script in the manifest).
   const FALLBACK_PHRASES = [
-    "your future self will thank you",
-    "focus. discipline. results."
+    DTI18n.t("defaultPhrase1"),
+    DTI18n.t("defaultPhrase3")
   ];
 
   let frictionConfig = { enabled: true, minutes: 5, phrases: FALLBACK_PHRASES, theme: "amber" };
@@ -77,12 +79,10 @@
     }
   }
 
-  // "7 min" under an hour, "1h 05m" past it.
-  function fmtElapsed(totalSeconds) {
-    const mins = Math.floor(totalSeconds / 60);
-    if (mins < 60) return `${mins} min`;
-    return `${Math.floor(mins / 60)}h ${String(mins % 60).padStart(2, "0")}m`;
-  }
+  // "7 min" under an hour, "1h 05m" past it — both localized via _locales.
+  // Formatting logic lives in shared/format.js (unit-tested); the translator is
+  // injected so that module never touches chrome.i18n directly.
+  const fmtElapsed = (totalSeconds) => DTFormat.fmtElapsed(totalSeconds, DTI18n.t);
 
   function pickRandom(arr) {
     if (!arr || arr.length === 0) return null;
@@ -132,15 +132,19 @@
     );
     el.innerHTML = `
       <div class="dtf-card">
-        <div class="dtf-eyebrow">dopamine toll</div>
+        <div class="dtf-eyebrow">${DTI18n.t("frictionEyebrow")}</div>
         <div class="dtf-phrase"></div>
-        <div class="dtf-time"><b></b> on this tab</div>
-        <button class="dtf-close" aria-label="dismiss">✕</button>
+        <div class="dtf-time"></div>
+        <button class="dtf-close">✕</button>
       </div>
     `;
     el.querySelector(".dtf-phrase").textContent = phrase;
-    el.querySelector(".dtf-time > b").textContent = fmtElapsed(secondsOnTab);
-    el.querySelector(".dtf-close").addEventListener("click", () => dismissWarning(el));
+    // Message carries the <b> wrapper and word order; the elapsed time (our own
+    // formatted string, no markup) is the substitution.
+    el.querySelector(".dtf-time").innerHTML = DTI18n.t("frictionTimeOnTab", [fmtElapsed(secondsOnTab)]);
+    const close = el.querySelector(".dtf-close");
+    close.setAttribute("aria-label", DTI18n.t("frictionDismissAria"));
+    close.addEventListener("click", () => dismissWarning(el));
     return el;
   }
 

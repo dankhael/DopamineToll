@@ -1,0 +1,125 @@
+{
+  "appName": { "message": "Dopamine Toll" },
+  "appDesc": { "message": "Superposition anti-procrastination qui intercepte les sites bloqués avec un péage motivant." },
+
+  "popupEnableAria": { "message": "Activer Dopamine Toll" },
+  "popupTollList": { "message": "liste de péage" },
+  "popupChecking": { "message": "vérification de l'onglet…" },
+  "popupOpenSettings": { "message": "Ouvrir les paramètres" },
+  "popupNoTab": { "message": "aucun onglet actif" },
+  "popupInternalPage": { "message": "page interne" },
+  "popupNotOnList": { "message": "pas dans votre liste de péage" },
+  "popupWindowOpen": {
+    "message": "dans votre liste de péage · fenêtre ouverte $TIME$",
+    "placeholders": { "time": { "content": "$1" } }
+  },
+  "popupTollArmed": { "message": "dans votre liste de péage · péage armé" },
+  "popupStat": {
+    "message": "aujourd'hui — <b>renoncé $WALKED$×</b> · payé $PAID$×",
+    "placeholders": { "walked": { "content": "$1" }, "paid": { "content": "$2" } }
+  },
+
+  "optionsTitle": { "message": "Dopamine Toll — paramètres" },
+  "optionsSubtitle": { "message": "Vos paramètres sont enregistrés automatiquement. <b>Le péage s'applique chaque fois que vous atteignez un site de la liste.</b>" },
+  "optionsTollListH2": { "message": "Liste de péage" },
+  "optionsTollListHint": { "message": "Sites qui imposent un péage avant de s'ouvrir. Ajoutez un chemin pour ne bloquer qu'une section — p. ex. <code>youtube.com/shorts</code> taxe les Shorts mais pas le reste de YouTube." },
+  "optionsDomainPlaceholder": { "message": "exemple.com ou youtube.com/shorts" },
+  "optionsAdd": { "message": "Ajouter" },
+  "optionsNorthStarH2": { "message": "Votre étoile polaire" },
+  "optionsNorthStarHint": { "message": "L'image que vous verrez sur l'écran de péage — ce que vous avez dit vouloir. Une seule à la fois, choisie au hasard." },
+  "optionsPhrasesH2": { "message": "Ce que vous vous êtes dit" },
+  "optionsPhrasesHint": { "message": "Écrites avec vos propres mots. L'une apparaît sous la photo à chaque péage." },
+  "optionsPhrasePlaceholder": { "message": "écrivez une phrase qui frappe…" },
+  "optionsTollH2": { "message": "Le péage" },
+  "optionsTollHint": { "message": "La friction qui se dresse entre vous et le défilement." },
+  "optionsCountdownK": { "message": "Compte à rebours" },
+  "optionsCountdownD": { "message": "L'attente avant que le bouton « ouvrir quand même » se débloque." },
+  "optionsSec": { "message": "s" },
+  "optionsMin": { "message": "min" },
+  "optionsCountdownDecAria": { "message": "diminuer le compte à rebours" },
+  "optionsCountdownIncAria": { "message": "augmenter le compte à rebours" },
+  "optionsUnlockK": { "message": "Fenêtre d'accès" },
+  "optionsUnlockD": { "message": "Durée pendant laquelle le site reste ouvert une fois le péage payé." },
+  "optionsUnlockDecAria": { "message": "diminuer la fenêtre d'accès" },
+  "optionsUnlockIncAria": { "message": "augmenter la fenêtre d'accès" },
+  "optionsTollEndnote": { "message": "Quand la fenêtre se termine, le péage revient — à chaque fois." },
+  "optionsFrictionH2": { "message": "Rappels de friction" },
+  "optionsFrictionHint": { "message": "Pendant qu'un site à péage est ouvert, une petite pop-up affiche l'une de vos phrases et depuis combien de temps vous êtes sur l'onglet. Le temps ne compte que lorsque l'onglet est devant vous." },
+  "optionsRemindersK": { "message": "Rappels" },
+  "optionsRemindersD": { "message": "Afficher la pop-up lorsque vous êtes sur un site à péage." },
+  "optionsFrictionToggleAria": { "message": "activer/désactiver les rappels de friction" },
+  "optionsEveryK": { "message": "Toutes les" },
+  "optionsEveryD": { "message": "Minutes passées sur l'onglet entre deux pop-ups." },
+  "optionsFrictionDecAria": { "message": "diminuer l'intervalle des rappels" },
+  "optionsFrictionIncAria": { "message": "augmenter l'intervalle des rappels" },
+  "optionsThemeH2": { "message": "Thème" },
+  "optionsThemeHint": { "message": "Recolore l'écran de péage, la pop-up et cette page." },
+  "themeAmber": { "message": "Ambre" },
+  "themeIndigo": { "message": "Indigo" },
+  "themeEmerald": { "message": "Émeraude" },
+  "themeRose": { "message": "Rose" },
+  "optionsSupportH2": { "message": "Soutien" },
+  "optionsSupportHint": { "message": "Si le péage vous éloigne du défilement, vous pouvez m'offrir un café. Entièrement facultatif — merci." },
+  "optionsBuyCoffee": { "message": "Offrez-moi un café" },
+  "optionsSaved": { "message": "Enregistré" },
+  "optionsRemove": { "message": "retirer" },
+  "optionsEmptyDomains": { "message": "rien dans votre liste de péage pour l'instant — ajoutez un site ci-dessus" },
+  "optionsEmptyPhrases": { "message": "aucune phrase pour l'instant — écrivez quelque chose qui frappe" },
+  "optionsInvalidHostname": { "message": "nom d'hôte invalide" },
+  "optionsAlreadyListed": { "message": "déjà dans la liste" },
+  "optionsAddPhoto": { "message": "ajouter une photo" },
+  "optionsPhotoLabel": {
+    "message": "photo $NUM$",
+    "placeholders": { "num": { "content": "$1" } }
+  },
+  "optionsLimitReached": {
+    "message": "limite atteinte — $MAX$ photos maximum",
+    "placeholders": { "max": { "content": "$1" } }
+  },
+  "optionsCompressWarn": {
+    "message": "la photo compressée fait $KB$KB (plus de $MAX$KB) — enregistrée quand même, mais envisagez-en une plus petite",
+    "placeholders": { "kb": { "content": "$1" }, "max": { "content": "$2" } }
+  },
+  "optionsUploadFailed": {
+    "message": "échec de l'envoi : $ERR$",
+    "placeholders": { "err": { "content": "$1" } }
+  },
+  "optionsDecodeError": { "message": "impossible de décoder l'image" },
+
+  "overlayNorthStarAlt": { "message": "votre étoile polaire" },
+  "overlayOnList": { "message": "dans votre liste de péage" },
+  "overlayYouToYourself": { "message": "— vous, à vous-même" },
+  "overlayChooseIn": { "message": "vous pourrez choisir dans" },
+  "overlayChooseNow": { "message": "vous pouvez choisir maintenant" },
+  "overlayCloseTab": { "message": "Fermer l'onglet" },
+  "overlayBeProductive": { "message": "soyez productif" },
+  "overlayOpenAnyway": {
+    "message": "Ouvrir quand même · $MIN$ min",
+    "placeholders": { "min": { "content": "$1" } }
+  },
+  "overlayUnlocksIn": {
+    "message": "débloqué dans $SEC$ s",
+    "placeholders": { "sec": { "content": "$1" } }
+  },
+  "overlayBeLazy": { "message": "soyez paresseux" },
+
+  "frictionEyebrow": { "message": "dopamine toll" },
+  "frictionTimeOnTab": {
+    "message": "<b>$TIME$</b> sur cet onglet",
+    "placeholders": { "time": { "content": "$1" } }
+  },
+  "frictionDismissAria": { "message": "fermer" },
+  "frictionElapsedMin": {
+    "message": "$MIN$ min",
+    "placeholders": { "min": { "content": "$1" } }
+  },
+  "frictionElapsedHour": {
+    "message": "$HOURS$ h $MINS$ m",
+    "placeholders": { "hours": { "content": "$1" }, "mins": { "content": "$2" } }
+  },
+
+  "defaultPhrase1": { "message": "votre futur vous dira merci" },
+  "defaultPhrase2": { "message": "vous avez de plus grands objectifs que ça" },
+  "defaultPhrase3": { "message": "concentration. discipline. résultats." },
+  "defaultPhrase4": { "message": "chaque minute ici est une minute loin de l'essentiel" }
+}
