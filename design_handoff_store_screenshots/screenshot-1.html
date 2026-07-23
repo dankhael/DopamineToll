@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dopamine Toll — store screenshot 1</title>
+<link rel="stylesheet" href="store.css">
+<link rel="stylesheet" href="ui.css">
+<script>
+/* ── Translatable copy. Duplicate `en`, rename (es/pt/de…), translate values,
+      keep HTML tags. View with ?lang=xx ── */
+const STRINGS = {
+  en: {
+    h1:        "Every scroll has <span class=\"u\">a price.</span>",
+    sub:       "A countdown you can't skip — on every visit to the sites that eat your day.",
+    onList:    "on your toll list",
+    pin:       "north star",
+    phrase:    "your future self will thank you",
+    phraseYou: "— you, to yourself",
+    tollLabel: "you can choose in",
+    closeTab:  "Close tab",
+    closeSub:  "be productive",
+    openTab:   "Open anyway · 10 min",
+    openSub:   "unlocks in 26s",
+    cardOpenSub: "locked 26s"
+  },
+  de: {
+    h1:          "Jedes Scrollen hat <span class=\"u\">seinen Preis.</span>",
+    sub:         "Ein Countdown, den du nicht überspringen kannst — bei jedem Besuch der Seiten, die deinen Tag fressen.",
+    onList:      "auf deiner Maut-Liste",
+    pin:         "Nordstern",
+    phrase:      "dein zukünftiges Ich wird dir danken",
+    phraseYou:   "— du, zu dir selbst",
+    tollLabel:   "du kannst wählen in",
+    closeTab:    "Tab schließen",
+    closeSub:    "sei produktiv",
+    openTab:     "Trotzdem öffnen · 10 Min.",
+    openSub:     "freigeschaltet in 26 s",
+    cardOpenSub: "gesperrt 26 s"
+  },
+  fr: {
+    h1:          "Chaque défilement a <span class=\"u\">un prix.</span>",
+    sub:         "Un compte à rebours que vous ne pouvez pas passer — à chaque visite des sites qui dévorent votre journée.",
+    onList:      "dans votre liste de péage",
+    pin:         "étoile polaire",
+    phrase:      "votre futur vous dira merci",
+    phraseYou:   "— vous, à vous-même",
+    tollLabel:   "vous pourrez choisir dans",
+    closeTab:    "Fermer l'onglet",
+    closeSub:    "soyez productif",
+    openTab:     "Ouvrir quand même · 10 min",
+    openSub:     "débloqué dans 26 s",
+    cardOpenSub: "verrouillé 26 s"
+  },
+  ja: {
+    h1:          "スクロールには<span class=\"u\">代償がある。</span>",
+    sub:         "スキップできないカウントダウン — 一日を食いつぶすサイトを開くたびに。",
+    onList:      "通行料リストにあります",
+    pin:         "北極星",
+    phrase:      "未来の自分が感謝する",
+    phraseYou:   "— 自分自身へ",
+    tollLabel:   "選べるようになるまで",
+    closeTab:    "タブを閉じる",
+    closeSub:    "生産的に",
+    openTab:     "それでも開く・10 分",
+    openSub:     "26秒で解除",
+    cardOpenSub: "ロック 26秒"
+  },
+  pt: {
+    h1:          "Cada rolagem tem <span class=\"u\">um preço.</span>",
+    sub:         "Uma contagem regressiva que você não pode pular — a cada visita aos sites que devoram o seu dia.",
+    onList:      "na sua lista de pedágio",
+    pin:         "estrela-guia",
+    phrase:      "seu eu do futuro vai agradecer",
+    phraseYou:   "— você, para você mesmo",
+    tollLabel:   "você pode escolher em",
+    closeTab:    "Fechar aba",
+    closeSub:    "seja produtivo",
+    openTab:     "Abrir mesmo assim · 10 min",
+    openSub:     "libera em 26s",
+    cardOpenSub: "bloqueado 26s"
+  },
+  zh: {
+    h1:          "每一次滑动都<span class=\"u\">有代价。</span>",
+    sub:         "一个你无法跳过的倒计时 — 每次打开吞噬你一天的网站时。",
+    onList:      "在你的过路费清单中",
+    pin:         "北极星",
+    phrase:      "未来的你会感谢现在的你",
+    phraseYou:   "— 你对自己说",
+    tollLabel:   "稍后可以选择",
+    closeTab:    "关闭标签页",
+    closeSub:    "去做正事",
+    openTab:     "仍然打开 · 10 分钟",
+    openSub:     "26 秒后解锁",
+    cardOpenSub: "锁定 26 秒"
+  }
+};
+</script>
+<style>
+  .board.hero { background: radial-gradient(120% 90% at 50% -10%, #f4a074 0%, rgba(244,160,116,0) 55%), linear-gradient(168deg, #ec7350 0%, #dd4c34 44%, #b8281a 100%); padding: 54px 64px 0; }
+  .hero-head { position: relative; z-index: 10; text-align: center; }
+  .hero-head h1 { font-size: 50px; font-weight: 800; letter-spacing: -0.032em; color: #fff; margin: 0; line-height: 1.02; text-wrap: balance; }
+  .hero-head h1 .u { color: #ffe0cf; }
+  .hero-head p { font-size: 21px; line-height: 1.4; color: rgba(255,255,255,0.92); margin: 15px auto 0; max-width: 40ch; font-weight: 500; }
+
+  .hero-stage { position: relative; flex: 1; margin-top: 30px; }
+  .hero-browser { position: absolute; left: 50%; top: 6px; transform: translateX(-50%); width: 940px; height: 520px; border-radius: 18px 18px 0 0; overflow: hidden; background: #0b0907; border: 1px solid rgba(0,0,0,0.25); box-shadow: 0 -8px 0 4px rgba(255,255,255,0.14), 0 60px 100px -40px rgba(90,10,4,0.6); }
+  .hero-browser .bar { display: flex; align-items: center; gap: 13px; height: 46px; padding: 0 16px; background: #100d0a; border-bottom: 1px solid var(--line); }
+  .hero-browser .dots { display: flex; gap: 8px; }
+  .hero-browser .dots i { width: 11px; height: 11px; border-radius: 50%; background: var(--surface-3); }
+  .hero-browser .addr { flex: 1; display: flex; align-items: center; gap: 9px; height: 28px; padding: 0 13px; background: #070605; border: 1px solid var(--line); border-radius: 8px; font-family: var(--mono); font-size: 12.5px; color: var(--dim); }
+  .hero-browser .addr .lock { width: 9px; height: 9px; border: 1.5px solid var(--faint); border-radius: 2px; position: relative; }
+  .hero-browser .addr .lock::before { content:""; position:absolute; left:1.5px; top:-3px; width:4px; height:4px; border:1.5px solid var(--faint); border-bottom:none; border-radius:3px 3px 0 0; }
+  .hero-browser .addr .armed { margin-left: auto; color: var(--terra); letter-spacing: 0.1em; text-transform: uppercase; font-size: 10px; }
+  .hero-browser .body { position: relative; height: 474px; overflow: hidden; }
+
+  .hero-badge { position: absolute; left: 48px; top: 150px; width: 132px; height: 132px; border-radius: 50%; background: #0c0a08; display: grid; place-items: center; box-shadow: 0 34px 60px -22px rgba(70,8,3,0.65); z-index: 20; }
+
+  .hero-card { position: absolute; right: 36px; top: 176px; width: 336px; background: #fff; color: #191512; border-radius: 18px; padding: 22px 22px 20px; box-shadow: 0 40px 70px -30px rgba(70,8,3,0.55); z-index: 20; }
+  .hero-card .hc-tag { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #c2402a; display: flex; align-items: center; gap: 8px; }
+  .hero-card .hc-tag .d { width: 6px; height: 6px; border-radius: 50%; background: #dd4c34; }
+  .hero-card .hc-label { font-family: var(--mono); font-size: 11.5px; letter-spacing: 0.16em; text-transform: uppercase; color: #8a827b; margin-top: 16px; }
+  .hero-card .hc-clock { font-family: var(--mono); font-weight: 700; font-size: 60px; line-height: 1; letter-spacing: 0.01em; color: #191512; margin-top: 4px; font-variant-numeric: tabular-nums; }
+  .hero-card .hc-meter { height: 4px; border-radius: 3px; background: #eee6df; overflow: hidden; margin: 15px 0 18px; }
+  .hero-card .hc-meter i { display: block; height: 100%; width: 44%; background: linear-gradient(90deg, #dd4c34, #f0a85a); }
+  .hero-card .hc-actions { display: flex; flex-direction: column; gap: 9px; }
+  .hero-card .hc-btn { border-radius: 11px; padding: 13px 15px; font-size: 14.5px; font-weight: 700; display: flex; align-items: center; justify-content: space-between; }
+  .hero-card .hc-btn.primary { background: #191512; color: #fff; }
+  .hero-card .hc-btn.ghost { background: #f3efe9; color: #b0a89f; }
+  .hero-card .hc-btn.ghost span { font-family: var(--mono); font-size: 10.5px; font-weight: 500; letter-spacing: 0.04em; color: #c2402a; }
+
+  .hero-browser .fit .scaler { transform: translate(-50%,-50%) scale(0.66); }
+</style>
+</head>
+<body>
+<div class="board b-shot hero">
+
+  <div class="hero-head">
+    <h1 data-t="h1">Every scroll has <span class="u">a price.</span></h1>
+    <p data-t="sub">A countdown you can't skip — on every visit to the sites that eat your day.</p>
+  </div>
+
+  <div class="hero-stage">
+    <div class="hero-browser">
+      <div class="bar">
+        <div class="dots"><i></i><i></i><i></i></div>
+        <div class="addr"><span class="lock"></span>instagram.com<span class="armed">● toll armed</span></div>
+      </div>
+      <div class="body">
+        <div class="fit">
+          <div class="scaler">
+            <div class="tollscreen">
+              <div class="col">
+                <div class="eyebrow"><b>instagram.com</b><span class="dotsep"></span><span data-t="onList">on your toll list</span></div>
+                <div class="photo">
+                  <img src="assets/img/ferrari.png" alt="">
+                  <div class="tint"></div>
+                  <div class="pin" data-t="pin">north star</div>
+                  <div class="cap">carro.jpg</div>
+                </div>
+                <div class="phrase"><span data-t="phrase">your future self will thank you</span><span class="you" data-t="phraseYou">— you, to yourself</span></div>
+                <div class="toll">
+                  <div class="label" data-t="tollLabel">you can choose in</div>
+                  <div class="clock">00:26</div>
+                  <div class="meter"><i></i></div>
+                </div>
+                <div class="actions">
+                  <button class="btn primary"><span data-t="closeTab">Close tab</span><small data-t="closeSub">be productive</small></button>
+                  <button class="btn locked"><span data-t="openTab">Open anyway · 10 min</span><small data-t="openSub">unlocks in 26s</small></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-badge">
+      <svg width="70" height="70" viewBox="0 0 72 72" fill="none">
+        <circle cx="36" cy="36" r="28" stroke="#2a2419" stroke-width="6"/>
+        <circle cx="36" cy="36" r="28" stroke="#e9a24c" stroke-width="6" stroke-linecap="round" stroke-dasharray="176" stroke-dashoffset="62" transform="rotate(-90 36 36)"/>
+        <circle cx="36" cy="36" r="7" fill="#e9a24c"/>
+      </svg>
+    </div>
+
+    <div class="hero-card">
+      <div class="hc-tag"><span class="d"></span>toll · instagram.com</div>
+      <div class="hc-label" data-t="tollLabel">you can choose in</div>
+      <div class="hc-clock">00:26</div>
+      <div class="hc-meter"><i></i></div>
+      <div class="hc-actions">
+        <div class="hc-btn primary"><span data-t="closeTab">Close tab</span></div>
+        <div class="hc-btn ghost"><span data-t="openTab">Open anyway · 10 min</span><span data-t="cardOpenSub">locked 26s</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script src="i18n.js"></script>
+</body>
+</html>

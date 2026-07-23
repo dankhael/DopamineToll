@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dopamine Toll — store screenshot 4</title>
+<link rel="stylesheet" href="store.css">
+<link rel="stylesheet" href="ui.css">
+<script>
+/* ── Translatable copy. Duplicate `en`, rename, translate, keep HTML tags. ── */
+const STRINGS = {
+  en: {
+    kicker:   "the toll list",
+    headline: "You decide what <span class=\"u\">costs you.</span>",
+    lede:     "List the sites that eat your hours. The toll guards <b>every one you name</b> — and only those.",
+    cardH:    "Toll list",
+    hint:     "Sites that charge a toll before they open. Add a <code>path</code> to gate one section.",
+    inputPh:  "example.com or youtube.com/shorts",
+    addBtn:   "Add",
+    rowtag:   "one section only",
+    remove:   "remove"
+  },
+  de: {
+    kicker:   "die Maut-Liste",
+    headline: "Du entscheidest, was dich <span class=\"u\">etwas kostet.</span>",
+    lede:     "Liste die Seiten, die deine Stunden fressen. Die Maut bewacht <b>jede, die du nennst</b> — und nur die.",
+    cardH:    "Maut-Liste",
+    hint:     "Seiten, die vor dem Öffnen eine Maut verlangen. Füge einen <code>Pfad</code> hinzu, um nur einen Bereich zu sperren.",
+    inputPh:  "beispiel.com oder youtube.com/shorts",
+    addBtn:   "Hinzufügen",
+    rowtag:   "nur ein Bereich",
+    remove:   "entfernen"
+  },
+  fr: {
+    kicker:   "la liste de péage",
+    headline: "C'est vous qui décidez ce qui <span class=\"u\">vous coûte.</span>",
+    lede:     "Listez les sites qui dévorent vos heures. Le péage garde <b>chacun que vous nommez</b> — et rien d'autre.",
+    cardH:    "Liste de péage",
+    hint:     "Sites qui imposent un péage avant de s'ouvrir. Ajoutez un <code>chemin</code> pour ne bloquer qu'une section.",
+    inputPh:  "exemple.com ou youtube.com/shorts",
+    addBtn:   "Ajouter",
+    rowtag:   "une section seulement",
+    remove:   "retirer"
+  },
+  ja: {
+    kicker:   "通行料リスト",
+    headline: "何に<span class=\"u\">対価を払うか</span>はあなた次第。",
+    lede:     "時間を食いつぶすサイトを挙げてください。通行料は<b>あなたが挙げたすべて</b>を — そしてそれだけを守ります。",
+    cardH:    "通行料リスト",
+    hint:     "開く前に通行料を課すサイト。<code>パス</code>を追加すれば一部だけを対象にできます。",
+    inputPh:  "example.com または youtube.com/shorts",
+    addBtn:   "追加",
+    rowtag:   "一部のみ",
+    remove:   "削除"
+  },
+  pt: {
+    kicker:   "a lista de pedágio",
+    headline: "Você decide o que <span class=\"u\">te custa.</span>",
+    lede:     "Liste os sites que devoram suas horas. O pedágio guarda <b>cada um que você citar</b> — e só esses.",
+    cardH:    "Lista de pedágio",
+    hint:     "Sites que cobram um pedágio antes de abrir. Adicione um <code>caminho</code> para bloquear só uma seção.",
+    inputPh:  "exemplo.com ou youtube.com/shorts",
+    addBtn:   "Adicionar",
+    rowtag:   "só uma seção",
+    remove:   "remover"
+  },
+  zh: {
+    kicker:   "过路费清单",
+    headline: "什么让你<span class=\"u\">付出代价</span>，由你决定。",
+    lede:     "列出吞噬你时间的网站。过路费会守住<b>你点名的每一个</b> — 且仅限这些。",
+    cardH:    "过路费清单",
+    hint:     "在打开前收取过路费的网站。添加一个<code>路径</code>可只拦截某个板块。",
+    inputPh:  "example.com 或 youtube.com/shorts",
+    addBtn:   "添加",
+    rowtag:   "仅一个板块",
+    remove:   "移除"
+  }
+};
+</script>
+<style>
+  .board.sh { background: radial-gradient(110% 80% at 20% 0%, #d96140 0%, rgba(217,97,64,0) 55%), linear-gradient(158deg, #c74e2e 0%, #9c2d1a 52%, #741d0f 100%); }
+  .wrap { display: flex; flex-direction: column; height: 100%; }
+  .sh-head { margin-top: 8px; }
+  .sh-head .kicker { color: #ffcdb8; }
+  .sh-head .kicker .pip { background: #ffcdb8; box-shadow: 0 0 10px #ffcdb8; }
+  .sh-head h1 { font-size: 50px; font-weight: 800; letter-spacing: -0.032em; line-height: 1.02; margin: 12px 0 0; color: #ffe2d5; text-wrap: balance; }
+  .sh-head h1 .u { color: #fff; }
+  .sh-head p { font-size: 18px; line-height: 1.45; color: rgba(255,235,228,0.86); margin: 14px 0 0; max-width: 52ch; }
+  .sh-head p b { color: #fff; font-weight: 600; }
+
+  .sh-stage { position: relative; flex: 1; margin-top: 20px; }
+  .sh-cardwrap { position: relative; width: 620px; margin: 0 auto; }
+  .sh-card { position: relative; width: 620px; z-index: 3; box-shadow: 0 50px 90px -40px rgba(60,10,3,0.7); }
+  .sh-ghost { position: absolute; left: 50%; top: 0; height: 100%; border-radius: var(--r); background: var(--bg-2); border: 1px solid var(--line); }
+  .sh-ghost.g1 { transform: translateX(-50%) translateY(22px); width: 584px; opacity: 0.55; z-index: 2; }
+  .sh-ghost.g2 { transform: translateX(-50%) translateY(44px); width: 542px; opacity: 0.3; z-index: 1; }
+  .sh-card .h { font-size: 19px; }
+  .sh-card .rowtag { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.06em; color: var(--amber); border: 1px solid rgba(233,162,76,0.4); border-radius: 999px; padding: 4px 10px; margin-left: 12px; }
+  .sh-card .dt-item .lhs { display: flex; align-items: center; }
+</style>
+</head>
+<body>
+<div class="board b-shot sh">
+  <div class="wrap">
+
+    <div class="mast">
+      <div class="brand">
+        <svg class="gauge" width="34" height="34" viewBox="0 0 72 72" fill="none">
+          <circle cx="36" cy="36" r="28" stroke="#5a2414" stroke-width="6"/>
+          <circle cx="36" cy="36" r="28" stroke="#ffd9a0" stroke-width="6" stroke-linecap="round" stroke-dasharray="176" stroke-dashoffset="62" transform="rotate(-90 36 36)"/>
+          <circle cx="36" cy="36" r="7" fill="#ffd9a0"/>
+        </svg>
+        <div class="wm"><span class="a" style="color:#fff">Dopamine Toll</span><span class="b" style="color:rgba(255,235,228,0.7)">pay in seconds</span></div>
+      </div>
+    </div>
+
+    <div class="sh-head">
+      <p class="kicker"><span class="pip"></span><span data-t="kicker">the toll list</span></p>
+      <h1 data-t="headline">You decide what <span class="u">costs you.</span></h1>
+      <p data-t="lede">List the sites that eat your hours. The toll guards <b>every one you name</b> — and only those.</p>
+    </div>
+
+    <div class="sh-stage">
+      <div class="sh-cardwrap">
+        <div class="sh-ghost g2"></div>
+        <div class="sh-ghost g1"></div>
+        <div class="dt-card sh-card">
+          <div class="h" data-t="cardH">Toll list</div>
+          <p class="hint" data-t="hint">Sites that charge a toll before they open. Add a <code>path</code> to gate one section.</p>
+          <div class="dt-addrow">
+            <div class="dt-input ph" data-t="inputPh">example.com or youtube.com/shorts</div>
+            <button class="dt-add" data-t="addBtn">Add</button>
+          </div>
+          <div class="dt-list">
+            <div class="dt-item dom"><span class="val">instagram.com</span><button class="dt-remove" data-t="remove">remove</button></div>
+            <div class="dt-item dom"><span class="val">tiktok.com</span><button class="dt-remove" data-t="remove">remove</button></div>
+            <div class="dt-item dom"><span class="lhs"><span class="val">youtube.com<span class="path">/shorts</span></span><span class="rowtag" data-t="rowtag">one section only</span></span><button class="dt-remove" data-t="remove">remove</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<script src="i18n.js"></script>
+</body>
+</html>

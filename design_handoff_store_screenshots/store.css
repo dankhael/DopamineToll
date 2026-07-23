@@ -1,0 +1,175 @@
+/* Dopamine Toll — Chrome Web Store asset system
+   shared marketing shell · warm near-black + amber · Archivo + JetBrains Mono */
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg:        #0a0908;
+  --bg-2:      #0f0d0b;
+  --surface:   #16130e;
+  --surface-2: #201b13;
+  --surface-3: #2a2419;
+
+  --line:   rgba(240,230,210,0.08);
+  --line-2: rgba(240,230,210,0.14);
+
+  --text:   #efe9dd;
+  --dim:    #9c958a;
+  --faint:  #6a645b;
+
+  --amber:      #e9a24c;
+  --amber-soft: #f0bd78;
+  --terra:      #cf6638;
+  --amber-ink:  #1a1305;
+
+  --r:    14px;
+  --r-sm: 10px;
+
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
+  --sans: 'Archivo', system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: #050403;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+  padding: 28px;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ---- the fixed-size export board ---- */
+.board {
+  position: relative;
+  overflow: hidden;
+  flex: 0 0 auto;
+  background:
+    radial-gradient(130% 95% at 50% -18%, #16120b 0%, rgba(22,18,11,0) 56%),
+    var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  isolation: isolate;
+}
+.board.b-shot    { width: 1280px; height: 800px; padding: 52px 64px 56px; }
+.board.b-marquee { width: 1400px; height: 560px; padding: 0; }
+.board.b-tile    { width: 440px;  height: 280px; padding: 0; }
+
+/* warm film grain (matches the product) */
+.board::after {
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none;
+  z-index: 40;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  opacity: 0.04;
+  mix-blend-mode: screen;
+}
+/* soft amber bloom anchor */
+.bloom {
+  position: absolute; pointer-events: none; z-index: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(233,162,76,0.16), rgba(233,162,76,0) 70%);
+  filter: blur(8px);
+}
+
+/* ---- brand lockup ---- */
+.brand { display: flex; align-items: center; gap: 13px; }
+.brand .gauge { display: block; flex: 0 0 auto; }
+.brand .wm { display: flex; flex-direction: column; line-height: 1; }
+.brand .wm { align-items: flex-start; }
+.brand .wm .a { font-weight: 800; font-size: 21px; letter-spacing: -0.02em; white-space: nowrap; }
+.brand .wm .b { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.34em; text-transform: uppercase; color: var(--dim); margin-top: 6px; }
+
+/* masthead row on screenshots */
+.mast { position: relative; z-index: 10; display: flex; align-items: center; justify-content: space-between; }
+.stepnum { font-family: var(--mono); font-size: 12.5px; letter-spacing: 0.22em; color: var(--faint); }
+.stepnum b { color: var(--amber-soft); font-weight: 600; }
+
+/* ---- marketing type ---- */
+.kicker {
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin: 0;
+  display: flex; align-items: center; gap: 9px;
+}
+.kicker .pip { width: 5px; height: 5px; border-radius: 50%; background: var(--terra); box-shadow: 0 0 10px var(--terra); }
+.headline {
+  font-weight: 800;
+  font-size: 52px;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  margin: 0;
+  text-wrap: balance;
+}
+.headline .am { color: var(--amber); }
+.lede {
+  font-size: 19px;
+  line-height: 1.5;
+  color: var(--dim);
+  margin: 0;
+  max-width: 46ch;
+  text-wrap: pretty;
+}
+.lede b { color: var(--text); font-weight: 600; }
+.lede .code { font-family: var(--mono); font-size: 0.86em; color: var(--amber-soft); background: var(--surface); padding: 1px 6px; border-radius: 5px; }
+
+/* ---- browser chrome frame ---- */
+.chrome {
+  position: relative; z-index: 5;
+  border: 1px solid var(--line-2);
+  border-radius: 16px;
+  overflow: hidden;
+  background: #0b0907;
+  box-shadow: 0 50px 90px -50px rgba(0,0,0,0.95), 0 0 0 1px rgba(0,0,0,0.4);
+}
+.chrome .bar {
+  display: flex; align-items: center; gap: 13px;
+  height: 46px; padding: 0 16px;
+  background: #100d0a;
+  border-bottom: 1px solid var(--line);
+}
+.chrome .dots { display: flex; gap: 8px; }
+.chrome .dots i { width: 11px; height: 11px; border-radius: 50%; background: var(--surface-3); }
+.chrome .addr {
+  flex: 1; display: flex; align-items: center; gap: 9px;
+  height: 28px; padding: 0 13px;
+  background: #070605; border: 1px solid var(--line);
+  border-radius: 8px;
+  font-family: var(--mono); font-size: 12.5px; color: var(--dim);
+}
+.chrome .addr .lock { width: 9px; height: 9px; border: 1.5px solid var(--faint); border-radius: 2px; position: relative; }
+.chrome .addr .lock::before { content:""; position:absolute; left:1.5px; top:-3px; width:4px; height:4px; border:1.5px solid var(--faint); border-bottom:none; border-radius:3px 3px 0 0; }
+.chrome .addr .armed { margin-left: auto; color: var(--terra); letter-spacing: 0.1em; text-transform: uppercase; font-size: 10px; }
+.chrome .body { position: relative; overflow: hidden; }
+
+/* fit a 1280x800 product screen inside a frame body */
+.fit { position: absolute; inset: 0; }
+.fit > .scaler { position: absolute; top: 50%; left: 50%; width: 1280px; height: 800px; transform-origin: center; }
+
+/* small pill / chip */
+.tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: 12px; letter-spacing: 0.04em;
+  color: var(--dim);
+  border: 1px solid var(--line-2); border-radius: 999px;
+  padding: 7px 13px;
+}
+.tag .d { width: 6px; height: 6px; border-radius: 50%; background: var(--amber); }
+
+/* feature point list (split layouts) */
+.points { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; }
+.points li { display: flex; gap: 12px; align-items: flex-start; font-size: 15.5px; line-height: 1.45; color: var(--dim); }
+.points li .ic { flex: 0 0 auto; margin-top: 2px; }
+.points li b { color: var(--text); font-weight: 600; }
+
+/* footer brand strip (corner attribution) */
+.foot {
+  position: absolute; z-index: 10;
+  display: flex; align-items: center; gap: 9px;
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.06em; color: var(--faint);
+}

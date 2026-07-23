@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dopamine Toll — store screenshot 5</title>
+<link rel="stylesheet" href="store.css">
+<link rel="stylesheet" href="ui.css">
+<script>
+/* ── Translatable copy. Duplicate `en`, rename, translate, keep HTML tags. ── */
+const STRINGS = {
+  en: {
+    headline:  "Nothing leaves <span class=\"am\">your machine.</span>",
+    sub:       "No servers, no accounts, no tracking. Your list, photos and words live <b>on your device</b> — the extension makes <b>zero network requests.</b>",
+    recording: "Recording network activity",
+    netOpts:   "Preserve log · Disable cache",
+    colName:   "Name",
+    colStatus: "Status",
+    colType:   "Type",
+    colSize:   "Size",
+    emptyT:    "0 requests · 0 B transferred",
+    emptyS:    "nothing has left this device",
+    privLabel: "privacy check",
+    pass:      "PASS",
+    nodeDevice:"your device",
+    nodeNet:   "internet",
+    foot:      "no request ever leaves"
+  },
+  de: {
+    headline:  "Nichts verlässt <span class=\"am\">deinen Rechner.</span>",
+    sub:       "Keine Server, keine Konten, kein Tracking. Deine Liste, Fotos und Worte bleiben <b>auf deinem Gerät</b> — die Erweiterung macht <b>keine einzige Netzwerkanfrage.</b>",
+    recording: "Netzwerkaktivität wird aufgezeichnet",
+    netOpts:   "Log behalten · Cache deaktivieren",
+    colName:   "Name",
+    colStatus: "Status",
+    colType:   "Typ",
+    colSize:   "Größe",
+    emptyT:    "0 Anfragen · 0 B übertragen",
+    emptyS:    "nichts hat dieses Gerät verlassen",
+    privLabel: "Datenschutz-Check",
+    pass:      "BESTANDEN",
+    nodeDevice:"dein Gerät",
+    nodeNet:   "Internet",
+    foot:      "keine Anfrage geht je hinaus"
+  },
+  fr: {
+    headline:  "Rien ne quitte <span class=\"am\">votre machine.</span>",
+    sub:       "Aucun serveur, aucun compte, aucun pistage. Votre liste, vos photos et vos mots restent <b>sur votre appareil</b> — l'extension ne fait <b>aucune requête réseau.</b>",
+    recording: "Enregistrement de l'activité réseau",
+    netOpts:   "Conserver le journal · Désactiver le cache",
+    colName:   "Nom",
+    colStatus: "Statut",
+    colType:   "Type",
+    colSize:   "Taille",
+    emptyT:    "0 requête · 0 o transféré",
+    emptyS:    "rien n'a quitté cet appareil",
+    privLabel: "contrôle de confidentialité",
+    pass:      "RÉUSSI",
+    nodeDevice:"votre appareil",
+    nodeNet:   "internet",
+    foot:      "aucune requête ne sort jamais"
+  },
+  ja: {
+    headline:  "何も<span class=\"am\">あなたのマシンから出ない。</span>",
+    sub:       "サーバーなし、アカウントなし、トラッキングなし。あなたのリスト、写真、言葉は<b>あなたのデバイス</b>に留まります — この拡張機能はネットワークリクエストを<b>一切行いません。</b>",
+    recording: "ネットワーク活動を記録中",
+    netOpts:   "ログを保持 · キャッシュを無効化",
+    colName:   "名前",
+    colStatus: "ステータス",
+    colType:   "種類",
+    colSize:   "サイズ",
+    emptyT:    "0 リクエスト · 0 B 転送",
+    emptyS:    "このデバイスから何も出ていません",
+    privLabel: "プライバシー確認",
+    pass:      "合格",
+    nodeDevice:"あなたのデバイス",
+    nodeNet:   "インターネット",
+    foot:      "リクエストは一切外に出ない"
+  },
+  pt: {
+    headline:  "Nada sai <span class=\"am\">da sua máquina.</span>",
+    sub:       "Sem servidores, sem contas, sem rastreamento. Sua lista, fotos e palavras ficam <b>no seu dispositivo</b> — a extensão faz <b>zero requisições de rede.</b>",
+    recording: "Registrando atividade de rede",
+    netOpts:   "Preservar log · Desativar cache",
+    colName:   "Nome",
+    colStatus: "Status",
+    colType:   "Tipo",
+    colSize:   "Tamanho",
+    emptyT:    "0 requisições · 0 B transferidos",
+    emptyS:    "nada saiu deste dispositivo",
+    privLabel: "verificação de privacidade",
+    pass:      "APROVADO",
+    nodeDevice:"seu dispositivo",
+    nodeNet:   "internet",
+    foot:      "nenhuma requisição jamais sai"
+  },
+  zh: {
+    headline:  "没有任何东西离开<span class=\"am\">你的设备。</span>",
+    sub:       "没有服务器、没有账户、没有追踪。你的清单、照片和文字都留在<b>你的设备</b>上 — 这个扩展<b>不发出任何网络请求。</b>",
+    recording: "正在记录网络活动",
+    netOpts:   "保留日志 · 禁用缓存",
+    colName:   "名称",
+    colStatus: "状态",
+    colType:   "类型",
+    colSize:   "大小",
+    emptyT:    "0 个请求 · 已传输 0 B",
+    emptyS:    "没有任何东西离开过这台设备",
+    privLabel: "隐私检查",
+    pass:      "通过",
+    nodeDevice:"你的设备",
+    nodeNet:   "互联网",
+    foot:      "没有任何请求会离开"
+  }
+};
+</script>
+<style>
+  .board.pv { background: radial-gradient(120% 90% at 50% 6%, #faf6ef 0%, #efe9df 60%, #e7e0d4 100%); color: #211c17; }
+  .board.pv::after { opacity: 0.03; mix-blend-mode: multiply; }
+  .wrap { display: flex; flex-direction: column; height: 100%; align-items: center; }
+
+  .pv-lock { display: flex; align-items: center; gap: 11px; }
+  .pv-lock .a { font-weight: 800; font-size: 20px; letter-spacing: -0.02em; color: #211c17; }
+  .pv-lock .b { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.32em; text-transform: uppercase; color: #a49b8d; }
+  .pv-lock .wm { display: flex; flex-direction: column; gap: 5px; line-height: 1; }
+
+  .pv-head { text-align: center; margin-top: 28px; }
+  .pv-head h1 { font-size: 60px; font-weight: 800; letter-spacing: -0.035em; line-height: 1.0; margin: 0; color: #191510; text-wrap: balance; }
+  .pv-head h1 .am { color: #c2402a; }
+  .pv-head p { font-size: 18.5px; line-height: 1.5; color: #6f685f; margin: 18px auto 0; max-width: 60ch; }
+  .pv-head p b { color: #211c17; font-weight: 600; }
+
+  .pv-stage { position: relative; flex: 1; width: 100%; margin-top: 30px; }
+  .pv-win { position: absolute; left: 50%; top: 0; transform: translateX(-50%); width: 900px; border-radius: 16px 16px 0 0; overflow: hidden; background: #fff; border: 1px solid #e3ddd2; border-bottom: none; box-shadow: 0 40px 80px -44px rgba(70,50,20,0.4); }
+  .pv-win .bar { display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 15px; background: #eee8de; border-bottom: 1px solid #e3ddd2; }
+  .pv-win .dots { display: flex; gap: 8px; }
+  .pv-win .dots i { width: 11px; height: 11px; border-radius: 50%; background: #cdc5b7; }
+  .pv-win .addr { flex: 1; height: 27px; display: flex; align-items: center; gap: 8px; padding: 0 13px; background: #fbf8f3; border: 1px solid #e3ddd2; border-radius: 8px; font-family: var(--mono); font-size: 12px; color: #8a8175; }
+  .pv-net { padding: 0 0 34px; }
+  .pv-net .ntool { display: flex; align-items: center; gap: 14px; padding: 12px 20px; border-bottom: 1px solid #eee8de; font-family: var(--mono); font-size: 12px; color: #8a8175; }
+  .pv-net .ntool .rec { width: 11px; height: 11px; border-radius: 50%; background: #c2402a; box-shadow: 0 0 0 3px rgba(194,64,42,0.16); }
+  .pv-net .ntool .sp { margin-left: auto; }
+  .pv-net .cols { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; padding: 10px 20px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; color: #b3aa9c; border-bottom: 1px solid #f0eae0; }
+  .pv-net .empty { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 46px 20px 20px; }
+  .pv-net .empty .z { font-family: var(--mono); font-weight: 700; font-size: 58px; color: #d7cfc0; line-height: 1; }
+  .pv-net .empty .t { font-size: 15px; font-weight: 600; color: #4c463d; }
+  .pv-net .empty .s { font-family: var(--mono); font-size: 12px; color: #a49b8d; }
+
+  .pv-card { position: absolute; right: 92px; top: 128px; width: 320px; background: #16130e; color: var(--text); border-radius: 16px; padding: 20px 20px 18px; box-shadow: 0 40px 70px -30px rgba(70,50,20,0.5); z-index: 10; }
+  .pv-card .pc-top { display: flex; align-items: center; justify-content: space-between; }
+  .pv-card .pc-top .lb { font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--terra); }
+  .pv-card .pc-top .done { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em; color: var(--amber-soft); }
+  .pv-card .pc-diag { display: flex; align-items: center; gap: 12px; margin: 18px 0 16px; }
+  .pv-card .pc-diag .node { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .pv-card .pc-diag .disc { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; }
+  .pv-card .pc-diag .disc.on { background: radial-gradient(circle at 50% 38%, #f0bd78, #cf6638); }
+  .pv-card .pc-diag .disc.off { border: 1.5px dashed var(--line-2); }
+  .pv-card .pc-diag .nl { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); }
+  .pv-card .pc-diag .link { flex: 1; height: 2px; position: relative; background-image: repeating-linear-gradient(90deg, var(--line-2) 0 6px, transparent 6px 12px); margin-bottom: 18px; }
+  .pv-card .pc-diag .link .x { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 24px; height: 24px; border-radius: 50%; background: #16130e; border: 1.5px solid var(--terra); display: grid; place-items: center; color: var(--terra); font-size: 12px; }
+  .pv-card .pc-foot { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--terra); border-top: 1px solid var(--line); padding-top: 13px; }
+
+  .pv-badge { position: absolute; right: 40px; top: 66px; width: 64px; height: 64px; border-radius: 16px; background: #16130e; display: grid; place-items: center; box-shadow: 0 20px 40px -18px rgba(70,50,20,0.5); z-index: 11; }
+</style>
+</head>
+<body>
+<div class="board b-shot pv">
+  <div class="wrap">
+
+    <div class="pv-lock">
+      <svg width="30" height="30" viewBox="0 0 72 72" fill="none">
+        <circle cx="36" cy="36" r="28" stroke="#e0d4bf" stroke-width="6"/>
+        <circle cx="36" cy="36" r="28" stroke="#cf6638" stroke-width="6" stroke-linecap="round" stroke-dasharray="176" stroke-dashoffset="62" transform="rotate(-90 36 36)"/>
+        <circle cx="36" cy="36" r="7" fill="#cf6638"/>
+      </svg>
+      <div class="wm"><span class="a">Dopamine Toll</span><span class="b">pay in seconds</span></div>
+    </div>
+
+    <div class="pv-head">
+      <h1 data-t="headline">Nothing leaves <span class="am">your machine.</span></h1>
+      <p data-t="sub">No servers, no accounts, no tracking. Your list, photos and words live <b>on your device</b> — the extension makes <b>zero network requests.</b></p>
+    </div>
+
+    <div class="pv-stage">
+      <div class="pv-win">
+        <div class="bar">
+          <div class="dots"><i></i><i></i><i></i></div>
+          <div class="addr">chrome-extension · Dopamine Toll · network</div>
+        </div>
+        <div class="pv-net">
+          <div class="ntool"><span class="rec"></span><span data-t="recording">Recording network activity</span><span class="sp" data-t="netOpts">Preserve log · Disable cache</span></div>
+          <div class="cols"><span data-t="colName">Name</span><span data-t="colStatus">Status</span><span data-t="colType">Type</span><span data-t="colSize">Size</span></div>
+          <div class="empty">
+            <div class="z">0</div>
+            <div class="t" data-t="emptyT">0 requests · 0 B transferred</div>
+            <div class="s" data-t="emptyS">nothing has left this device</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pv-badge">
+        <svg width="34" height="34" viewBox="0 0 72 72" fill="none">
+          <circle cx="36" cy="36" r="28" stroke="#2a2419" stroke-width="6"/>
+          <circle cx="36" cy="36" r="28" stroke="#e9a24c" stroke-width="6" stroke-linecap="round" stroke-dasharray="176" stroke-dashoffset="62" transform="rotate(-90 36 36)"/>
+          <circle cx="36" cy="36" r="7" fill="#e9a24c"/>
+        </svg>
+      </div>
+
+      <div class="pv-card">
+        <div class="pc-top"><span class="lb" data-t="privLabel">privacy check</span><span class="done" data-t="pass">PASS</span></div>
+        <div class="pc-diag">
+          <div class="node"><div class="disc on"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="13" rx="2" fill="#1a1305"/><rect x="8.5" y="19" width="7" height="1.6" rx="0.8" fill="#1a1305"/><rect x="6" y="17.3" width="12" height="1.6" rx="0.8" fill="#1a1305"/></svg></div><span class="nl" data-t="nodeDevice">your device</span></div>
+          <div class="link"><span class="x">✕</span></div>
+          <div class="node"><div class="disc off"></div><span class="nl" data-t="nodeNet">internet</span></div>
+        </div>
+        <div class="pc-foot" data-t="foot">no request ever leaves</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<script src="i18n.js"></script>
+</body>
+</html>

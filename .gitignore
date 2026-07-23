@@ -7,6 +7,9 @@ node_modules/
 *.pem
 web-ext-artifacts/
 
+# Rendered store screenshots — regenerate: design_handoff_store_screenshots/tools -> npm run render
+design_handoff_store_screenshots/png/
+
 # OS cruft
 .DS_Store
 Thumbs.db

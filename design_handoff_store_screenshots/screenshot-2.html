@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dopamine Toll — store screenshot 2</title>
+<link rel="stylesheet" href="store.css">
+<link rel="stylesheet" href="ui.css">
+<script>
+/* ── Translatable copy. Duplicate `en`, rename, translate, keep HTML tags. ── */
+const STRINGS = {
+  en: {
+    kicker:   "what you said you wanted",
+    headline: "Look at what you <span class=\"am\">actually</span> want.",
+    lede:     "Before the scroll, the toll shows you a photo <b>you chose</b> — the car, the setup, the finish line. Not a stock quote. Your goal, full screen.",
+    point1:   "<b>8 photos</b> max — one shown at random",
+    point2:   "<b>Full-screen</b>, every single visit",
+    point3:   "On <b>your device</b> — never uploaded",
+    cardSub:  "· on your toll list",
+    capBig:   "your future self will thank you",
+    capBy:    "— you, to yourself",
+    stars:    "your north stars",
+    random:   "one shown at random ›"
+  },
+  de: {
+    kicker:   "was du dir vorgenommen hast",
+    headline: "Sieh dir an, was du <span class=\"am\">wirklich</span> willst.",
+    lede:     "Vor dem Scrollen zeigt dir die Maut ein Foto, <b>das du gewählt hast</b> — das Auto, das Setup, die Ziellinie. Kein Standardspruch. Dein Ziel, formatfüllend.",
+    point1:   "<b>Max. 8 Fotos</b> — eines zufällig gezeigt",
+    point2:   "<b>Formatfüllend</b>, bei jedem Besuch",
+    point3:   "Auf <b>deinem Gerät</b> — nie hochgeladen",
+    cardSub:  "· auf deiner Maut-Liste",
+    capBig:   "dein zukünftiges Ich wird dir danken",
+    capBy:    "— du, zu dir selbst",
+    stars:    "deine Nordsterne",
+    random:   "eines zufällig gezeigt ›"
+  },
+  fr: {
+    kicker:   "ce que vous avez dit vouloir",
+    headline: "Regardez ce que vous voulez <span class=\"am\">vraiment</span>.",
+    lede:     "Avant le défilement, le péage vous montre une photo <b>que vous avez choisie</b> — la voiture, le setup, la ligne d'arrivée. Pas une citation toute faite. Votre objectif, plein écran.",
+    point1:   "<b>8 photos</b> max — une montrée au hasard",
+    point2:   "<b>Plein écran</b>, à chaque visite",
+    point3:   "Sur <b>votre appareil</b> — jamais envoyée",
+    cardSub:  "· dans votre liste de péage",
+    capBig:   "votre futur vous dira merci",
+    capBy:    "— vous, à vous-même",
+    stars:    "vos étoiles polaires",
+    random:   "une montrée au hasard ›"
+  },
+  ja: {
+    kicker:   "あなたが望んだもの",
+    headline: "<span class=\"am\">本当に</span>望むものを見よう。",
+    lede:     "スクロールの前に、通行料は<b>あなたが選んだ</b>写真を見せます — あの車、あの環境、あのゴール。ありきたりな名言ではなく、あなたの目標を全画面で。",
+    point1:   "<b>最大8枚</b> — 1枚をランダム表示",
+    point2:   "<b>全画面</b>、訪れるたびに",
+    point3:   "<b>あなたのデバイス</b>に — アップロードなし",
+    cardSub:  "・通行料リストにあります",
+    capBig:   "未来の自分が感謝する",
+    capBy:    "— 自分自身へ",
+    stars:    "あなたの北極星",
+    random:   "1枚をランダム表示 ›"
+  },
+  pt: {
+    kicker:   "o que você disse que queria",
+    headline: "Veja o que você <span class=\"am\">realmente</span> quer.",
+    lede:     "Antes da rolagem, o pedágio te mostra uma foto <b>que você escolheu</b> — o carro, o setup, a linha de chegada. Não uma frase pronta. Seu objetivo, em tela cheia.",
+    point1:   "<b>8 fotos</b> no máx. — uma mostrada ao acaso",
+    point2:   "<b>Tela cheia</b>, em toda visita",
+    point3:   "No <b>seu dispositivo</b> — nunca enviada",
+    cardSub:  "· na sua lista de pedágio",
+    capBig:   "seu eu do futuro vai agradecer",
+    capBy:    "— você, para você mesmo",
+    stars:    "suas estrelas-guia",
+    random:   "uma mostrada ao acaso ›"
+  },
+  zh: {
+    kicker:   "你说过你想要的",
+    headline: "看看你<span class=\"am\">真正</span>想要的。",
+    lede:     "在滑动之前，过路费会给你看一张<b>你自己选的</b>照片 — 那辆车、那套装备、那条终点线。不是套话，而是你的目标，全屏显示。",
+    point1:   "<b>最多 8 张</b>照片 — 随机显示一张",
+    point2:   "<b>全屏</b>，每一次访问",
+    point3:   "在<b>你的设备</b>上 — 从不上传",
+    cardSub:  "· 在你的过路费清单中",
+    capBig:   "未来的你会感谢现在的你",
+    capBy:    "— 你对自己说",
+    stars:    "你的北极星",
+    random:   "随机显示一张 ›"
+  }
+};
+</script>
+<style>
+  .board.ns { background: radial-gradient(120% 100% at 78% 42%, #17130c 0%, rgba(23,19,12,0) 60%), #0b0908; }
+  .wrap { display: flex; flex-direction: column; height: 100%; position: relative; z-index: 5; }
+  .main { flex: 1; display: grid; grid-template-columns: 0.92fr 1.02fr; gap: 56px; align-items: center; margin-top: 14px; }
+
+  .left .kicker { margin-bottom: 20px; }
+  .left .headline { font-size: 50px; line-height: 1.03; }
+  .left .lede { margin-top: 18px; }
+  .left .points { margin-top: 28px; }
+  .left .points li { font-size: 16px; }
+  .left .points li .dot { flex: 0 0 auto; width: 6px; height: 6px; border-radius: 50%; background: var(--amber); margin-top: 8px; }
+
+  .right { position: relative; }
+
+  .ns-card { border: 1px solid var(--line-2); border-radius: 16px; overflow: hidden; background: #0c0a08; box-shadow: 0 50px 90px -48px rgba(0,0,0,0.95), 0 0 0 1px rgba(0,0,0,0.4); }
+  .ns-card .head { display: flex; align-items: center; justify-content: center; gap: 8px; height: 44px; border-bottom: 1px solid var(--line); font-family: var(--mono); font-size: 12.5px; }
+  .ns-card .head .site { color: var(--text); font-weight: 600; }
+  .ns-card .head .sub { color: var(--faint); }
+  .ns-card .photo { position: relative; margin: 16px; border-radius: 12px; overflow: hidden; aspect-ratio: 16/8.4; }
+  .ns-card .photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .ns-card .photo .lb { position: absolute; left: 12px; bottom: 11px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.02em; color: #fff; text-shadow: 0 1px 6px rgba(0,0,0,0.9); }
+  .ns-card .cap { text-align: center; padding: 4px 24px 26px; }
+  .ns-card .cap .big { font-size: 25px; font-weight: 700; letter-spacing: -0.015em; color: var(--text); }
+  .ns-card .cap .by { display: block; margin-top: 12px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--faint); }
+
+  .ns-thumbs { margin-top: 20px; }
+  .ns-thumbs .lbrow { display: flex; align-items: baseline; justify-content: space-between; font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 12px; }
+  .ns-thumbs .lbrow .l { color: var(--faint); }
+  .ns-thumbs .lbrow .r { color: var(--amber); display: inline-flex; align-items: center; gap: 6px; }
+  .ns-tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .ns-tile { position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 16/10; background: #16130e; border: 1px solid var(--line); }
+  .ns-tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .ns-tile.pick { outline: 2px solid var(--amber); outline-offset: -2px; }
+  .ns-tile .lb { position: absolute; left: 9px; bottom: 8px; font-family: var(--mono); font-size: 10px; color: #fff; text-shadow: 0 1px 5px rgba(0,0,0,0.9); }
+</style>
+</head>
+<body>
+<div class="board b-shot ns">
+  <div class="wrap">
+
+    <div class="mast">
+      <div class="brand">
+        <svg class="gauge" width="34" height="34" viewBox="0 0 72 72" fill="none">
+          <circle cx="36" cy="36" r="28" stroke="#2a2419" stroke-width="6"/>
+          <circle cx="36" cy="36" r="28" stroke="#e9a24c" stroke-width="6" stroke-linecap="round" stroke-dasharray="176" stroke-dashoffset="62" transform="rotate(-90 36 36)"/>
+          <circle cx="36" cy="36" r="7" fill="#e9a24c"/>
+        </svg>
+        <div class="wm"><span class="a">Dopamine Toll</span><span class="b">pay in seconds</span></div>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="left">
+        <p class="kicker"><span class="pip"></span><span data-t="kicker">what you said you wanted</span></p>
+        <h1 class="headline" data-t="headline">Look at what you <span class="am">actually</span> want.</h1>
+        <p class="lede" data-t="lede">Before the scroll, the toll shows you a photo <b>you chose</b> — the car, the setup, the finish line. Not a stock quote. Your goal, full screen.</p>
+        <ul class="points">
+          <li><span class="dot"></span><span data-t="point1"><b>8 photos</b> max — one shown at random</span></li>
+          <li><span class="dot"></span><span data-t="point2"><b>Full-screen</b>, every single visit</span></li>
+          <li><span class="dot"></span><span data-t="point3">On <b>your device</b> — never uploaded</span></li>
+        </ul>
+      </div>
+
+      <div class="right">
+        <div class="ns-card">
+          <div class="head"><span class="site">instagram.com</span><span class="sub" data-t="cardSub">· on your toll list</span></div>
+          <div class="photo">
+            <img src="assets/img/ferrari.png" alt="">
+            <span class="lb">carro.jpg</span>
+          </div>
+          <div class="cap">
+            <span class="big" data-t="capBig">your future self will thank you</span>
+            <span class="by" data-t="capBy">— you, to yourself</span>
+          </div>
+        </div>
+
+        <div class="ns-thumbs">
+          <div class="lbrow"><span class="l" data-t="stars">your north stars</span><span class="r" data-t="random">one shown at random ›</span></div>
+          <div class="ns-tiles">
+            <div class="ns-tile pick"><img src="assets/img/ferrari.png" alt=""><span class="lb">carro.jpg</span></div>
+            <div class="ns-tile"><img src="assets/img/switch.png" alt=""><span class="lb">videogame.png</span></div>
+            <div class="ns-tile"><img src="assets/img/pc.png" alt=""><span class="lb">pc.png</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<script src="i18n.js"></script>
+</body>
+</html>

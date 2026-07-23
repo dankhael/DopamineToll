@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dopamine Toll — store screenshot 3</title>
+<link rel="stylesheet" href="store.css">
+<link rel="stylesheet" href="ui.css">
+<script>
+/* ── Translatable copy. Duplicate `en`, rename, translate, keep HTML tags. ── */
+const STRINGS = {
+  en: {
+    kicker:    "no canned quotes",
+    headline:  "Read back your <span class=\"am\">own</span> words.",
+    lede:      "The toll shows the exact phrases <b>you wrote to yourself</b> — one at random, under your photo, every single time.",
+    docLabel:  "the toll · your phrase",
+    docHl:     "every minute here is a minute away from what matters.",
+    docMuted:  "you have bigger goals than this. focus. discipline. results. your future self will thank you.",
+    tabPhrases:"Your phrases",
+    tabPhotos: "Photos",
+    tabTiming: "Timing",
+    inputPh:   "write a phrase that hits…",
+    addBtn:    "Add",
+    phrase1:   "your future self will thank you",
+    phrase2:   "you have bigger goals than this",
+    phrase3:   "every minute here is a minute away from what matters",
+    remove:    "remove"
+  },
+  de: {
+    kicker:    "keine vorgefertigten Sprüche",
+    headline:  "Lies deine <span class=\"am\">eigenen</span> Worte.",
+    lede:      "Die Maut zeigt genau die Sätze, <b>die du dir selbst geschrieben hast</b> — einen zufällig, unter deinem Foto, jedes Mal.",
+    docLabel:  "die Maut · dein Satz",
+    docHl:     "jede Minute hier ist eine Minute weg von dem, was zählt.",
+    docMuted:  "du hast größere Ziele als das. Fokus. Disziplin. Ergebnisse. dein zukünftiges Ich wird dir danken.",
+    tabPhrases:"Deine Sätze",
+    tabPhotos: "Fotos",
+    tabTiming: "Timing",
+    inputPh:   "schreib einen Satz, der trifft…",
+    addBtn:    "Hinzufügen",
+    phrase1:   "dein zukünftiges Ich wird dir danken",
+    phrase2:   "du hast größere Ziele als das",
+    phrase3:   "jede Minute hier ist eine Minute weg von dem, was zählt",
+    remove:    "entfernen"
+  },
+  fr: {
+    kicker:    "aucune citation toute faite",
+    headline:  "Relisez vos <span class=\"am\">propres</span> mots.",
+    lede:      "Le péage affiche les phrases exactes <b>que vous vous êtes écrites</b> — une au hasard, sous votre photo, à chaque fois.",
+    docLabel:  "le péage · votre phrase",
+    docHl:     "chaque minute ici est une minute loin de l'essentiel.",
+    docMuted:  "vous avez de plus grands objectifs que ça. concentration. discipline. résultats. votre futur vous dira merci.",
+    tabPhrases:"Vos phrases",
+    tabPhotos: "Photos",
+    tabTiming: "Minuterie",
+    inputPh:   "écrivez une phrase qui frappe…",
+    addBtn:    "Ajouter",
+    phrase1:   "votre futur vous dira merci",
+    phrase2:   "vous avez de plus grands objectifs que ça",
+    phrase3:   "chaque minute ici est une minute loin de l'essentiel",
+    remove:    "retirer"
+  },
+  ja: {
+    kicker:    "ありきたりな名言はなし",
+    headline:  "<span class=\"am\">自分の</span>言葉を読み返す。",
+    lede:      "通行料は、<b>あなたが自分に書いた</b>言葉そのものを見せます — 1つをランダムに、写真の下に、毎回。",
+    docLabel:  "通行料・あなたの言葉",
+    docHl:     "ここでの1分は、大切なことから離れた1分。",
+    docMuted:  "あなたにはもっと大きな目標がある。集中。規律。結果。未来の自分が感謝する。",
+    tabPhrases:"あなたの言葉",
+    tabPhotos: "写真",
+    tabTiming: "タイミング",
+    inputPh:   "心に刺さる言葉を書く…",
+    addBtn:    "追加",
+    phrase1:   "未来の自分が感謝する",
+    phrase2:   "あなたにはもっと大きな目標がある",
+    phrase3:   "ここでの1分は、大切なことから離れた1分",
+    remove:    "削除"
+  },
+  pt: {
+    kicker:    "nada de frases prontas",
+    headline:  "Releia as suas <span class=\"am\">próprias</span> palavras.",
+    lede:      "O pedágio mostra exatamente as frases <b>que você escreveu para si mesmo</b> — uma ao acaso, sob a sua foto, toda vez.",
+    docLabel:  "o pedágio · sua frase",
+    docHl:     "cada minuto aqui é um minuto longe do que importa.",
+    docMuted:  "você tem objetivos maiores do que isso. foco. disciplina. resultados. seu eu do futuro vai agradecer.",
+    tabPhrases:"Suas frases",
+    tabPhotos: "Fotos",
+    tabTiming: "Tempo",
+    inputPh:   "escreva uma frase que te acerte…",
+    addBtn:    "Adicionar",
+    phrase1:   "seu eu do futuro vai agradecer",
+    phrase2:   "você tem objetivos maiores do que isso",
+    phrase3:   "cada minuto aqui é um minuto longe do que importa",
+    remove:    "remover"
+  },
+  zh: {
+    kicker:    "没有套话名言",
+    headline:  "读回你<span class=\"am\">自己</span>的话。",
+    lede:      "过路费会显示<b>你写给自己</b>的原话 — 每一次，在照片下方，随机显示一句。",
+    docLabel:  "过路费 · 你的句子",
+    docHl:     "在这里的每一分钟，都是远离重要之事的一分钟。",
+    docMuted:  "你有比这更大的目标。专注。自律。结果。未来的你会感谢现在的你。",
+    tabPhrases:"你的句子",
+    tabPhotos: "照片",
+    tabTiming: "计时",
+    inputPh:   "写一句能打动你的话…",
+    addBtn:    "添加",
+    phrase1:   "未来的你会感谢现在的你",
+    phrase2:   "你有比这更大的目标",
+    phrase3:   "在这里的每一分钟，都是远离重要之事的一分钟",
+    remove:    "移除"
+  }
+};
+</script>
+<style>
+  .board.gm { background: radial-gradient(120% 100% at 82% 40%, #17130c 0%, rgba(23,19,12,0) 60%), #0b0908; }
+  .board.gm .netbg { position: absolute; inset: 0; z-index: 0; background-image: linear-gradient(rgba(240,230,210,0.045) 1px, transparent 1px), linear-gradient(90deg, rgba(240,230,210,0.045) 1px, transparent 1px); background-size: 46px 46px; -webkit-mask-image: radial-gradient(120% 100% at 78% 45%, #000 30%, transparent 78%); mask-image: radial-gradient(120% 100% at 78% 45%, #000 30%, transparent 78%); }
+  .board.gm .dots-arc { position: absolute; z-index: 0; border: 1.5px dotted rgba(233,162,76,0.28); border-radius: 50%; }
+
+  .wrap { display: flex; flex-direction: column; height: 100%; position: relative; z-index: 5; }
+  .main { flex: 1; display: grid; grid-template-columns: 0.82fr 1fr; gap: 54px; align-items: center; margin-top: 20px; }
+  .left .headline { margin-top: 16px; font-size: 50px; line-height: 1.04; }
+  .left .lede { margin-top: 18px; }
+
+  .right { position: relative; height: 500px; }
+  .gm-browser { position: absolute; right: 0; top: 0; width: 540px; border-radius: 14px; overflow: hidden; background: #0b0907; border: 1px solid var(--line-2); box-shadow: 0 50px 90px -46px rgba(0,0,0,0.95); }
+  .gm-browser .bar { display: flex; align-items: center; gap: 12px; height: 42px; padding: 0 14px; background: #100d0a; border-bottom: 1px solid var(--line); }
+  .gm-browser .dots { display: flex; gap: 7px; }
+  .gm-browser .dots i { width: 10px; height: 10px; border-radius: 50%; background: var(--surface-3); }
+  .gm-browser .addr { flex: 1; height: 26px; display: flex; align-items: center; padding: 0 12px; background: #070605; border: 1px solid var(--line); border-radius: 7px; font-family: var(--mono); font-size: 11.5px; color: var(--dim); }
+  .gm-doc { padding: 24px 28px 40px; }
+  .gm-doc .dl { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); margin: 0 0 14px; }
+  .gm-doc .txt { font-size: 21px; line-height: 1.55; color: var(--dim); }
+  .gm-doc .txt .hl { color: var(--text); background: rgba(233,162,76,0.17); box-shadow: -3px 0 0 var(--amber); padding: 1px 2px; }
+  .gm-doc .txt .muted { color: var(--faint); }
+
+  .gm-card { position: absolute; left: -14px; top: 232px; width: 372px; z-index: 10; box-shadow: 0 44px 80px -34px rgba(0,0,0,0.95); }
+  .gm-card .dt-list { max-height: none; }
+  .gm-card .dt-item .val { font-size: 13.5px; }
+  .gm-card .tabs { display: flex; gap: 20px; border-bottom: 1px solid var(--line); margin: -4px -4px 16px; padding: 0 4px 12px; }
+  .gm-card .tabs span { font-size: 13px; color: var(--faint); font-weight: 600; }
+  .gm-card .tabs span.on { color: var(--amber); position: relative; }
+  .gm-card .tabs span.on::after { content:""; position:absolute; left:0; right:0; bottom:-13px; height:2px; background: var(--amber); }
+</style>
+</head>
+<body>
+<div class="board b-shot gm">
+  <div class="netbg"></div>
+  <div class="dots-arc" style="width:280px;height:280px;right:-90px;top:-90px;"></div>
+  <div class="dots-arc" style="width:90px;height:90px;left:44%;bottom:38px;"></div>
+  <div class="wrap">
+
+    <div class="mast">
+      <div class="brand">
+        <svg class="gauge" width="34" height="34" viewBox="0 0 72 72" fill="none">
+          <circle cx="36" cy="36" r="28" stroke="#2a2419" stroke-width="6"/>
+          <circle cx="36" cy="36" r="28" stroke="#e9a24c" stroke-width="6" stroke-linecap="round" stroke-dasharray="176" stroke-dashoffset="62" transform="rotate(-90 36 36)"/>
+          <circle cx="36" cy="36" r="7" fill="#e9a24c"/>
+        </svg>
+        <div class="wm"><span class="a">Dopamine Toll</span><span class="b">pay in seconds</span></div>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="left">
+        <p class="kicker"><span class="pip"></span><span data-t="kicker">no canned quotes</span></p>
+        <h1 class="headline" data-t="headline">Read back your <span class="am">own</span> words.</h1>
+        <p class="lede" data-t="lede">The toll shows the exact phrases <b>you wrote to yourself</b> — one at random, under your photo, every single time.</p>
+      </div>
+
+      <div class="right">
+        <div class="gm-browser">
+          <div class="bar">
+            <div class="dots"><i></i><i></i><i></i></div>
+            <div class="addr">instagram.com · toll armed</div>
+          </div>
+          <div class="gm-doc">
+            <p class="dl" data-t="docLabel">the toll · your phrase</p>
+            <p class="txt"><span class="hl" data-t="docHl">every minute here is a minute away from what matters.</span> <span class="muted" data-t="docMuted">you have bigger goals than this. focus. discipline. results. your future self will thank you.</span></p>
+          </div>
+        </div>
+
+        <div class="dt-card gm-card">
+          <div class="tabs"><span class="on" data-t="tabPhrases">Your phrases</span><span data-t="tabPhotos">Photos</span><span data-t="tabTiming">Timing</span></div>
+          <div class="dt-addrow">
+            <div class="dt-input ph" data-t="inputPh">write a phrase that hits…</div>
+            <button class="dt-add" data-t="addBtn">Add</button>
+          </div>
+          <div class="dt-list">
+            <div class="dt-item"><span class="val" data-t="phrase1">your future self will thank you</span><button class="dt-remove" data-t="remove">remove</button></div>
+            <div class="dt-item"><span class="val" data-t="phrase2">you have bigger goals than this</span><button class="dt-remove" data-t="remove">remove</button></div>
+            <div class="dt-item"><span class="val" data-t="phrase3">every minute here is a minute away from what matters</span><button class="dt-remove" data-t="remove">remove</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<script src="i18n.js"></script>
+</body>
+</html>

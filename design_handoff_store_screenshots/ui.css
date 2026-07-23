@@ -1,0 +1,105 @@
+/* Dopamine Toll — faithful UI recreations (Amber theme)
+   scoped so marketing shell classes never collide.
+   ports: screens/overlay-v1.html · settings.html · popup.html */
+
+/* ============ THE TOLL OVERLAY ============ */
+.tollscreen {
+  position: relative;
+  width: 100%; height: 100%;
+  background: radial-gradient(120% 90% at 50% -10%, #14110b 0%, var(--bg) 55%);
+  color: var(--text);
+  font-family: var(--sans);
+  display: grid; place-items: center;
+  padding: 52px 48px;
+  overflow: hidden;
+}
+.tollscreen .col { width: 100%; max-width: 640px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 30px; }
+.tollscreen .eyebrow { font-family: var(--mono); font-size: 14px; letter-spacing: 0.06em; color: var(--dim); display: flex; align-items: center; gap: 10px; }
+.tollscreen .eyebrow b { color: var(--text); font-weight: 600; }
+.tollscreen .dotsep { width: 5px; height: 5px; border-radius: 50%; background: var(--terra); }
+.tollscreen .photo {
+  position: relative; width: 320px; height: 214px;
+  border-radius: var(--r); overflow: hidden;
+  border: 1px solid var(--line-2);
+  box-shadow: 0 24px 60px -28px rgba(0,0,0,0.9);
+}
+.tollscreen .photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.tollscreen .photo .tint { position: absolute; inset: 0; background: linear-gradient(160deg, rgba(233,162,76,0.16), rgba(207,102,56,0.08)); mix-blend-mode: overlay; }
+.tollscreen .photo .cap { position: absolute; left: 12px; bottom: 11px; font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; color: #efe9dd; text-shadow: 0 1px 0 rgba(0,0,0,0.95); }
+.tollscreen .photo .pin { position: absolute; right: 12px; top: 11px; font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; color: var(--amber); text-transform: uppercase; text-shadow: 0 1px 0 rgba(0,0,0,0.95); }
+.tollscreen .phrase { font-size: 36px; line-height: 1.16; font-weight: 600; letter-spacing: -0.02em; text-wrap: balance; max-width: 580px; }
+.tollscreen .phrase .you { display: block; font-family: var(--mono); font-size: 12px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); margin-top: 18px; }
+.tollscreen .toll { display: flex; flex-direction: column; align-items: center; gap: 7px; }
+.tollscreen .toll .label { font-family: var(--mono); font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); }
+.tollscreen .toll .clock { font-family: var(--mono); font-weight: 700; font-size: 76px; line-height: 1; letter-spacing: 0.02em; color: var(--amber); font-variant-numeric: tabular-nums; }
+.tollscreen .meter { width: 300px; height: 3px; border-radius: 3px; background: var(--surface-2); overflow: hidden; }
+.tollscreen .meter > i { display: block; height: 100%; width: 42%; background: linear-gradient(90deg, var(--terra), var(--amber)); }
+.tollscreen .actions { display: flex; gap: 14px; }
+.tollscreen .btn { font-family: var(--sans); font-size: 15px; font-weight: 600; border-radius: var(--r-sm); padding: 15px 22px; border: 1px solid transparent; display: flex; flex-direction: column; align-items: center; gap: 3px; min-width: 196px; }
+.tollscreen .btn small { font-family: var(--mono); font-weight: 500; font-size: 11px; letter-spacing: 0.06em; text-transform: lowercase; opacity: 0.7; }
+.tollscreen .btn.primary { background: var(--amber); color: var(--amber-ink); }
+.tollscreen .btn.primary small { opacity: 0.55; }
+.tollscreen .btn.locked { color: var(--faint); border-color: var(--line); }
+.tollscreen .btn.locked small { color: var(--terra); opacity: 1; }
+
+/* ============ SETTINGS CARD ============ */
+.dt-card { background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--r); padding: 26px 26px 24px; }
+.dt-card .h { font-size: 17px; font-weight: 700; letter-spacing: -0.01em; margin: 0 0 5px; }
+.dt-card .hint { color: var(--faint); font-size: 13px; line-height: 1.55; margin: 0 0 16px; }
+.dt-card .hint code, .codechip { font-family: var(--mono); color: var(--dim); background: var(--surface); padding: 1px 6px; border-radius: 5px; font-size: 0.86em; }
+
+.dt-addrow { display: flex; gap: 10px; margin-bottom: 14px; }
+.dt-input { flex: 1; background-color: #060504; border: 1px solid var(--line-2); border-radius: var(--r-sm); color: var(--text); font-family: var(--sans); font-size: 14.5px; padding: 14px 16px; }
+.dt-input.ph { color: var(--faint); }
+.dt-add { background: var(--amber); color: var(--amber-ink); border: none; border-radius: var(--r-sm); font-family: var(--sans); font-weight: 700; font-size: 14.5px; padding: 0 24px; display: flex; align-items: center; }
+
+.dt-list { display: flex; flex-direction: column; gap: 9px; }
+.dt-item { display: flex; align-items: center; justify-content: space-between; background: #060504; border: 1px solid var(--line); border-radius: var(--r-sm); padding: 14px 16px; }
+.dt-item .val { font-size: 14.5px; }
+.dt-item.dom .val { font-family: var(--mono); font-size: 13.5px; }
+.dt-item .val .path { color: var(--amber); }
+.dt-remove { background: transparent; color: var(--dim); border: 1px solid var(--line-2); border-radius: 7px; font-family: var(--sans); font-size: 12.5px; padding: 7px 13px; }
+
+/* north-star gallery (standalone-capable) */
+.dt-stars { display: grid; grid-template-columns: repeat(3, 1fr); gap: 13px; }
+.dt-star { aspect-ratio: 3 / 2; border-radius: var(--r-sm); border: 1px solid var(--line-2); position: relative; overflow: hidden; background: repeating-linear-gradient(135deg, #1c160d 0 10px, #161109 10px 20px); display: grid; place-items: center; }
+.dt-star img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.dt-star.dashed { border-style: dashed; }
+.dt-star::after { content:""; position:absolute; inset:0; background: linear-gradient(160deg, rgba(233,162,76,0.14), rgba(207,102,56,0.05)); pointer-events: none; }
+.dt-star.dashed::after { display: none; }
+.dt-star .plus { font-size: 28px; color: var(--faint); font-weight: 300; }
+.dt-star .lbl { position: absolute; left: 10px; bottom: 8px; font-family: var(--mono); font-size: 10.5px; color: var(--amber-soft); letter-spacing: 0.04em; z-index: 2; text-shadow: 0 1px 5px rgba(0,0,0,0.8); }
+.dt-star.dashed .lbl { color: var(--faint); text-shadow: none; }
+
+/* toll timing steppers */
+.dt-steps { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.dt-ctrl { background: #060504; border: 1px solid var(--line); border-radius: var(--r-sm); padding: 17px 17px 15px; }
+.dt-ctrl .k { font-size: 13.5px; font-weight: 600; margin-bottom: 3px; }
+.dt-ctrl .d { font-size: 12px; color: var(--faint); line-height: 1.5; margin-bottom: 14px; }
+.dt-stepper { display: flex; align-items: center; justify-content: space-between; }
+.dt-stepper .num { font-family: var(--mono); font-weight: 700; font-size: 32px; color: var(--amber); font-variant-numeric: tabular-nums; }
+.dt-stepper .num span { font-size: 13px; color: var(--dim); font-weight: 500; margin-left: 3px; }
+.dt-pm { display: flex; gap: 7px; }
+.dt-pm button { width: 34px; height: 34px; border-radius: 8px; background: var(--surface); border: 1px solid var(--line-2); color: var(--text); font-family: var(--mono); font-size: 18px; line-height: 1; }
+.dt-endnote { font-size: 12.5px; color: var(--dim); margin-top: 14px; display: flex; align-items: center; gap: 8px; }
+.dt-endnote .dotsep { width: 5px; height: 5px; border-radius: 50%; background: var(--terra); }
+
+/* ============ POPUP ============ */
+.dt-popup { width: 300px; background: var(--bg-2); border: 1px solid var(--line-2); border-radius: var(--r); padding: 17px; color: var(--text); box-shadow: 0 30px 60px -28px rgba(0,0,0,0.95); }
+.dt-popup .top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
+.dt-popup .name { display: flex; align-items: center; gap: 9px; font-size: 16px; font-weight: 800; letter-spacing: -0.01em; }
+.dt-popup .toggle { width: 44px; height: 25px; border-radius: 13px; background: var(--amber); position: relative; }
+.dt-popup .toggle::after { content:""; position:absolute; top: 3px; right: 3px; width: 19px; height: 19px; border-radius: 50%; background: #1a1305; }
+.dt-popup .rows { display: flex; flex-direction: column; gap: 8px; margin-bottom: 13px; }
+.dt-popup .prow { background: #060504; border: 1px solid var(--line); border-radius: var(--r-sm); padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; }
+.dt-popup .prow .l { font-size: 13px; color: var(--dim); }
+.dt-popup .prow .r { font-family: var(--mono); font-size: 13px; font-weight: 600; }
+.dt-popup .prow .r.amber { color: var(--amber); }
+.dt-popup .status { flex-direction: column; align-items: flex-start; gap: 5px; }
+.dt-popup .status .head2 { display: flex; align-items: center; gap: 8px; font-size: 13px; }
+.dt-popup .status .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--terra); box-shadow: 0 0 10px var(--terra); }
+.dt-popup .status .meta { font-family: var(--mono); font-size: 11px; color: var(--terra); letter-spacing: 0.03em; }
+.dt-popup .stat { background: transparent; border: none; padding: 2px 2px 0; }
+.dt-popup .stat .l { font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; color: var(--faint); }
+.dt-popup .stat .l b { color: var(--amber-soft); font-weight: 600; }
+.dt-popup .openbtn { width: 100%; margin-top: 12px; background: var(--surface); border: 1px solid var(--line-2); color: var(--text); border-radius: var(--r-sm); font-family: var(--sans); font-weight: 600; font-size: 13.5px; padding: 13px; }

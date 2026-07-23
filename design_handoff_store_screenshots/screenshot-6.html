@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dopamine Toll — store screenshot 6</title>
+<link rel="stylesheet" href="store.css">
+<script>
+/* ============================================================
+   ALL TRANSLATABLE COPY LIVES HERE.
+   To add a language: copy the whole `en: { ... }` block, rename
+   the key (e.g. `es`, `pt`, `de`), translate the values, keep the
+   HTML tags (<b>, <span class="am">) intact. Then open the page
+   with ?lang=es  (e.g. screenshot-6.html?lang=es).
+   ============================================================ */
+const STRINGS = {
+  en: {
+    kicker:   "if you slip past the toll",
+    headline: "It doesn't stop at the <span class=\"am\">door.</span>",
+    lede:     "Blow past the toll and keep scrolling? Dopamine Toll drops a quiet nudge right into the feed — <b>your own words</b>, plus a live count of the minutes you've burned on this tab.",
+    point1:   "<b>Timed nudges</b> — at 10, 20, 30 minutes in",
+    point2:   "<b>Your own phrases</b> — the lines you wrote to yourself",
+    point3:   "<b>Live tab timer</b> — minutes here, out in the open",
+    point4:   "<b>Dismiss anytime</b> — it never blocks the page",
+    armed:    "toll armed",
+    tabFor:   "For you",
+    tabFol:   "Following",
+    p1name:   "Jordan Reyes",
+    p1text:   "wait until the very end 😭 this edit goes so hard, watched it like six times already",
+    p2name:   "Sam Okafor",
+    p2text:   "nobody:\nme at 2am: just one more video and then i'll actually go to bed i promise this time for real",
+    t1msg:    "every minute here is a minute away from what matters",
+    t2msg:    "you have bigger goals than this",
+    time:     "15 min",
+    onTab:    "on this tab"
+  },
+  de: {
+    kicker:   "wenn du an der Maut vorbeischlüpfst",
+    headline: "Es hört nicht an der <span class=\"am\">Tür auf.</span>",
+    lede:     "An der Maut vorbei und einfach weiterscrollen? Dopamine Toll setzt einen leisen Hinweis direkt in den Feed — <b>deine eigenen Worte</b>, plus eine Live-Zählung der Minuten, die du auf diesem Tab verbrannt hast.",
+    point1:   "<b>Getaktete Hinweise</b> — nach 10, 20, 30 Minuten",
+    point2:   "<b>Deine eigenen Sätze</b> — die Zeilen, die du dir geschrieben hast",
+    point3:   "<b>Live-Tab-Timer</b> — die Minuten hier, offen sichtbar",
+    point4:   "<b>Jederzeit schließbar</b> — blockiert die Seite nie",
+    armed:    "Maut aktiv",
+    tabFor:   "Für dich",
+    tabFol:   "Folge ich",
+    p1name:   "Jordan Reyes",
+    p1text:   "wart bis ganz zum schluss 😭 dieser edit ist so krass, hab ihn schon sechs mal geschaut",
+    p2name:   "Sam Okafor",
+    p2text:   "niemand:\nich um 2 uhr nachts: nur noch ein video und dann geh ich wirklich ins bett versprochen diesmal echt",
+    t1msg:    "jede Minute hier ist eine Minute weg von dem, was zählt",
+    t2msg:    "du hast größere Ziele als das",
+    time:     "15 Min.",
+    onTab:    "auf diesem Tab"
+  },
+  fr: {
+    kicker:   "si vous passez le péage en douce",
+    headline: "Ça ne s'arrête pas à la <span class=\"am\">porte.</span>",
+    lede:     "Vous forcez le péage et continuez à défiler ? Dopamine Toll glisse un rappel discret dans le fil — <b>vos propres mots</b>, plus un compteur en direct des minutes brûlées sur cet onglet.",
+    point1:   "<b>Rappels minutés</b> — à 10, 20, 30 minutes",
+    point2:   "<b>Vos propres phrases</b> — les lignes que vous vous êtes écrites",
+    point3:   "<b>Minuteur d'onglet en direct</b> — les minutes ici, au grand jour",
+    point4:   "<b>Fermez quand vous voulez</b> — ça ne bloque jamais la page",
+    armed:    "péage armé",
+    tabFor:   "Pour vous",
+    tabFol:   "Abonnements",
+    p1name:   "Jordan Reyes",
+    p1text:   "attends jusqu'à la toute fin 😭 ce montage est tellement bien, je l'ai déjà regardé genre six fois",
+    p2name:   "Sam Okafor",
+    p2text:   "personne :\nmoi à 2h du mat : juste une vidéo de plus et après je vais vraiment me coucher promis cette fois c'est sûr",
+    t1msg:    "chaque minute ici est une minute loin de l'essentiel",
+    t2msg:    "vous avez de plus grands objectifs que ça",
+    time:     "15 min",
+    onTab:    "sur cet onglet"
+  },
+  ja: {
+    kicker:   "通行料をすり抜けたら",
+    headline: "<span class=\"am\">ドアの前で</span>終わりじゃない。",
+    lede:     "通行料を突破してスクロールを続ける？ Dopamine Toll はフィードに静かな一言を差し込みます — <b>あなた自身の言葉</b>と、このタブで費やした分数のライブカウント。",
+    point1:   "<b>時間差の通知</b> — 10分、20分、30分で",
+    point2:   "<b>あなた自身の言葉</b> — 自分に書いた一節",
+    point3:   "<b>ライブのタブタイマー</b> — ここでの分数を、はっきりと",
+    point4:   "<b>いつでも閉じられる</b> — ページを妨げない",
+    armed:    "通行料あり",
+    tabFor:   "おすすめ",
+    tabFol:   "フォロー中",
+    p1name:   "Jordan Reyes",
+    p1text:   "最後まで見て 😭 この編集ガチですごい、もう6回くらい見た",
+    p2name:   "Sam Okafor",
+    p2text:   "誰も聞いてない:\n午前2時の私: あと1本だけ見たら本当に寝る、今度こそマジで約束する",
+    t1msg:    "ここでの1分は、大切なことから離れた1分",
+    t2msg:    "あなたにはもっと大きな目標がある",
+    time:     "15 分",
+    onTab:    "このタブで"
+  },
+  pt: {
+    kicker:   "se você passar batido pelo pedágio",
+    headline: "Não para na <span class=\"am\">porta.</span>",
+    lede:     "Furou o pedágio e continuou rolando? O Dopamine Toll solta um lembrete discreto no feed — <b>as suas próprias palavras</b>, mais uma contagem ao vivo dos minutos que você queimou nesta aba.",
+    point1:   "<b>Lembretes cronometrados</b> — aos 10, 20, 30 minutos",
+    point2:   "<b>Suas próprias frases</b> — as linhas que você escreveu para si",
+    point3:   "<b>Cronômetro da aba ao vivo</b> — os minutos aqui, à mostra",
+    point4:   "<b>Dispense quando quiser</b> — nunca bloqueia a página",
+    armed:    "pedágio armado",
+    tabFor:   "Para você",
+    tabFol:   "Seguindo",
+    p1name:   "Jordan Reyes",
+    p1text:   "espera até o finalzinho 😭 esse edit é bom demais, já assisti umas seis vezes",
+    p2name:   "Sam Okafor",
+    p2text:   "ninguém:\neu às 2 da manhã: só mais um vídeo e aí eu vou dormir de verdade prometo dessa vez é sério",
+    t1msg:    "cada minuto aqui é um minuto longe do que importa",
+    t2msg:    "você tem objetivos maiores do que isso",
+    time:     "15 min",
+    onTab:    "nesta aba"
+  },
+  zh: {
+    kicker:   "如果你溜过了过路费",
+    headline: "它不会止步于<span class=\"am\">门口。</span>",
+    lede:     "冲过过路费继续刷？Dopamine Toll 会在信息流里轻轻放一句提醒 — <b>你自己的话</b>，外加你在这个标签页上已经烧掉的分钟数实时计数。",
+    point1:   "<b>定时提醒</b> — 在第 10、20、30 分钟",
+    point2:   "<b>你自己的句子</b> — 你写给自己的话",
+    point3:   "<b>实时标签页计时</b> — 这里的分钟数，摆在明面上",
+    point4:   "<b>随时关闭</b> — 从不拦截页面",
+    armed:    "过路费已就绪",
+    tabFor:   "为你推荐",
+    tabFol:   "正在关注",
+    p1name:   "Jordan Reyes",
+    p1text:   "一定要看到最后 😭 这个剪辑太顶了，我都看了六遍了",
+    p2name:   "Sam Okafor",
+    p2text:   "没有人:\n凌晨两点的我: 再看一个视频我就真的去睡觉，这次我保证是真的",
+    t1msg:    "在这里的每一分钟，都是远离重要之事的一分钟",
+    t2msg:    "你有比这更大的目标",
+    time:     "15 分钟",
+    onTab:    "在此标签页"
+  }
+};
+</script>
+<style>
+  .board.ng { background: radial-gradient(120% 100% at 80% 44%, #17130c 0%, rgba(23,19,12,0) 58%), #0b0908; }
+  .wrap { display: flex; flex-direction: column; height: 100%; position: relative; z-index: 5; }
+  .main { flex: 1; display: grid; grid-template-columns: 0.9fr 1.05fr; gap: 54px; align-items: center; margin-top: 14px; }
+
+  .left .kicker { margin-bottom: 20px; }
+  .left .headline { font-size: 50px; line-height: 1.03; }
+  .left .lede { margin-top: 18px; }
+  .left .points { margin-top: 28px; }
+  .left .points li { font-size: 16px; }
+  .left .points li .dot { flex: 0 0 auto; width: 6px; height: 6px; border-radius: 50%; background: var(--amber); margin-top: 8px; }
+
+  .right { position: relative; }
+
+  .xb { border: 1px solid var(--line-2); border-radius: 16px; overflow: hidden; background: #000; box-shadow: 0 54px 96px -48px rgba(0,0,0,0.95), 0 0 0 1px rgba(0,0,0,0.4); }
+  .xb .bar { display: flex; align-items: center; gap: 12px; height: 44px; padding: 0 15px; background: #0b0907; border-bottom: 1px solid var(--line); }
+  .xb .dots { display: flex; gap: 7px; }
+  .xb .dots i { width: 10px; height: 10px; border-radius: 50%; background: var(--surface-3); }
+  .xb .addr { flex: 1; height: 26px; display: flex; align-items: center; gap: 8px; padding: 0 12px; background: #070605; border: 1px solid var(--line); border-radius: 7px; font-family: var(--mono); font-size: 11.5px; color: #71767b; }
+  .xb .addr .armed { margin-left: auto; color: var(--terra); letter-spacing: 0.1em; text-transform: uppercase; font-size: 10px; }
+
+  .xfeed { background: #000; color: #e7e9ea; font-family: var(--sans); }
+  .xb .xfeed { max-height: 512px; overflow: hidden; }
+  .xtabs { display: flex; height: 48px; border-bottom: 1px solid #2f3336; }
+  .xtabs .tb { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: #71767b; position: relative; }
+  .xtabs .tb.on { color: #e7e9ea; }
+  .xtabs .tb.on::after { content: ""; position: absolute; bottom: 0; height: 4px; width: 56px; border-radius: 4px; background: #1d9bf0; }
+
+  .xpost { display: grid; grid-template-columns: 40px 1fr; gap: 12px; padding: 14px 16px; border-bottom: 1px solid #2f3336; }
+  .xav { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg,#2a2f33,#15181b); }
+  .xmeta { display: flex; align-items: center; gap: 5px; font-size: 14px; }
+  .xmeta .nm { font-weight: 700; color: #e7e9ea; }
+  .xmeta .hd, .xmeta .dt { color: #71767b; font-weight: 400; }
+  .xtext { font-size: 14.5px; line-height: 1.4; margin: 3px 0 10px; color: #e7e9ea; white-space: pre-line; }
+  .xmedia { position: relative; border-radius: 16px; overflow: hidden; border: 1px solid #2f3336; aspect-ratio: 16/9; }
+  .xmedia img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .xmedia .pt { position: absolute; left: 10px; bottom: 8px; font-family: var(--mono); font-size: 11px; color: #fff; background: rgba(0,0,0,0.6); padding: 2px 7px; border-radius: 4px; }
+  .xacts { display: flex; justify-content: space-between; max-width: 300px; margin-top: 11px; color: #71767b; }
+  .xacts i { display: block; width: 17px; height: 17px; border: 1.6px solid #71767b; }
+  .xacts .a { display: flex; align-items: center; gap: 7px; font-size: 12.5px; }
+  .xacts .a i.c { border-radius: 50% 50% 50% 2px; border-width: 1.6px; }
+  .xacts .a i.r { border: none; position: relative; }
+  .xacts .a i.h { border-radius: 50% 50% 0 50%; transform: rotate(45deg); }
+
+  .toast { position: absolute; z-index: 10; width: 288px; border-radius: 14px; padding: 14px 15px 13px; background: rgba(18,15,11,0.86); backdrop-filter: blur(10px); border: 1px solid rgba(233,162,76,0.34); box-shadow: 0 26px 50px -22px rgba(0,0,0,0.9), inset 0 0 0 1px rgba(233,162,76,0.05); }
+  .toast .th { display: flex; align-items: center; gap: 8px; margin-bottom: 9px; }
+  .toast .th .gz { flex: 0 0 auto; }
+  .toast .th .lbl { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--amber-soft); }
+  .toast .th .x { margin-left: auto; color: #71767b; font-size: 15px; line-height: 1; }
+  .toast .msg { font-size: 14px; line-height: 1.38; color: #f3eee4; font-weight: 500; }
+  .toast .tf { margin-top: 10px; font-family: var(--mono); font-size: 11.5px; color: var(--dim); letter-spacing: 0.02em; }
+  .toast .tf b { color: var(--amber); font-weight: 700; }
+
+  .toast.t1 { left: 60px; top: 236px; }
+  .toast.t2 { right: -14px; bottom: 92px; }
+</style>
+</head>
+<body>
+<div class="board b-shot ng">
+  <div class="wrap">
+
+    <div class="mast">
+      <div class="brand">
+        <svg class="gauge" width="34" height="34" viewBox="0 0 72 72" fill="none">
+          <circle cx="36" cy="36" r="28" stroke="#2a2419" stroke-width="6"/>
+          <circle cx="36" cy="36" r="28" stroke="#e9a24c" stroke-width="6" stroke-linecap="round" stroke-dasharray="176" stroke-dashoffset="62" transform="rotate(-90 36 36)"/>
+          <circle cx="36" cy="36" r="7" fill="#e9a24c"/>
+        </svg>
+        <div class="wm"><span class="a">Dopamine Toll</span><span class="b">pay in seconds</span></div>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="left">
+        <p class="kicker"><span class="pip"></span><span data-t="kicker">if you slip past the toll</span></p>
+        <h1 class="headline" data-t="headline">It doesn't stop at the <span class="am">door.</span></h1>
+        <p class="lede" data-t="lede">Blow past the toll and keep scrolling? Dopamine Toll drops a quiet nudge right into the feed — <b>your own words</b>, plus a live count of the minutes you've burned on this tab.</p>
+        <ul class="points">
+          <li><span class="dot"></span><span data-t="point1"><b>Timed nudges</b> — at 10, 20, 30 minutes in</span></li>
+          <li><span class="dot"></span><span data-t="point2"><b>Your own phrases</b> — the lines you wrote to yourself</span></li>
+          <li><span class="dot"></span><span data-t="point3"><b>Live tab timer</b> — minutes here, out in the open</span></li>
+          <li><span class="dot"></span><span data-t="point4"><b>Dismiss anytime</b> — it never blocks the page</span></li>
+        </ul>
+      </div>
+
+      <div class="right">
+        <div class="xb">
+          <div class="bar">
+            <div class="dots"><i></i><i></i><i></i></div>
+            <div class="addr">x.com/home<span class="armed" data-t="armed">toll armed</span></div>
+          </div>
+          <div class="xfeed">
+            <div class="xtabs"><div class="tb on" data-t="tabFor">For you</div><div class="tb" data-t="tabFol">Following</div></div>
+
+            <div class="xpost">
+              <div class="xav"></div>
+              <div>
+                <div class="xmeta"><span class="nm" data-t="p1name">Jordan Reyes</span><span class="hd">@jordanreyes</span><span class="dt">· 18h</span></div>
+                <p class="xtext" data-t="p1text">wait until the very end 😭 this edit goes so hard, watched it like six times already</p>
+                <div class="xmedia"><img src="assets/img/switch.png" alt=""><span class="pt">0:36 / 1:06</span></div>
+                <div class="xacts"><span class="a"><i class="c"></i>21</span><span class="a"><i class="r">⇄</i>402</span><span class="a"><i class="h"></i>17k</span><span class="a"><i></i>772k</span></div>
+              </div>
+            </div>
+
+            <div class="xpost">
+              <div class="xav"></div>
+              <div>
+                <div class="xmeta"><span class="nm" data-t="p2name">Sam Okafor</span><span class="hd">@samokafor</span><span class="dt">· 17h</span></div>
+                <p class="xtext" data-t="p2text">nobody:
+me at 2am: just one more video and then i'll actually go to bed i promise this time for real</p>
+                <div class="xacts"><span class="a"><i class="c"></i>22</span><span class="a"><i class="r">⇄</i>1k</span><span class="a"><i class="h"></i>24k</span><span class="a"><i></i>279k</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="toast t1">
+          <div class="th">
+            <svg class="gz" width="15" height="15" viewBox="0 0 72 72" fill="none"><circle cx="36" cy="36" r="28" stroke="#3a3320" stroke-width="8"/><circle cx="36" cy="36" r="28" stroke="#e9a24c" stroke-width="8" stroke-linecap="round" stroke-dasharray="176" stroke-dashoffset="62" transform="rotate(-90 36 36)"/></svg>
+            <span class="lbl">Dopamine Toll</span><span class="x">×</span>
+          </div>
+          <p class="msg" data-t="t1msg">every minute here is a minute away from what matters</p>
+          <p class="tf"><b data-t="time">15 min</b> <span data-t="onTab">on this tab</span></p>
+        </div>
+
+        <div class="toast t2">
+          <div class="th">
+            <svg class="gz" width="15" height="15" viewBox="0 0 72 72" fill="none"><circle cx="36" cy="36" r="28" stroke="#3a3320" stroke-width="8"/><circle cx="36" cy="36" r="28" stroke="#e9a24c" stroke-width="8" stroke-linecap="round" stroke-dasharray="176" stroke-dashoffset="62" transform="rotate(-90 36 36)"/></svg>
+            <span class="lbl">Dopamine Toll</span><span class="x">×</span>
+          </div>
+          <p class="msg" data-t="t2msg">you have bigger goals than this</p>
+          <p class="tf"><b data-t="time">15 min</b> <span data-t="onTab">on this tab</span></p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<script src="i18n.js"></script>
+</body>
+</html>
