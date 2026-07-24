@@ -5,7 +5,9 @@
   "type": "module",
   "description": "Render the store screenshot HTML files to 1280x800 PNGs, one per language.",
   "scripts": {
-    "render": "node render.mjs"
+    "render": "node render.mjs",
+    "record": "node record.mjs",
+    "thumbnail": "node thumbnail.mjs"
   },
   "dependencies": {
     "puppeteer-core": "^24.0.0"

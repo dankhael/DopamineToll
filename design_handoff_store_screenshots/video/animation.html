@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Dopamine Toll — promo video (1920×1080)</title>
+<!-- Shared brand + product-UI styles, reused verbatim from the screenshots. -->
+<link rel="stylesheet" href="../store.css">
+<link rel="stylesheet" href="../ui.css">
+<script src="strings.js"></script>
+<style>
+  /* The page hosts one exact 1920×1080 capture surface. */
+  body { margin: 0; padding: 0; background: #050403; display: block; }
+
+  .stage {
+    position: relative;
+    width: 1920px; height: 1080px;
+    overflow: hidden;
+    isolation: isolate;
+    font-family: var(--sans);
+    color: var(--text);
+    background:
+      radial-gradient(120% 90% at 50% -16%, #16120b 0%, rgba(22,18,11,0) 56%),
+      var(--bg);
+  }
+  /* same warm grain as .board, so the video matches the store screenshots */
+  .stage::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 60;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+    opacity: 0.035; mix-blend-mode: screen;
+  }
+
+  /* Persistent corner lockup across every scene. */
+  .v-mast { position: absolute; left: 64px; top: 52px; z-index: 50; }
+  .v-mast .a { font-size: 24px; }
+  .v-mast .b { font-size: 10px; }
+
+  .scene { position: absolute; inset: 0; opacity: 0; }
+  .scene-in { position: absolute; inset: 0; display: grid; place-items: center; }
+
+  /* Lower-third caption (kicker + headline), one per scene. */
+  .v-cap { position: absolute; left: 0; right: 0; bottom: 64px; text-align: center; z-index: 20; }
+  .v-cap .kicker { justify-content: center; font-size: 14px; }
+  .v-cap h2 { font-weight: 800; font-size: 36px; letter-spacing: -0.03em; margin: 12px 0 0; }
+  .v-cap h2 .am { color: var(--amber); }
+
+  /* ── gate: browser chrome + faithful toll overlay ── */
+  #g-chrome { width: 1060px; }
+  #g-chrome .body { height: 686px; }
+  .stage .tollscreen { padding: 30px 40px; }
+  .stage .tollscreen .col { gap: 22px; }
+  .stage .tollscreen .photo { width: 300px; height: 182px; }
+  .stage .tollscreen .phrase { font-size: 30px; }
+  .stage .tollscreen .clock { font-size: 60px; }
+  .stage .tollscreen .meter > i { width: 100%; transform-origin: left center; }
+  .v-cursor { position: absolute; left: 0; top: 0; width: 26px; height: 26px; z-index: 30; opacity: 0; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.6)); }
+
+  /* ── nudge: x.com feed + tumbling toll cards (ported from screenshot 6) ── */
+  .n-wrap { position: relative; width: 760px; }
+  .xb { border: 1px solid var(--line-2); border-radius: 16px; overflow: hidden; background: #000; box-shadow: 0 54px 96px -48px rgba(0,0,0,0.95), 0 0 0 1px rgba(0,0,0,0.4); }
+  .xb .bar { display: flex; align-items: center; gap: 12px; height: 46px; padding: 0 15px; background: #0b0907; border-bottom: 1px solid var(--line); }
+  .xb .dots { display: flex; gap: 7px; }
+  .xb .dots i { width: 10px; height: 10px; border-radius: 50%; background: var(--surface-3); }
+  .xb .addr { flex: 1; height: 27px; display: flex; align-items: center; gap: 8px; padding: 0 12px; background: #070605; border: 1px solid var(--line); border-radius: 7px; font-family: var(--mono); font-size: 12px; color: #71767b; }
+  .xb .addr .armed { margin-left: auto; color: var(--terra); letter-spacing: 0.1em; text-transform: uppercase; font-size: 10px; }
+  .xfeed { background: #000; color: #e7e9ea; font-family: var(--sans); max-height: 560px; overflow: hidden; }
+  .xtabs { display: flex; height: 50px; border-bottom: 1px solid #2f3336; }
+  .xtabs .tb { flex: 1; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 600; color: #71767b; position: relative; }
+  .xtabs .tb.on { color: #e7e9ea; }
+  .xtabs .tb.on::after { content: ""; position: absolute; bottom: 0; height: 4px; width: 56px; border-radius: 4px; background: #1d9bf0; }
+  .xpost { display: grid; grid-template-columns: 44px 1fr; gap: 13px; padding: 16px 18px; border-bottom: 1px solid #2f3336; }
+  .xav { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg,#2a2f33,#15181b); }
+  .xmeta { display: flex; align-items: center; gap: 5px; font-size: 15px; }
+  .xmeta .nm { font-weight: 700; color: #e7e9ea; }
+  .xmeta .hd, .xmeta .dt { color: #71767b; font-weight: 400; }
+  .xtext { font-size: 15.5px; line-height: 1.4; margin: 3px 0 11px; color: #e7e9ea; white-space: pre-line; }
+  .xmedia { position: relative; border-radius: 16px; overflow: hidden; border: 1px solid #2f3336; aspect-ratio: 16/9; }
+  .xmedia img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .xmedia .pt { position: absolute; left: 10px; bottom: 8px; font-family: var(--mono); font-size: 11px; color: #fff; background: rgba(0,0,0,0.6); padding: 2px 7px; border-radius: 4px; }
+  .toast { position: absolute; z-index: 10; width: 300px; border-radius: 14px; padding: 15px 16px 14px; background: rgba(18,15,11,0.9); backdrop-filter: blur(10px); border: 1px solid rgba(233,162,76,0.34); box-shadow: 0 26px 50px -22px rgba(0,0,0,0.9), inset 0 0 0 1px rgba(233,162,76,0.05); }
+  .toast .th { display: flex; align-items: center; gap: 8px; margin-bottom: 9px; }
+  .toast .th .lbl { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--amber-soft); }
+  .toast .th .x { margin-left: auto; color: #71767b; font-size: 16px; line-height: 1; }
+  .toast .msg { font-size: 14.5px; line-height: 1.38; color: #f3eee4; font-weight: 500; }
+  .toast .tf { margin-top: 10px; font-family: var(--mono); font-size: 11.5px; color: var(--dim); }
+  .toast .tf b { color: var(--amber); font-weight: 700; }
+  #n-t1 { left: -56px; top: 150px; }
+  #n-t2 { right: -56px; top: 300px; }
+  #n-t3 { right: 6px; top: 452px; width: 268px; }
+
+  /* ── control: two settings cards side by side ── */
+  .c-grid { display: flex; gap: 40px; width: 1220px; align-items: start; }
+  #c-list { flex: 1.05; }
+  #c-steps { flex: 0.95; }
+  .c-grid .dt-card .h { font-size: 20px; }
+  .c-grid .rowtag { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.06em; color: var(--amber); border: 1px solid rgba(233,162,76,0.4); border-radius: 999px; padding: 4px 10px; margin-left: 12px; }
+
+  /* ── outro ── */
+  .o-stack { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 26px; }
+  .o-brand { display: flex; align-items: center; gap: 16px; }
+  .o-brand .wm { display: flex; flex-direction: column; align-items: flex-start; line-height: 1; }
+  .o-brand .a { font-weight: 800; font-size: 34px; letter-spacing: -0.02em; }
+  .o-brand .b { font-family: var(--mono); font-size: 11px; letter-spacing: 0.34em; text-transform: uppercase; color: var(--dim); margin-top: 6px; }
+  #o-headline { font-size: 62px; }
+  #o-priv { font-size: 19px; color: var(--dim); max-width: 40ch; }
+  .v-cta { display: inline-flex; align-items: center; gap: 10px; background: var(--amber); color: var(--amber-ink); font-weight: 800; font-size: 19px; padding: 17px 30px; border-radius: 13px; box-shadow: 0 24px 50px -22px rgba(233,162,76,0.5); }
+</style>
+</head>
+<body>
+<div class="stage">
+
+  <div class="v-mast brand">
+    <svg class="gauge" width="34" height="34" viewBox="0 0 72 72" fill="none">
+      <circle cx="36" cy="36" r="28" stroke="#2a2419" stroke-width="6"/>
+      <circle cx="36" cy="36" r="28" stroke="#e9a24c" stroke-width="6" stroke-linecap="round" stroke-dasharray="176" stroke-dashoffset="62" transform="rotate(-90 36 36)"/>
+      <circle cx="36" cy="36" r="7" fill="#e9a24c"/>
+    </svg>
+    <div class="wm"><span class="a">Dopamine Toll</span><span class="b">pay in seconds</span></div>
+  </div>
+
+  <!-- ══════════════════ SCENE 1 · GATE ══════════════════ -->
+  <section class="scene" data-scene="gate">
+    <div class="scene-in">
+      <div class="chrome" id="g-chrome">
+        <div class="bar">
+          <div class="dots"><i></i><i></i><i></i></div>
+          <div class="addr"><span class="lock"></span>instagram.com<span class="armed" data-t="gArmed">● toll armed</span></div>
+        </div>
+        <div class="body">
+          <div class="tollscreen" id="g-toll">
+            <div class="col">
+              <div class="eyebrow"><b>instagram.com</b><span class="dotsep"></span><span data-t="gOnList">on your toll list</span></div>
+              <div class="photo" id="g-photo">
+                <img src="../assets/img/ferrari.png" alt="">
+                <div class="tint"></div>
+                <div class="pin" data-t="gPin">north star</div>
+                <div class="cap">carro.jpg</div>
+              </div>
+              <div class="phrase" id="g-phrase"><span data-t="gPhrase">your future self will thank you</span><span class="you" data-t="gYou">— you, to yourself</span></div>
+              <div class="toll" id="g-tollblock">
+                <div class="label" data-t="gTollLabel">you can choose in</div>
+                <div class="clock" id="g-clock">00:30</div>
+                <div class="meter"><i id="g-meter"></i></div>
+              </div>
+              <div class="actions">
+                <button class="btn primary" id="g-close"><span data-t="gClose">Close tab</span><small data-t="gCloseSub">be productive</small></button>
+                <button class="btn locked" id="g-open"><span data-t="gOpen">Open anyway · 10 min</span><small id="g-open-sub">unlocks in 26s</small></button>
+              </div>
+            </div>
+            <svg class="v-cursor" id="g-cursor" viewBox="0 0 24 24" fill="#fff"><path d="M4 2l14 8-6 1.6 3.4 6.4-2.6 1.4-3.4-6.4L6 18z"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="v-cap" id="g-cap">
+      <p class="kicker"><span class="pip"></span><span data-t="capGateK">every scroll has a price</span></p>
+      <h2 data-t="capGateH">A countdown you can't skip.</h2>
+    </div>
+  </section>
+
+  <!-- ══════════════════ SCENE 2 · NUDGE ══════════════════ -->
+  <section class="scene" data-scene="nudge">
+    <div class="scene-in">
+      <div class="n-wrap">
+        <div class="xb" id="n-xb">
+          <div class="bar">
+            <div class="dots"><i></i><i></i><i></i></div>
+            <div class="addr">x.com/home<span class="armed" data-t="nArmed">toll armed</span></div>
+          </div>
+          <div class="xfeed">
+            <div class="xtabs"><div class="tb on">For you</div><div class="tb">Following</div></div>
+            <div class="xpost n-post">
+              <div class="xav"></div>
+              <div>
+                <div class="xmeta"><span class="nm" data-t="nP1name">Jordan Reyes</span><span class="hd">@jordanreyes</span><span class="dt">· 18h</span></div>
+                <p class="xtext" data-t="nP1text">wait until the very end 😭 this edit goes so hard, watched it like six times already</p>
+                <div class="xmedia"><img src="../assets/img/switch.png" alt=""><span class="pt">0:36 / 1:06</span></div>
+              </div>
+            </div>
+            <div class="xpost n-post">
+              <div class="xav"></div>
+              <div>
+                <div class="xmeta"><span class="nm" data-t="nP2name">Sam Okafor</span><span class="hd">@samokafor</span><span class="dt">· 17h</span></div>
+                <p class="xtext" data-t="nP2text">nobody:
+me at 2am: just one more video and then i'll actually go to bed i promise this time for real</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="toast" id="n-t1">
+          <div class="th"><span class="lbl">Dopamine Toll</span><span class="x">×</span></div>
+          <p class="msg" data-t="nT1msg">every minute here is a minute away from what matters</p>
+          <p class="tf"><b data-t="nTime">15 min</b> <span data-t="nOnTab">on this tab</span></p>
+        </div>
+        <div class="toast" id="n-t2">
+          <div class="th"><span class="lbl">Dopamine Toll</span><span class="x">×</span></div>
+          <p class="msg" data-t="nT2msg">you have bigger goals than this</p>
+          <p class="tf"><b data-t="nTime">15 min</b> <span data-t="nOnTab">on this tab</span></p>
+        </div>
+        <div class="toast" id="n-t3">
+          <div class="th"><span class="lbl">Dopamine Toll</span><span class="x">×</span></div>
+          <p class="msg" data-t="nT1msg">every minute here is a minute away from what matters</p>
+          <p class="tf"><b data-t="nTime">15 min</b> <span data-t="nOnTab">on this tab</span></p>
+        </div>
+      </div>
+    </div>
+    <div class="v-cap" id="n-cap">
+      <p class="kicker"><span class="pip"></span><span data-t="capNudgeK">it doesn't stop at the door</span></p>
+      <h2 data-t="capNudgeH">Nudges, in your own words.</h2>
+    </div>
+  </section>
+
+  <!-- ══════════════════ SCENE 3 · CONTROL ══════════════════ -->
+  <section class="scene" data-scene="ctrl">
+    <div class="scene-in">
+      <div class="c-grid">
+        <div class="dt-card" id="c-list">
+          <div class="h" data-t="cListH">Toll list</div>
+          <div class="dt-addrow">
+            <div class="dt-input ph" data-t="cInputPh">example.com or youtube.com/shorts</div>
+            <button class="dt-add" data-t="cAdd">Add</button>
+          </div>
+          <div class="dt-list">
+            <div class="dt-item dom c-item"><span class="val">instagram.com</span><button class="dt-remove" data-t="cRemove">remove</button></div>
+            <div class="dt-item dom c-item"><span class="val">tiktok.com</span><button class="dt-remove" data-t="cRemove">remove</button></div>
+            <div class="dt-item dom c-item"><span class="val">x.com</span><button class="dt-remove" data-t="cRemove">remove</button></div>
+            <div class="dt-item dom c-item"><span style="display:flex;align-items:center"><span class="val">youtube.com<span class="path">/shorts</span></span><span class="rowtag" data-t="cRowtag">one section only</span></span><button class="dt-remove" data-t="cRemove">remove</button></div>
+          </div>
+        </div>
+        <div class="dt-card" id="c-steps">
+          <div class="h" style="margin-bottom:16px">The toll</div>
+          <div class="dt-steps">
+            <div class="dt-ctrl c-ctrl">
+              <div class="k" data-t="cCountK">Countdown</div>
+              <div class="d" data-t="cCountD">before you can choose</div>
+              <div class="dt-stepper">
+                <span class="num"><span id="c-count-val">30</span><span>s</span></span>
+                <span class="dt-pm"><button>−</button><button>+</button></span>
+              </div>
+            </div>
+            <div class="dt-ctrl c-ctrl">
+              <div class="k" data-t="cWinK">Unlock window</div>
+              <div class="d" data-t="cWinD">how long a pass lasts</div>
+              <div class="dt-stepper">
+                <span class="num"><span id="c-win-val">10</span><span> min</span></span>
+                <span class="dt-pm"><button>−</button><button>+</button></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="v-cap" id="c-cap">
+      <p class="kicker"><span class="pip"></span><span data-t="capCtrlK">your list, your rules</span></p>
+      <h2 data-t="capCtrlH">You set the price.</h2>
+    </div>
+  </section>
+
+  <!-- ══════════════════ SCENE 4 · OUTRO ══════════════════ -->
+  <section class="scene" data-scene="outro">
+    <div class="scene-in">
+      <div class="o-stack">
+        <div class="o-brand" id="o-wm">
+          <svg width="66" height="66" viewBox="0 0 72 72" fill="none">
+            <circle cx="36" cy="36" r="28" stroke="#2a2419" stroke-width="6"/>
+            <circle id="o-ring" cx="36" cy="36" r="28" stroke="#e9a24c" stroke-width="6" stroke-linecap="round" stroke-dasharray="176" stroke-dashoffset="176" transform="rotate(-90 36 36)"/>
+            <circle cx="36" cy="36" r="7" fill="#e9a24c"/>
+          </svg>
+          <div class="wm" style="align-items:flex-start"><span class="a">Dopamine Toll</span><span class="b">pay in seconds</span></div>
+        </div>
+        <h1 class="headline" id="o-headline" data-t="oHeadline">Put a price on <span class="am">distraction.</span></h1>
+        <p id="o-priv" data-t="oPriv">Runs entirely on your device — no accounts, no trackers, no network.</p>
+        <div class="v-cta" id="o-cta"><span data-t="oCta">Add to Chrome</span></div>
+      </div>
+    </div>
+  </section>
+
+</div>
+<script src="timeline.js"></script>
+</body>
+</html>
