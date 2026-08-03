@@ -10,6 +10,10 @@ web-ext-artifacts/
 # Rendered store screenshots — regenerate: design_handoff_store_screenshots/tools -> npm run render
 design_handoff_store_screenshots/png/
 
+# Local scrape of Google's listing docs — read the live page instead, it changes.
+# Constraints we design against are summarized in STORE_DESCRIPTION.md.
+GOOGLE_GUIDELINES.md
+
 # OS cruft
 .DS_Store
 Thumbs.db
