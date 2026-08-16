@@ -1,0 +1,19 @@
+**Source:** unminified, unobfuscated, dependency-free vanilla JavaScript. Every file in the package is the original source, byte for byte. Repo: https://github.com/dankhael/DopamineToll
+
+**What it does:** when the user opens a site on a list *they* configured, the extension covers the page with an overlay and runs a countdown. When it ends they choose: close the tab, or open the site anyway for a time limit they set. No hard block — only friction.
+
+**Why `<all_urls>`:** the block list is user-defined and editable at runtime (defaults: twitter.com, x.com, instagram.com, tiktok.com, youtube.com/shorts). The extension cannot know at install time which hosts a user will add, so a static host list is impossible. It is used for exactly two things:
+1. webNavigation.onCommitted / onHistoryStateUpdated to detect the active tab reaching a listed host. onHistoryStateUpdated is required because the target sites are SPAs whose route changes never trigger a document load.
+2. Injecting the content script that draws the overlay.
+
+Page content is never read, inspected, stored or transmitted. The content script only appends its own node and observes for its removal.
+
+**Network:** none. No remote code, analytics, telemetry, accounts, ads, or developer-run server. data_collection_permissions is declared as required: ["none"]. Policy: https://github.com/dankhael/DopamineToll/blob/main/PRIVACY.md
+
+**Storage:** storage.sync for settings, storage.local for user-uploaded images and the daily counter, storage.session for per-tab unlock state. All browser-local.
+
+**The three innerHTML assignments the linter flags** (content/gate-view.js, popup/popup.js, shared/i18n.js): these render localized strings from the extension's own _locales catalogs, which contain <b> markup so translators control emphasis and word order — required for ja/de/zh_CN, where splitting the sentence breaks grammatical order. The substituted values are never user input: they are integers (String(count)) and the extension's own formatted elapsed-time string. Every value originating from the user — block-list entries, phrases, image data, the current domain — is written with textContent or assigned to img.src, never interpolated into markup. All other overlay and list rendering was converted to DOM construction for this release.
+
+**Manifest:** background declares both service_worker (Chrome) and scripts (Firefox) so one manifest serves both stores. Firefox ignores the former; the BACKGROUND_SERVICE_WORKER_IGNORED warning is expected and intentional.
+
+**Testing:** install, open the popup to confirm the toll list is seeded, then visit https://x.com — the overlay should appear before the page paints, with a countdown. Note the countdown deliberately pauses when the tab loses focus (users must not be able to wait it out in a background tab), so keep the tab focused while testing.

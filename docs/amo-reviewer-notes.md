@@ -3,6 +3,14 @@
 Paste the section below into the "Notes for reviewers" field when submitting a new
 version to addons.mozilla.org. Keep it current — a stale note is worse than none.
 
+**AMO caps that field at 3000 characters and this document does not fit.** Paste
+[amo-reviewer-notes-3000.txt](./amo-reviewer-notes-3000.txt) instead — it is this
+document trimmed to 2869 characters, keeping the four points that decide the review
+(why `<all_urls>` is unavoidable, no network or data collection, the remaining
+`innerHTML` uses, and the intentional dual `background` keys). Edit both together, or
+the short version silently goes stale — the field is editable after submission, so
+there is no excuse to paste an outdated one.
+
 ---
 
 **Source:** this add-on is unminified, unobfuscated, dependency-free vanilla JavaScript.
