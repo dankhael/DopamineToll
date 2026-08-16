@@ -9,6 +9,21 @@ try {
   if (t) document.documentElement.dataset.theme = t;
 } catch {}
 
+// Android renders the action popup as a full page instead of a sized popup window,
+// so it needs a different width rule (see popup.css). Mirrored to localStorage so a
+// re-open applies it before the async platform lookup resolves, avoiding a flash of
+// the 300px desktop layout.
+async function applyPlatformClass() {
+  try {
+    if (localStorage.getItem("dt-android") === "1") {
+      document.documentElement.classList.add("android");
+    }
+  } catch {}
+  const android = await DTPlatform.isAndroid(chrome.runtime);
+  document.documentElement.classList.toggle("android", android);
+  try { localStorage.setItem("dt-android", android ? "1" : "0"); } catch {}
+}
+
 async function applyThemeFromStorage() {
   const { theme = "amber" } = await chrome.storage.sync.get("theme");
   document.documentElement.dataset.theme = theme;
@@ -132,12 +147,18 @@ $("toggle").addEventListener("keydown", (e) => {
 
 $("grant-access").addEventListener("click", requestSiteAccess);
 
-$("open-options").addEventListener("click", () => {
-  chrome.runtime.openOptionsPage();
+// The settings page opens in a tab behind the popup. On desktop the popup closes
+// itself when it loses focus; on Android it is a full page that just sits there,
+// hiding the tab that was opened and leaving the tap looking like it did nothing.
+// Closing explicitly gives the same feedback on both.
+$("open-options").addEventListener("click", async () => {
+  await chrome.runtime.openOptionsPage();
+  window.close();
 });
 
 document.addEventListener("DOMContentLoaded", () => {
   DTI18n.applyI18n();
+  applyPlatformClass();
   applyThemeFromStorage();
   refresh();
 });

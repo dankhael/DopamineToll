@@ -1,9 +1,11 @@
 /* Dopamine Toll — toolbar popup. Tokens come from ../assets/theme.css. */
 
 html, body { margin: 0; }
-/* Browsers size the popup window to the body's intrinsic width, so the width must
-   live on the body itself. The popup fills the whole window edge-to-edge — no
-   floating card / outer frame — for a leaner look. */
+/* Desktop browsers size the popup window to the body's intrinsic width, so the
+   width must live on the body itself. The popup fills the whole window
+   edge-to-edge — no floating card / outer frame — for a leaner look.
+   On Firefox for Android the popup opens as a full-width sheet instead, so the
+   width is a preference (max-width), never a floor. */
 body {
   width: 300px;
   max-width: 100%;
@@ -11,6 +13,19 @@ body {
   background: var(--bg-2);
   font-family: var(--sans);
   -webkit-font-smoothing: antialiased;
+}
+
+/* Android opens the action popup as a full page, not a sized popup window, so the
+   300px body would sit stranded in the corner. Keyed on a platform class rather
+   than a width media query on purpose: on desktop the popup's own viewport IS
+   ~300px, so any max-width query wide enough to catch a phone also catches the
+   desktop popup and destroys the sizing that makes it work. popup.js sets the
+   class from runtime.getPlatformInfo(). */
+html.android body {
+  width: 100%;
+}
+html.android .popup {
+  padding: 18px 16px;
 }
 
 .popup {
