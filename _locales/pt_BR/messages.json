@@ -118,6 +118,15 @@
     "placeholders": { "hours": { "content": "$1" }, "mins": { "content": "$2" } }
   },
 
+  "popupAccessRevoked": {
+    "message": "acesso aos sites desligado — o pedágio não funciona",
+    "description": "Popup status when the user has revoked host access, so no gate can appear."
+  },
+  "popupGrantAccess": {
+    "message": "Conceder acesso aos sites",
+    "description": "Popup button that re-requests host access after the user revoked it."
+  },
+
   "defaultPhrase1": { "message": "seu eu do futuro vai agradecer" },
   "defaultPhrase2": { "message": "você tem objetivos maiores do que isso" },
   "defaultPhrase3": { "message": "foco. disciplina. resultados." },

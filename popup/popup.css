@@ -1,11 +1,13 @@
 /* Dopamine Toll — toolbar popup. Tokens come from ../assets/theme.css. */
 
 html, body { margin: 0; }
-/* Chrome sizes the popup window to the body's intrinsic width, so the width must
+/* Browsers size the popup window to the body's intrinsic width, so the width must
    live on the body itself. The popup fills the whole window edge-to-edge — no
    floating card / outer frame — for a leaner look. */
 body {
   width: 300px;
+  max-width: 100%;
+  box-sizing: border-box;
   background: var(--bg-2);
   font-family: var(--sans);
   -webkit-font-smoothing: antialiased;
@@ -115,3 +117,20 @@ body {
   transition: border-color 0.15s ease, color 0.15s ease;
 }
 .openbtn:hover { border-color: var(--amber); color: var(--amber-soft); }
+
+/* Shown only when host access has been revoked (Firefox lets the user do that at
+   any time), so it carries the accent rather than the neutral surface. */
+.grantbtn {
+  width: 100%;
+  margin-top: 12px;
+  background: var(--amber);
+  border: 1px solid var(--amber);
+  color: var(--bg-1);
+  border-radius: var(--r-sm);
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 13.5px;
+  padding: 12px;
+  cursor: pointer;
+}
+.grantbtn[hidden] { display: none; }

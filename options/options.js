@@ -21,6 +21,13 @@ const $ = (id) => document.getElementById(id);
 const toastEl = $("toast");
 let toastTimer = null;
 
+// Element construction lives in shared/dom.js (loaded before this script) so it is
+// shared with the content scripts and unit-testable in Node. Bound to this
+// document here to keep the call sites terse.
+const el = (tag, className, text) => DTDom.el(document, tag, className, text);
+const createRemovableRow = (rowClass) =>
+  DTDom.createRemovableRow(document, rowClass, DTI18n.t("optionsRemove"));
+
 // Draw the countdown-gauge favicon in the theme's accent and apply it to the
 // settings tab. Same geometry as the toolbar icon / logo (72px grid).
 function setFavicon(name) {
@@ -143,24 +150,16 @@ async function renderDomains() {
     const slash = entry.indexOf("/");
     const host = slash === -1 ? entry : entry.slice(0, slash);
     const path = slash === -1 ? "" : entry.slice(slash);
-    const li = document.createElement("div");
-    li.className = "item dom";
-    li.innerHTML = `<span class="val"></span><button class="remove">${DTI18n.t("optionsRemove")}</button>`;
-    const val = li.querySelector(".val");
-    val.textContent = host;
-    if (path) {
-      const pathEl = document.createElement("span");
-      pathEl.className = "path";
-      pathEl.textContent = path;
-      val.appendChild(pathEl);
-    }
-    li.querySelector(".remove").addEventListener("click", async () => {
+    const { row, value, remove } = createRemovableRow("item dom");
+    value.textContent = host;
+    if (path) value.appendChild(el("span", "path", path));
+    remove.addEventListener("click", async () => {
       const next = blockedDomains.filter((x) => x !== entry);
       await chrome.storage.sync.set({ blockedDomains: next });
       toast();
       renderDomains();
     });
-    list.appendChild(li);
+    list.appendChild(row);
   }
 }
 
@@ -193,17 +192,15 @@ async function renderPhrases() {
     return;
   }
   phrases.forEach((p, i) => {
-    const li = document.createElement("div");
-    li.className = "item";
-    li.innerHTML = `<span class="val"></span><button class="remove">${DTI18n.t("optionsRemove")}</button>`;
-    li.querySelector(".val").textContent = p;
-    li.querySelector(".remove").addEventListener("click", async () => {
+    const { row, value, remove } = createRemovableRow("item");
+    value.textContent = p;
+    remove.addEventListener("click", async () => {
       const next = phrases.filter((_, j) => j !== i);
       await chrome.storage.sync.set({ phrases: next });
       toast();
       renderPhrases();
     });
-    list.appendChild(li);
+    list.appendChild(row);
   });
 }
 
@@ -250,9 +247,8 @@ async function renderStars() {
   });
 
   if (goalImages.length < MAX_IMAGES) {
-    const add = document.createElement("div");
-    add.className = "star add";
-    add.innerHTML = `<span class="plus">+</span><span class="lbl">${DTI18n.t("optionsAddPhoto")}</span>`;
+    const add = el("div", "star add");
+    add.append(el("span", "plus", "+"), el("span", "lbl", DTI18n.t("optionsAddPhoto")));
     add.addEventListener("click", () => $("file-input").click());
     grid.appendChild(add);
   }

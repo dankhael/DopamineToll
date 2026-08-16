@@ -118,6 +118,15 @@
     "placeholders": { "hours": { "content": "$1" }, "mins": { "content": "$2" } }
   },
 
+  "popupAccessRevoked": {
+    "message": "サイトへのアクセスがオフです — 通行料は機能しません",
+    "description": "Popup status when the user has revoked host access, so no gate can appear."
+  },
+  "popupGrantAccess": {
+    "message": "サイトへのアクセスを許可",
+    "description": "Popup button that re-requests host access after the user revoked it."
+  },
+
   "defaultPhrase1": { "message": "未来の自分が感謝する" },
   "defaultPhrase2": { "message": "あなたにはもっと大きな目標がある" },
   "defaultPhrase3": { "message": "集中。規律。結果。" },

@@ -1,17 +1,21 @@
-# Build a Chrome Web Store-ready ZIP containing only the files Chrome actually loads.
-# Dev-only files (this script, gen-icons.ps1, README.md, CLAUDE.md, PRIVACY.md, .git,
-# .gitignore) are intentionally left out of the package.
+# Build a store-ready ZIP containing only the files a browser actually loads. The same
+# archive goes to both the Chrome Web Store and addons.mozilla.org — there is one
+# manifest for both browsers (see docs/adr/0001).
+#
+# This is the Windows packager; build.mjs is the Node equivalent for Linux/macOS. Both
+# read the file list from build-manifest.json so they cannot drift apart.
 #
 # Usage:  ./package.ps1
 $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent $MyInvocation.MyCommand.Path
 
-# The loadable extension = manifest at the ZIP root + these asset folders. Anything
-# not listed here is deliberately excluded from what ships to users (e.g. package.json,
-# the test/ suite, gen-icons.ps1). "_locales" and "shared" are required at runtime:
-# _locales holds the chrome.i18n catalogs, shared/i18n.js is a content script + popup
-# and options dependency.
-$include = @("manifest.json", "_locales", "shared", "assets", "background", "content", "options", "popup")
+# The loadable extension = manifest at the ZIP root + the asset folders named in
+# build-manifest.json. Anything not listed there is deliberately excluded from what
+# ships to users (e.g. package.json, the test/ suite, gen-icons.ps1, docs/).
+$buildManifestPath = Join-Path $root "build-manifest.json"
+if (-not (Test-Path $buildManifestPath)) { throw "package.ps1: build-manifest.json not found at '$buildManifestPath'" }
+$include = (Get-Content $buildManifestPath -Raw | ConvertFrom-Json).include
+if (-not $include) { throw "package.ps1: build-manifest.json has no 'include' list" }
 
 # Expand the includes into a flat file list, verifying each top-level entry exists so a
 # future rename can't silently ship an incomplete package.

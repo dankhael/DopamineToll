@@ -1,7 +1,7 @@
 # Dopamine Toll
 
-A Chrome extension (Manifest V3) that intercepts blocked domains with a full-screen
-motivational overlay. The user must wait out a countdown before they can choose to
+A browser extension (Manifest V3, Chrome + Firefox) that intercepts blocked domains
+with a full-screen motivational overlay. The user must wait out a countdown before they can choose to
 either close the tab ("be productive") or unlock the site for a configurable window
 ("be lazy"). After the unlock window expires the overlay returns.
 
@@ -72,10 +72,22 @@ assets/
 
 ## Install (load unpacked)
 
-1. Open `chrome://extensions` in Chrome (or any Chromium browser: Edge, Brave, Arc).
+**Chrome** (or any Chromium browser: Edge, Brave, Arc):
+
+1. Open `chrome://extensions`.
 2. Toggle **Developer mode** on (top right).
 3. Click **Load unpacked** and select this project's root folder.
 4. The Dopamine Toll icon should appear in the toolbar. Pin it for easier access.
+
+**Firefox** — one manifest serves both browsers (see `docs/adr/0001`), so the same
+folder loads as-is:
+
+```bash
+npx --yes web-ext@latest run          # temporary install in a scratch profile
+```
+
+Or manually: `about:debugging#/runtime/this-firefox` → **Load Temporary Add-on** →
+pick `manifest.json`.
 
 The default toll list is seeded on install: `twitter.com`, `x.com`, `instagram.com`,
 `tiktok.com`, and `youtube.com/shorts` (a path entry — Shorts tolls, the rest of
@@ -83,8 +95,32 @@ YouTube doesn't), with a 30s countdown and a 10min unlock window.
 
 ## Build
 
-There is no build step. Files are loaded as-is by Chrome — vanilla JS, vanilla CSS,
-no bundler, no transpiler, no `node_modules`. Edit a file → reload the extension.
+There is no compile step. Files are loaded as-is by the browser — vanilla JS, vanilla
+CSS, no bundler, no transpiler, no `node_modules`. Edit a file → reload the extension.
+
+Packaging for the stores produces one ZIP that both accept:
+
+```bash
+npm run build        # -> web-ext-artifacts/dopamine-toll-<version>.zip
+npm run lint:amo     # the same linter addons.mozilla.org runs at review time
+npm test             # locale + manifest invariants
+```
+
+`./package.ps1` is the Windows equivalent of `npm run build`. Both read the shipped
+file list from `build-manifest.json`, so they cannot drift apart — add a folder there,
+not in the scripts.
+
+## Publishing
+
+```bash
+./scripts/amo-submit.sh
+```
+
+A wizard that walks through the whole addons.mozilla.org submission: it builds and
+lints the package, runs the Android check on a connected device, then talks you
+through account setup, upload, listing fields, localization, and the reviewer notes.
+Re-run it for each new version. The notes it tells you to paste live in
+`docs/amo-reviewer-notes.md`.
 
 To regenerate the toolbar icons (the amber countdown gauge — only needed if you
 delete `assets/` or change the mark):

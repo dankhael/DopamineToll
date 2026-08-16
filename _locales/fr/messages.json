@@ -118,6 +118,15 @@
     "placeholders": { "hours": { "content": "$1" }, "mins": { "content": "$2" } }
   },
 
+  "popupAccessRevoked": {
+    "message": "accès aux sites désactivé — le péage ne peut pas fonctionner",
+    "description": "Popup status when the user has revoked host access, so no gate can appear."
+  },
+  "popupGrantAccess": {
+    "message": "Autoriser l’accès aux sites",
+    "description": "Popup button that re-requests host access after the user revoked it."
+  },
+
   "defaultPhrase1": { "message": "votre futur vous dira merci" },
   "defaultPhrase2": { "message": "vous avez de plus grands objectifs que ça" },
   "defaultPhrase3": { "message": "concentration. discipline. résultats." },

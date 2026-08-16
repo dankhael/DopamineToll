@@ -1,0 +1,13 @@
+{
+  "//": "Single source of truth for what ships to users. Both packagers read this file: build.mjs (Linux/macOS) and package.ps1 (Windows). Anything absent here is deliberately dev-only — package.json, test/, gen-icons.ps1, docs/, CONTEXT.md, design_handoff_store_screenshots/.",
+  "include": [
+    "manifest.json",
+    "_locales",
+    "shared",
+    "assets",
+    "background",
+    "content",
+    "options",
+    "popup"
+  ]
+}

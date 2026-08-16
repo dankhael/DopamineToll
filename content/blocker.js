@@ -69,7 +69,6 @@
   // Pure formatters live in shared/format.js (loaded before this script) so
   // they can be unit-tested in Node. Aliased here to keep the call sites terse.
   const fmtClock = DTFormat.fmtClock;
-  const escapeHTML = DTFormat.escapeHTML;
 
   // goalImages entries are either a legacy base64 string or {name, src}.
   function imageSrc(entry) {
@@ -229,41 +228,27 @@
       "position:fixed!important;inset:0!important;z-index:2147483647!important;"
     );
 
-    // With a north star uploaded, the photo shows it; otherwise a striped
-    // placeholder card. Localized copy comes from _locales; it is our own text
-    // (no user HTML) so it is interpolated directly, while `domain`, `phrase`,
-    // and `imgSrc` stay escaped.
-    const photoFill = imgSrc
-      ? `<img class="dt-photo-img" src="${escapeHTML(imgSrc)}" alt="${escapeHTML(DTI18n.t("overlayNorthStarAlt"))}">`
-      : `<div class="dt-stripes"></div>`;
-
-    overlay.innerHTML = `
-      <div class="dt-backdrop">
-        <div class="dt-stage">
-          <div class="dt-col" role="dialog" aria-modal="true">
-            <div class="dt-eyebrow"><b>${escapeHTML(domain)}</b><span class="dt-dotsep"></span>${DTI18n.t("overlayOnList")}</div>
-
-            <div class="dt-photo">
-              ${photoFill}
-              <div class="dt-tint"></div>
-            </div>
-
-            <div class="dt-phrase">${escapeHTML(phrase)}<span class="dt-you">${DTI18n.t("overlayYouToYourself")}</span></div>
-
-            <div class="dt-toll">
-              <div class="dt-label">${DTI18n.t("overlayChooseIn")}</div>
-              <div class="dt-clock">${fmtClock(lockSeconds)}</div>
-              <div class="dt-meter"><i></i></div>
-            </div>
-
-            <div class="dt-actions">
-              <button class="dt-btn dt-primary" data-dt-action="productive">${DTI18n.t("overlayCloseTab")}<small>${DTI18n.t("overlayBeProductive")}</small></button>
-              <button class="dt-btn dt-locked" data-dt-action="lazy" disabled>${DTI18n.t("overlayOpenAnyway", [String(unlockMinutes)])}<small>${DTI18n.t("overlayUnlocksIn", [String(lockSeconds)])}</small></button>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
+    // Markup construction lives in content/gate-view.js so it can be asserted in
+    // Node; every label is resolved here and injected, keeping that module free of
+    // chrome.i18n.
+    overlay.appendChild(
+      DTGateView.buildGate(document, {
+        domain,
+        phrase,
+        imgSrc,
+        clockText: fmtClock(lockSeconds),
+        copy: {
+          onList: DTI18n.t("overlayOnList"),
+          northStarAlt: DTI18n.t("overlayNorthStarAlt"),
+          youToYourself: DTI18n.t("overlayYouToYourself"),
+          chooseIn: DTI18n.t("overlayChooseIn"),
+          closeTab: DTI18n.t("overlayCloseTab"),
+          beProductive: DTI18n.t("overlayBeProductive"),
+          openAnyway: DTI18n.t("overlayOpenAnyway", [String(unlockMinutes)]),
+          unlocksIn: DTI18n.t("overlayUnlocksIn", [String(lockSeconds)])
+        }
+      })
+    );
 
     document.documentElement.appendChild(overlay);
 

@@ -39,7 +39,29 @@ async function refreshStat() {
   $("stat").innerHTML = DTI18n.t("popupStat", [String(fresh.walkedAway || 0), String(fresh.paid || 0)]);
 }
 
+// Firefox grants <all_urls> at install, but lets the user revoke it per-site or
+// wholesale from the extensions menu at any time. Without it no content script
+// injects and no gate can appear — so the popup says so instead of looking healthy
+// while the toll is silently dead. Chrome keeps the permission granted, so this
+// check is a no-op there.
+const ALL_URLS = ["<all_urls>"];
+
+const hasSiteAccess = () => DTPlatform.hasOriginAccess(chrome.permissions, ALL_URLS);
+
+// permissions.request must run inside a user gesture, hence the click handler.
+async function requestSiteAccess() {
+  await DTPlatform.requestOriginAccess(chrome.permissions, ALL_URLS);
+  refresh();
+}
+
 async function refresh() {
+  if (!(await hasSiteAccess())) {
+    $("grant-access").hidden = false;
+    setStatus({ host: "—", meta: DTI18n.t("popupAccessRevoked"), state: "armed" });
+    return;
+  }
+  $("grant-access").hidden = true;
+
   const { blockedDomains = [], enabled = true } = await chrome.storage.sync.get([
     "blockedDomains",
     "enabled"
@@ -107,6 +129,8 @@ $("toggle").addEventListener("keydown", (e) => {
     toggleEnabled();
   }
 });
+
+$("grant-access").addEventListener("click", requestSiteAccess);
 
 $("open-options").addEventListener("click", () => {
   chrome.runtime.openOptionsPage();

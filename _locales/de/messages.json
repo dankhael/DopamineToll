@@ -118,6 +118,15 @@
     "placeholders": { "hours": { "content": "$1" }, "mins": { "content": "$2" } }
   },
 
+  "popupAccessRevoked": {
+    "message": "Seitenzugriff ist aus — die Maut kann nicht laufen",
+    "description": "Popup status when the user has revoked host access, so no gate can appear."
+  },
+  "popupGrantAccess": {
+    "message": "Seitenzugriff erlauben",
+    "description": "Popup button that re-requests host access after the user revoked it."
+  },
+
   "defaultPhrase1": { "message": "dein zukünftiges Ich wird dir danken" },
   "defaultPhrase2": { "message": "du hast größere Ziele als das" },
   "defaultPhrase3": { "message": "Fokus. Disziplin. Ergebnisse." },

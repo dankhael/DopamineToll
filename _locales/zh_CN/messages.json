@@ -118,6 +118,15 @@
     "placeholders": { "hours": { "content": "$1" }, "mins": { "content": "$2" } }
   },
 
+  "popupAccessRevoked": {
+    "message": "网站访问已关闭 — 过路费无法运行",
+    "description": "Popup status when the user has revoked host access, so no gate can appear."
+  },
+  "popupGrantAccess": {
+    "message": "授予网站访问权限",
+    "description": "Popup button that re-requests host access after the user revoked it."
+  },
+
   "defaultPhrase1": { "message": "未来的你会感谢现在的你" },
   "defaultPhrase2": { "message": "你有比这更大的目标" },
   "defaultPhrase3": { "message": "专注。自律。结果。" },

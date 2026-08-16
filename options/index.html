@@ -2,6 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <!-- Deliberately NO <meta name="viewport">, unlike popup/popup.html. Firefox for
+       Android lays this page out in its default 980px viewport and zooms to fit,
+       which the centered `.wrap { max-width: 680px }` handles gracefully — verified
+       on a phone. Adding width=device-width would re-flow the whole settings page
+       at native size; do that only with a device in hand. The trade-off: widening
+       `.wrap` or adding a wide element degrades mobile silently. -->
+
   <title data-i18n="optionsTitle">Dopamine Toll — settings</title>
   <link rel="icon" type="image/png" id="favicon" href="../assets/icon128.png">
   <link rel="stylesheet" href="../assets/theme.css">
@@ -126,6 +133,7 @@
   <div id="toast" data-i18n="optionsSaved">Saved</div>
 
   <script src="../shared/i18n.js"></script>
+  <script src="../shared/dom.js"></script>
   <script src="options.js"></script>
 </body>
 </html>

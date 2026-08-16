@@ -1,9 +1,11 @@
 {
   "name": "dopamine-toll",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "private": true,
-  "description": "Dev tooling for the Dopamine Toll extension. Not shipped — see package.ps1 for what ends up in the Web Store zip.",
+  "description": "Dev tooling for the Dopamine Toll extension. Not shipped — see build-manifest.json for what ends up in the store ZIP.",
   "scripts": {
-    "test": "node --test"
+    "test": "node --test",
+    "build": "node build.mjs",
+    "lint:amo": "npx --yes web-ext@latest lint --source-dir=."
   }
 }

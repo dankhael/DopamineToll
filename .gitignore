@@ -7,6 +7,10 @@ node_modules/
 *.pem
 web-ext-artifacts/
 
+# Values captured by scripts/amo-submit.sh (account email, listing slug/URL).
+# Carried between submissions, not part of the extension.
+.amo-submission.env
+
 # Rendered store screenshots — regenerate: design_handoff_store_screenshots/tools -> npm run render
 design_handoff_store_screenshots/png/
 

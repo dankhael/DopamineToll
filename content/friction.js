@@ -130,20 +130,16 @@
       `position:fixed!important;left:${x}%!important;top:${y}%!important;` +
         `z-index:2147483647!important;--dtf-tilt:${tilt}deg;--dtf-spin:${spin}deg;`
     );
-    el.innerHTML = `
-      <div class="dtf-card">
-        <div class="dtf-eyebrow">${DTI18n.t("frictionEyebrow")}</div>
-        <div class="dtf-phrase"></div>
-        <div class="dtf-time"></div>
-        <button class="dtf-close">✕</button>
-      </div>
-    `;
-    el.querySelector(".dtf-phrase").textContent = phrase;
-    // Message carries the <b> wrapper and word order; the elapsed time (our own
-    // formatted string, no markup) is the substitution.
-    el.querySelector(".dtf-time").innerHTML = DTI18n.t("frictionTimeOnTab", [fmtElapsed(secondsOnTab)]);
-    const close = el.querySelector(".dtf-close");
-    close.setAttribute("aria-label", DTI18n.t("frictionDismissAria"));
+    // Markup construction lives in content/gate-view.js so it can be asserted in
+    // Node. The time string carries the catalog's <b> wrapper and word order; the
+    // elapsed time (our own formatted string, no markup) is the substitution.
+    const { card, close } = DTGateView.buildWarningCard(
+      document,
+      phrase,
+      DTI18n.t("frictionTimeOnTab", [fmtElapsed(secondsOnTab)]),
+      { eyebrow: DTI18n.t("frictionEyebrow"), dismissAria: DTI18n.t("frictionDismissAria") }
+    );
+    el.appendChild(card);
     close.addEventListener("click", () => dismissWarning(el));
     return el;
   }

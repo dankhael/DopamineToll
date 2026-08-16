@@ -196,6 +196,15 @@
     }
   },
 
+  "popupAccessRevoked": {
+    "message": "site access is off — the toll cannot run",
+    "description": "Popup status when the user has revoked host access, so no gate can appear."
+  },
+  "popupGrantAccess": {
+    "message": "Grant site access",
+    "description": "Popup button that re-requests host access after the user revoked it."
+  },
+
   "defaultPhrase1": { "message": "your future self will thank you" },
   "defaultPhrase2": { "message": "you have bigger goals than this" },
   "defaultPhrase3": { "message": "focus. discipline. results." },

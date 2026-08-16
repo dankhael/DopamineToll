@@ -21,7 +21,7 @@ Features:
 • Works on modern sites — catches in-app navigation on single-page apps like X, Reddit, and Instagram, not just full page loads.
 • Daily tally — see how often you walked away versus paid, and pick from four color themes.
 
-Privacy: Dopamine Toll runs entirely on your device. It makes no network requests and has no accounts, ads, analytics, or trackers. Your settings, photos, and stats stay in your browser; settings sync only through your own Chrome account if you have sync enabled. Full privacy policy: https://github.com/dankhael/DopamineToll/blob/main/PRIVACY.md
+Privacy: Dopamine Toll runs entirely on your device. It makes no network requests and has no accounts, ads, analytics, or trackers. Your settings, photos, and stats stay in your browser; settings sync only through your own browser account if you have sync enabled. Full privacy policy: https://github.com/dankhael/DopamineToll/blob/main/PRIVACY.md
 
 ---
 
@@ -40,7 +40,7 @@ Funktionen:
 • Funktioniert auf modernen Seiten – erfasst In-App-Navigation auf Single-Page-Apps wie X, Reddit und Instagram, nicht nur vollständige Seitenaufrufe.
 • Tägliche Bilanz – sieh, wie oft du weggegangen bist gegenüber wie oft du bezahlt hast, und wähle aus vier Farbthemen.
 
-Datenschutz: Dopamine Toll läuft vollständig auf deinem Gerät. Es stellt keine Netzwerkanfragen und hat keine Konten, Werbung, Analyse oder Tracker. Deine Einstellungen, Fotos und Statistiken bleiben in deinem Browser; Einstellungen werden nur über dein eigenes Chrome-Konto synchronisiert, falls du die Synchronisierung aktiviert hast. Vollständige Datenschutzerklärung: https://github.com/dankhael/DopamineToll/blob/main/PRIVACY.md
+Datenschutz: Dopamine Toll läuft vollständig auf deinem Gerät. Es stellt keine Netzwerkanfragen und hat keine Konten, Werbung, Analyse oder Tracker. Deine Einstellungen, Fotos und Statistiken bleiben in deinem Browser; Einstellungen werden nur über dein eigenes Browser-Konto synchronisiert, falls du die Synchronisierung aktiviert hast. Vollständige Datenschutzerklärung: https://github.com/dankhael/DopamineToll/blob/main/PRIVACY.md
 
 ---
 
@@ -59,7 +59,7 @@ Fonctionnalités :
 • Fonctionne sur les sites modernes – détecte la navigation interne des applications monopage comme X, Reddit et Instagram, pas seulement les chargements de page complets.
 • Bilan quotidien – voyez combien de fois vous êtes reparti face à combien de fois vous avez payé, et choisissez parmi quatre thèmes de couleur.
 
-Confidentialité : Dopamine Toll fonctionne entièrement sur votre appareil. Il ne fait aucune requête réseau et n'a ni comptes, ni publicités, ni analyses, ni traqueurs. Vos réglages, photos et statistiques restent dans votre navigateur ; les réglages ne se synchronisent que via votre propre compte Chrome si vous avez activé la synchronisation. Politique de confidentialité complète : https://github.com/dankhael/DopamineToll/blob/main/PRIVACY.md
+Confidentialité : Dopamine Toll fonctionne entièrement sur votre appareil. Il ne fait aucune requête réseau et n'a ni comptes, ni publicités, ni analyses, ni traqueurs. Vos réglages, photos et statistiques restent dans votre navigateur ; les réglages ne se synchronisent que via votre propre compte de navigateur si vous avez activé la synchronisation. Politique de confidentialité complète : https://github.com/dankhael/DopamineToll/blob/main/PRIVACY.md
 
 ---
 
@@ -78,7 +78,7 @@ Recursos:
 • Funciona em sites modernos – detecta a navegação interna de apps de página única como X, Reddit e Instagram, não só carregamentos de página inteira.
 • Balanço diário – veja quantas vezes você foi embora contra quantas vezes você pagou, e escolha entre quatro temas de cor.
 
-Privacidade: Dopamine Toll roda inteiramente no seu dispositivo. Não faz nenhuma requisição de rede e não tem contas, anúncios, análises ou rastreadores. Suas configurações, fotos e estatísticas ficam no seu navegador; as configurações só sincronizam pela sua própria conta do Chrome se você tiver a sincronização ativada. Política de privacidade completa: https://github.com/dankhael/DopamineToll/blob/main/PRIVACY.md
+Privacidade: Dopamine Toll roda inteiramente no seu dispositivo. Não faz nenhuma requisição de rede e não tem contas, anúncios, análises ou rastreadores. Suas configurações, fotos e estatísticas ficam no seu navegador; as configurações só sincronizam pela sua própria conta do navegador se você tiver a sincronização ativada. Política de privacidade completa: https://github.com/dankhael/DopamineToll/blob/main/PRIVACY.md
 
 ---
 
@@ -97,7 +97,7 @@ Dopamine Toll は、気を散らすことに代償を課します。X、Instagra
 • 最新のサイトに対応 — X、Reddit、Instagram のようなシングルページアプリのアプリ内遷移も、ページ全体の読み込みだけでなく捉えます。
 • 1 日の集計 — 立ち去った回数と支払った回数を確認でき、4 つのカラーテーマから選べます。
 
-プライバシー：Dopamine Toll は完全にあなたのデバイス上で動作します。ネットワークリクエストを一切行わず、アカウント、広告、解析、トラッカーもありません。設定・写真・統計はあなたのブラウザ内にとどまります。設定は、同期を有効にしている場合にのみ、あなた自身の Chrome アカウントを通じて同期されます。プライバシーポリシー全文：https://github.com/dankhael/DopamineToll/blob/main/PRIVACY.md
+プライバシー：Dopamine Toll は完全にあなたのデバイス上で動作します。ネットワークリクエストを一切行わず、アカウント、広告、解析、トラッカーもありません。設定・写真・統計はあなたのブラウザ内にとどまります。設定は、同期を有効にしている場合にのみ、あなた自身のブラウザーアカウントを通じて同期されます。プライバシーポリシー全文：https://github.com/dankhael/DopamineToll/blob/main/PRIVACY.md
 
 ---
 
@@ -116,16 +116,19 @@ Dopamine Toll 给分心标上价格。当你打开过路费清单中的网站—
 • 支持现代网站 — 能捕捉 X、Reddit、Instagram 等单页应用的应用内跳转，而不只是整页加载。
 • 每日统计 — 查看你走开了多少次、又付费了多少次，并从四种配色主题中挑选。
 
-隐私：Dopamine Toll 完全在你的设备上运行。它不发起任何网络请求，也没有账户、广告、分析或追踪器。你的设置、照片和统计数据都留在你的浏览器里；只有在你启用了同步的情况下，设置才会通过你自己的 Chrome 账户同步。完整隐私政策：https://github.com/dankhael/DopamineToll/blob/main/PRIVACY.md
+隐私：Dopamine Toll 完全在你的设备上运行。它不发起任何网络请求，也没有账户、广告、分析或追踪器。你的设置、照片和统计数据都留在你的浏览器里；只有在你启用了同步的情况下，设置才会通过你自己的浏览器账户同步。完整隐私政策：https://github.com/dankhael/DopamineToll/blob/main/PRIVACY.md
 
 ---
 
 ## Listing constraints
 
-Source of truth is the live page — it changes, so check it before a submission:
-<https://developer.chrome.com/docs/webstore/best-listing>
+The same copy above serves both stores, but their listing models differ. Source of truth is
+the live page in each case — they change, so check before a submission:
 
-The dimensions and limits we design against:
+- Chrome Web Store: <https://developer.chrome.com/docs/webstore/best-listing>
+- addons.mozilla.org: <https://extensionworkshop.com/documentation/develop/create-an-appealing-listing/>
+
+### Chrome Web Store
 
 | Asset | Requirement |
 | --- | --- |
@@ -138,3 +141,20 @@ The dimensions and limits we design against:
 
 Both the summary and these graphical assets can be localized per listing locale, matching the six
 locales above.
+
+### addons.mozilla.org
+
+| Asset | Requirement |
+| --- | --- |
+| Add-on name | Localizable |
+| Summary | 250 characters max — the same `appDesc` fits with room to spare |
+| Description | This file |
+| Screenshots | 1280x800 recommended, 1.6:1 aspect ratio, no hard count limit |
+| Icon | 128x128 works; 32x32 and 64x64 are the sizes AMO renders |
+
+**The important difference: AMO accepts only ONE set of screenshots for the whole
+listing** — image *captions* are localizable, the images themselves are not. So the six
+localized renders in `design_handoff_store_screenshots/png/` cannot all be used there.
+Upload the `en` set and localize the captions.
+
+AMO has no promo tile or marquee image; those assets are Chrome-only.
