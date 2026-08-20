@@ -136,8 +136,12 @@ chrome.runtime.onInstalled.addListener(async () => {
 
 // Repaint the toolbar icon the moment the theme changes in settings.
 chrome.storage.onChanged.addListener((changes, area) => {
-  if (area === "sync" && changes.theme) {
+  if (area !== "sync") return;
+  if (changes.theme) {
     applyThemeIcon(changes.theme.newValue || "amber").catch(() => {});
+  }
+  if (changes.freePassAllowance) {
+    pinAllowanceBefore(changes.freePassAllowance.oldValue).catch(() => {});
   }
 });
 
@@ -240,6 +244,11 @@ async function bumpStat(kind) {
 // costs no storage write until the user reaches for a pass.
 const LEDGER_KEY = DTFreePass.STORAGE_KEY;
 
+// Reading also *pins* the day: a stale or missing ledger is written back at the
+// allowance in force right now. Without that snapshot on disk, raising the allowance
+// later today would open a fresh ledger at the new number and grant the passes
+// immediately — the very bypass the cooling-off in front of that setting exists to
+// slow down (ADR-0004). Costs one write per day, on the first read.
 async function readLedger() {
   const [local, sync] = await Promise.all([
     chrome.storage.local.get(LEDGER_KEY),
@@ -247,7 +256,9 @@ async function readLedger() {
   ]);
   const allowance = DTFreePass.clampAllowance(sync.freePassAllowance);
   const today = DTFreePass.dayKey(new Date());
-  return { ledger: DTFreePass.currentLedger(local[LEDGER_KEY], today, allowance), allowance };
+  const pin = DTFreePass.ledgerToPin(local[LEDGER_KEY], today, allowance);
+  if (pin) await chrome.storage.local.set({ [LEDGER_KEY]: pin });
+  return { ledger: pin || DTFreePass.currentLedger(local[LEDGER_KEY], today, allowance), allowance };
 }
 
 async function countFreePasses() {
@@ -255,15 +266,40 @@ async function countFreePasses() {
   return DTFreePass.passesLeft(ledger, allowance);
 }
 
+// The other half of the same guarantee: a user who has not hit a blocked site yet
+// today has no ledger for readLedger() to have pinned, so an allowance change pins
+// one itself — at the value being replaced, not the new one.
+async function pinAllowanceBefore(previousAllowance) {
+  const local = await chrome.storage.local.get(LEDGER_KEY);
+  const today = DTFreePass.dayKey(new Date());
+  const pin = DTFreePass.ledgerToPin(local[LEDGER_KEY], today, previousAllowance);
+  if (pin) await chrome.storage.local.set({ [LEDGER_KEY]: pin });
+}
+
 // Returns what is left after the attempt, and whether one was actually spent —
 // the gate hides its button at zero, so a false here means the balance changed
 // under an already-open gate.
-async function spendFreePass() {
+async function applySpend() {
   const { ledger, allowance } = await readLedger();
   if (DTFreePass.passesLeft(ledger, allowance) <= 0) return { spent: false, left: 0 };
   const next = DTFreePass.spendPass(ledger, allowance);
   await chrome.storage.local.set({ [LEDGER_KEY]: next });
   return { spent: true, left: DTFreePass.passesLeft(next, allowance) };
+}
+
+// Spends are serialised. The worker is single-threaded, but every await inside
+// applySpend yields, so two gates spending at the same moment could both read a
+// balance of one, both write a spend, and both be let through — handing out the same
+// pass twice and breaking the one guarantee ADR-0004 rests on.
+let spendChain = Promise.resolve();
+
+function spendFreePass() {
+  const spend = spendChain.then(applySpend, applySpend);
+  spendChain = spend.then(
+    () => {},
+    () => {}
+  );
+  return spend;
 }
 
 async function cleanupTab(tabId) {

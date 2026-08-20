@@ -10,6 +10,7 @@ const assert = require("node:assert/strict");
 
 const {
   DAILY_CAP,
+  ledgerToPin,
   dayKey,
   clampAllowance,
   openLedger,
@@ -101,6 +102,36 @@ test("lowering below what is already spent leaves nothing, never a negative", ()
 
 test("lowering the allowance to zero closes the door for the rest of the day", () => {
   assert.equal(passesLeft({ date: TODAY, allowance: 3, spent: 0 }, 0), 0);
+});
+
+// ----- pinning the day, so a raise cannot land on it -----
+
+test("a day with no ledger yet gets one pinned at the allowance being replaced", () => {
+  // The hole this closes: passesLeft() keeps a raise from landing today by comparing
+  // against the ledger's snapshot, but the ledger is only written when a pass is
+  // spent. Someone who has not reached for one yet today has no snapshot, so a fresh
+  // ledger would open at the NEW number and hand the passes over immediately.
+  const pinned = ledgerToPin(undefined, TODAY, 0);
+  assert.deepEqual(pinned, { date: TODAY, allowance: 0, spent: 0 });
+  assert.equal(passesLeft(pinned, 3), 0, "raising to three grants nothing today");
+});
+
+test("a ledger already covering today is left alone", () => {
+  const existing = { date: TODAY, allowance: 1, spent: 1 };
+  assert.equal(ledgerToPin(existing, TODAY, 1), null);
+});
+
+test("a ledger from an earlier day is repinned rather than reused", () => {
+  const stale = { date: YESTERDAY, allowance: 3, spent: 3 };
+  assert.deepEqual(ledgerToPin(stale, TODAY, 1), { date: TODAY, allowance: 1, spent: 0 });
+});
+
+test("the first raise after a fresh install grants nothing until tomorrow", () => {
+  // Install at allowance 0, no ledger written yet, user raises to 1 at 2pm.
+  const pinned = ledgerToPin(undefined, TODAY, 0);
+  assert.equal(passesLeft(pinned, 1), 0, "not today");
+  const tomorrow = currentLedger(pinned, "2026-08-21", 1);
+  assert.equal(passesLeft(tomorrow, 1), 1, "but from the next refill");
 });
 
 // ----- spending -----

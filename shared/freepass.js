@@ -35,6 +35,13 @@
     return `${date.getFullYear()}-${mm}-${dd}`;
   }
 
+  /**
+   * Read an allowance from storage: anything that is not a real number reads as
+   * zero, and anything out of range is pulled back into it. Nonsense must never
+   * become "unlimited".
+   *
+   * Example: clampAllowance(9) === 3, clampAllowance(undefined) === 0
+   */
   function clampAllowance(value) {
     if (typeof value !== "number" || !Number.isFinite(value)) return 0;
     return Math.min(DAILY_CAP, Math.max(0, Math.floor(value)));
@@ -84,6 +91,25 @@
   }
 
   /**
+   * The ledger that must be written before an allowance change takes effect, or
+   * null when today's ledger already exists and nothing needs pinning.
+   *
+   * passesLeft() keeps a raise from landing today by comparing against the ledger's
+   * snapshot — but the ledger is only written when a pass is spent, so a user who
+   * has not reached for one yet today has no snapshot at all, and a raise would open
+   * a fresh ledger at the *new* number and hand the passes over immediately. Pinning
+   * one at the value being replaced closes that, which is what ADR-0004 requires.
+   *
+   * @example
+   *   ledgerToPin(undefined, "2026-08-20", 0) // → { date: ..., allowance: 0, spent: 0 }
+   *   ledgerToPin({ date: "2026-08-20", ... }, "2026-08-20", 0) // → null
+   */
+  function ledgerToPin(stored, today, previousAllowance) {
+    if (stored && typeof stored === "object" && stored.date === today) return null;
+    return openLedger(today, previousAllowance);
+  }
+
+  /**
    * Spend one pass, returning the ledger that results. Refuses when none are left
    * rather than going negative — a caller that gets here with an empty balance has
    * a bug worth surfacing.
@@ -100,5 +126,5 @@
     return { ...ledger, spent: ledger.spent + 1 };
   }
 
-  return { DAILY_CAP, STORAGE_KEY, dayKey, clampAllowance, openLedger, currentLedger, passesLeft, spendPass };
+  return { DAILY_CAP, STORAGE_KEY, dayKey, clampAllowance, openLedger, currentLedger, ledgerToPin, passesLeft, spendPass };
 });
