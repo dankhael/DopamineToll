@@ -122,22 +122,11 @@
     if (el && el.parentNode) el.parentNode.removeChild(el);
   }
 
-  // The gate is "active" only while its tab is visible and its window focused.
-  // Switching tabs flips document.hidden; Alt+Tab to another app blurs the
-  // window without hiding the tab — so we need both signals.
-  function isGateActive() {
-    return !document.hidden && document.hasFocus();
-  }
-
-  // Runs the toll clock, but only while the gate is in front of the user.
-  // Leaving the tab/window freezes the clock and the meter; returning resumes
-  // from where it stopped, so stepping away doesn't pay the toll. Returns a
-  // controller whose stop() clears the timer and detaches the focus listeners.
+  // Paints the gate's meter and clock for the shared countdown, which is the same
+  // clock the settings page's cooling-off uses (shared/countdown.js, ADR-0003).
+  // The meter drains over the seconds still owed and freezes mid-drain the moment
+  // the user looks away, so stepping out of the tab never pays the toll.
   function startTollCountdown({ clockEl, meterBar, lazyNote }, lockSeconds, onUnlock) {
-    let remaining = lockSeconds;
-    let ticker = null;
-
-    // Animate the meter draining to empty over the seconds still owed.
     function drainMeter(seconds) {
       meterBar.style.transition = `width ${seconds}s linear`;
       requestAnimationFrame(() => {
@@ -145,66 +134,23 @@
       });
     }
 
-    // Stop the meter mid-drain at the fraction of time still remaining.
-    function freezeMeter() {
+    function freezeMeter(seconds) {
       meterBar.style.transition = "none";
-      meterBar.style.width = `${Math.max(0, (remaining / lockSeconds) * 100)}%`;
+      meterBar.style.width = `${Math.max(0, (seconds / lockSeconds) * 100)}%`;
     }
 
-    function stopTicker() {
-      if (!ticker) return;
-      clearInterval(ticker);
-      ticker = null;
-    }
-
-    function tick() {
-      remaining -= 1;
-      if (remaining > 0) {
+    return DTCountdown.startFocusCountdown(lockSeconds, {
+      ...DTCountdown.pageActivity(document, window),
+      onResume: drainMeter,
+      onPause: freezeMeter,
+      onTick: (remaining) => {
         clockEl.textContent = fmtClock(remaining);
-        lazyNote.textContent = DTI18n.t("overlayUnlocksIn", [String(remaining)]);
-        return;
-      }
-      stopTicker();
-      clockEl.textContent = fmtClock(0);
-      onUnlock();
-    }
-
-    function resume() {
-      if (ticker || remaining <= 0 || !isGateActive()) return;
-      drainMeter(remaining);
-      ticker = setInterval(tick, 1000);
-    }
-
-    function pause() {
-      if (!ticker) return;
-      stopTicker();
-      freezeMeter();
-    }
-
-    function syncToFocus() {
-      if (isGateActive()) resume();
-      else pause();
-    }
-
-    function stop() {
-      stopTicker();
-      document.removeEventListener("visibilitychange", syncToFocus);
-      window.removeEventListener("focus", syncToFocus);
-      window.removeEventListener("blur", syncToFocus);
-    }
-
-    document.addEventListener("visibilitychange", syncToFocus);
-    window.addEventListener("focus", syncToFocus);
-    window.addEventListener("blur", syncToFocus);
-
-    if (isGateActive()) {
-      drainMeter(lockSeconds);
-      ticker = setInterval(tick, 1000);
-    } else {
-      freezeMeter();
-    }
-
-    return { pause, resume, stop };
+        if (remaining > 0) {
+          lazyNote.textContent = DTI18n.t("overlayUnlocksIn", [String(remaining)]);
+        }
+      },
+      onDone: onUnlock
+    });
   }
 
   async function injectOverlay(domain) {

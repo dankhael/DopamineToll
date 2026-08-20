@@ -30,6 +30,7 @@
         "shared/i18n.js",
         "shared/format.js",
         "shared/dom.js",
+        "shared/countdown.js",
         "content/gate-view.js",
         "content/friction.js",
         "content/blocker.js"
