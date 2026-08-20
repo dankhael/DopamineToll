@@ -72,6 +72,16 @@
     return actions;
   }
 
+  // The free pass sits below the two real choices and stays deliberately quiet: it
+  // is an escape hatch, not a third equal option. When the day's balance is empty it
+  // is absent rather than disabled — a gate someone is trying to walk away from
+  // should not advertise a door that is already shut.
+  function buildFreePass(doc, copy) {
+    const pass = el(doc, "button", "dt-freepass", copy.freePass);
+    pass.dataset.dtAction = "freepass";
+    return pass;
+  }
+
   /**
    * Assemble the whole gate. Returns the backdrop element, ready to append.
    *
@@ -80,8 +90,11 @@
    *     domain: "x.com", phrase: "focus", imgSrc: null, clockText: "00:30",
    *     copy: { onList: "on your list", northStarAlt: "your north star", ... }
    *   });
+   *
+   * `freePasses` is today's remaining balance; at zero the gate carries no free-pass
+   * button at all.
    */
-  function buildGate(doc, { domain, phrase, imgSrc, clockText, copy }) {
+  function buildGate(doc, { domain, phrase, imgSrc, clockText, freePasses = 0, copy }) {
     const column = el(doc, "div", "dt-col");
     column.setAttribute("role", "dialog");
     column.setAttribute("aria-modal", "true");
@@ -92,6 +105,7 @@
       buildTollMeter(doc, clockText, copy.chooseIn),
       buildActions(doc, copy)
     );
+    if (freePasses > 0) column.appendChild(buildFreePass(doc, copy));
 
     const stage = el(doc, "div", "dt-stage");
     stage.appendChild(column);
@@ -120,5 +134,14 @@
     return { card, close };
   }
 
-  return { buildEyebrow, buildPhoto, buildPhrase, buildTollMeter, buildActions, buildGate, buildWarningCard };
+  return {
+    buildEyebrow,
+    buildPhoto,
+    buildPhrase,
+    buildTollMeter,
+    buildActions,
+    buildFreePass,
+    buildGate,
+    buildWarningCard
+  };
 });

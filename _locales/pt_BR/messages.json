@@ -15,9 +15,10 @@
   },
   "popupTollArmed": { "message": "na sua lista de pedágio · pedágio armado" },
   "popupStat": {
-    "message": "hoje — <b>desistiu $WALKED$×</b> · pagou $PAID$×",
-    "placeholders": { "walked": { "content": "$1" }, "paid": { "content": "$2" } }
+    "message": "hoje — <b>desistiu $WALKED$×</b> · pagou $PAID$× · passe livre $PASS$×",
+    "placeholders": { "walked": { "content": "$1" }, "paid": { "content": "$2" }, "pass": { "content": "$3" } }
   },
+  "popupFreePasses": { "message": "passes livres" },
 
   "optionsTitle": { "message": "Dopamine Toll — configurações" },
   "optionsSubtitle": { "message": "Suas configurações são salvas automaticamente. <b>O pedágio é cobrado toda vez que você chega a um site da lista.</b>" },
@@ -43,6 +44,13 @@
   "optionsUnlockDecAria": { "message": "diminuir janela de acesso" },
   "optionsUnlockIncAria": { "message": "aumentar janela de acesso" },
   "optionsTollEndnote": { "message": "Quando a janela acaba, o pedágio volta — toda vez." },
+  "optionsFreePassH2": { "message": "Passes livres" },
+  "optionsFreePassHint": { "message": "Um passe livre pula a contagem e abre o site na hora. Os passes recarregam à meia-noite, nunca acumulam, e aumentar o número só vale a partir de amanhã." },
+  "optionsFreePassK": { "message": "Passes por dia" },
+  "optionsFreePassD": { "message": "Em zero, o pedágio nunca oferece um." },
+  "optionsPerDay": { "message": "por dia" },
+  "optionsFreePassDecAria": { "message": "diminuir passes livres" },
+  "optionsFreePassIncAria": { "message": "aumentar passes livres" },
   "optionsFrictionH2": { "message": "Lembretes de atrito" },
   "optionsFrictionHint": { "message": "Enquanto um site com pedágio está aberto, um pequeno pop-up mostra uma das suas frases e há quanto tempo você está na aba. O tempo só conta enquanto a aba está à sua frente." },
   "optionsRemindersK": { "message": "Lembretes" },
@@ -102,6 +110,11 @@
     "placeholders": { "sec": { "content": "$1" } }
   },
   "overlayBeLazy": { "message": "seja preguiçoso" },
+  "overlayFreePass": {
+    "message": "Passe livre · restam $LEFT$",
+    "placeholders": { "left": { "content": "$1", "example": "2" } }
+  },
+  "overlayFreePassConfirm": { "message": "toque de novo para usar" },
 
   "frictionEyebrow": { "message": "dopamine toll" },
   "frictionTimeOnTab": {

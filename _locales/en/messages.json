@@ -46,12 +46,17 @@
     "description": "Popup status when the site is gated and the toll will fire."
   },
   "popupStat": {
-    "message": "today — <b>walked away $WALKED$×</b> · paid $PAID$×",
+    "message": "today — <b>walked away $WALKED$×</b> · paid $PAID$× · free pass $PASS$×",
     "description": "Daily tally in the popup. Keep the <b> tags and the × sign.",
     "placeholders": {
       "walked": { "content": "$1", "example": "2" },
-      "paid": { "content": "$2", "example": "1" }
+      "paid": { "content": "$2", "example": "1" },
+      "pass": { "content": "$3", "example": "1" }
     }
+  },
+  "popupFreePasses": {
+    "message": "free passes",
+    "description": "Popup row label: free passes left today, shown only when the allowance is above zero."
   },
 
   "optionsTitle": {
@@ -97,6 +102,16 @@
   "optionsUnlockDecAria": { "message": "decrease unlock window" },
   "optionsUnlockIncAria": { "message": "increase unlock window" },
   "optionsTollEndnote": { "message": "When the window ends, the toll returns — every time." },
+  "optionsFreePassH2": { "message": "Free passes" },
+  "optionsFreePassHint": { "message": "A free pass skips the countdown and opens the site straight away. Passes refill at midnight, never stack up, and raising the number only counts from tomorrow." },
+  "optionsFreePassK": { "message": "Passes a day" },
+  "optionsFreePassD": { "message": "At zero, the gate never offers one." },
+  "optionsPerDay": {
+    "message": "a day",
+    "description": "Short unit label shown next to the free-pass number."
+  },
+  "optionsFreePassDecAria": { "message": "decrease free passes" },
+  "optionsFreePassIncAria": { "message": "increase free passes" },
   "optionsFrictionH2": { "message": "Friction reminders" },
   "optionsFrictionHint": {
     "message": "While a toll site is open, a small pop-up shows one of your phrases and how long you've been on the tab. Time only counts while the tab is in front of you."
@@ -173,6 +188,15 @@
     "placeholders": { "sec": { "content": "$1", "example": "30" } }
   },
   "overlayBeLazy": { "message": "be lazy" },
+  "overlayFreePass": {
+    "message": "Free pass · $LEFT$ left",
+    "description": "Gate button label. $LEFT$ is how many free passes remain today.",
+    "placeholders": { "left": { "content": "$1", "example": "2" } }
+  },
+  "overlayFreePassConfirm": {
+    "message": "tap again to spend one",
+    "description": "Replaces the free-pass label after the first tap; the second tap spends it."
+  },
 
   "frictionEyebrow": {
     "message": "dopamine toll",

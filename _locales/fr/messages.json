@@ -15,9 +15,10 @@
   },
   "popupTollArmed": { "message": "dans votre liste de péage · péage armé" },
   "popupStat": {
-    "message": "aujourd'hui — <b>renoncé $WALKED$×</b> · payé $PAID$×",
-    "placeholders": { "walked": { "content": "$1" }, "paid": { "content": "$2" } }
+    "message": "aujourd'hui — <b>renoncé $WALKED$×</b> · payé $PAID$× · laissez-passer $PASS$×",
+    "placeholders": { "walked": { "content": "$1" }, "paid": { "content": "$2" }, "pass": { "content": "$3" } }
   },
+  "popupFreePasses": { "message": "laissez-passer" },
 
   "optionsTitle": { "message": "Dopamine Toll — paramètres" },
   "optionsSubtitle": { "message": "Vos paramètres sont enregistrés automatiquement. <b>Le péage s'applique chaque fois que vous atteignez un site de la liste.</b>" },
@@ -43,6 +44,13 @@
   "optionsUnlockDecAria": { "message": "diminuer la fenêtre d'accès" },
   "optionsUnlockIncAria": { "message": "augmenter la fenêtre d'accès" },
   "optionsTollEndnote": { "message": "Quand la fenêtre se termine, le péage revient — à chaque fois." },
+  "optionsFreePassH2": { "message": "Laissez-passer" },
+  "optionsFreePassHint": { "message": "Un laissez-passer saute le compte à rebours et ouvre le site immédiatement. Ils se rechargent à minuit, ne s'accumulent jamais, et augmenter leur nombre ne prend effet qu'à partir de demain." },
+  "optionsFreePassK": { "message": "Laissez-passer par jour" },
+  "optionsFreePassD": { "message": "À zéro, le péage n'en propose jamais." },
+  "optionsPerDay": { "message": "par jour" },
+  "optionsFreePassDecAria": { "message": "diminuer les laissez-passer" },
+  "optionsFreePassIncAria": { "message": "augmenter les laissez-passer" },
   "optionsFrictionH2": { "message": "Rappels de friction" },
   "optionsFrictionHint": { "message": "Pendant qu'un site à péage est ouvert, une petite pop-up affiche l'une de vos phrases et depuis combien de temps vous êtes sur l'onglet. Le temps ne compte que lorsque l'onglet est devant vous." },
   "optionsRemindersK": { "message": "Rappels" },
@@ -102,6 +110,11 @@
     "placeholders": { "sec": { "content": "$1" } }
   },
   "overlayBeLazy": { "message": "soyez paresseux" },
+  "overlayFreePass": {
+    "message": "Laissez-passer · il en reste $LEFT$",
+    "placeholders": { "left": { "content": "$1", "example": "2" } }
+  },
+  "overlayFreePassConfirm": { "message": "touchez à nouveau pour l'utiliser" },
 
   "frictionEyebrow": { "message": "dopamine toll" },
   "frictionTimeOnTab": {

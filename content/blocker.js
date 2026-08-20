@@ -106,7 +106,7 @@
     }
     currentDomain = resp.domain;
     await ensureBodyReady();
-    await injectOverlay(resp.domain);
+    await injectOverlay(resp.domain, resp.freePassesLeft || 0);
   }
 
   function removeOverlay() {
@@ -153,7 +153,35 @@
     });
   }
 
-  async function injectOverlay(domain) {
+  // Spending a free pass takes two taps: the first turns the button into its own
+  // confirmation. It is the only scarce thing on the gate — a mis-tap would burn a
+  // whole day's allowance, and there is no undo.
+  function wireFreePass(overlay, domain) {
+    const btn = overlay.querySelector('[data-dt-action="freepass"]');
+    if (!btn) return;
+    let awaitingConfirm = false;
+
+    btn.addEventListener("click", async () => {
+      if (!awaitingConfirm) {
+        awaitingConfirm = true;
+        btn.textContent = DTI18n.t("overlayFreePassConfirm");
+        btn.classList.add("dt-freepass-confirm");
+        return;
+      }
+      const resp = await send({ type: "SPEND_FREE_PASS", domain });
+      // A refusal means the balance emptied under an already-open gate (another tab
+      // spent the last one). Drop the button rather than leave a dead control.
+      if (!resp || !resp.ok) {
+        btn.remove();
+        return;
+      }
+      scheduleRelock(resp.unlockedUntil);
+      removeOverlay();
+      reportGateState(true, false);
+    });
+  }
+
+  async function injectOverlay(domain, freePasses = 0) {
     reportGateState(true, true);
     const cfg = await loadConfig();
     const phrase = pickRandom(cfg.phrases) || FALLBACK_PHRASES[0];
@@ -183,6 +211,7 @@
         phrase,
         imgSrc,
         clockText: fmtClock(lockSeconds),
+        freePasses,
         copy: {
           onList: DTI18n.t("overlayOnList"),
           northStarAlt: DTI18n.t("overlayNorthStarAlt"),
@@ -191,7 +220,8 @@
           closeTab: DTI18n.t("overlayCloseTab"),
           beProductive: DTI18n.t("overlayBeProductive"),
           openAnyway: DTI18n.t("overlayOpenAnyway", [String(unlockMinutes)]),
-          unlocksIn: DTI18n.t("overlayUnlocksIn", [String(lockSeconds)])
+          unlocksIn: DTI18n.t("overlayUnlocksIn", [String(lockSeconds)]),
+          freePass: DTI18n.t("overlayFreePass", [String(freePasses)])
         }
       })
     );
@@ -242,6 +272,8 @@
       }
     });
 
+    wireFreePass(overlay, domain);
+
     // Re-inject if the host page (or DevTools) removes the overlay.
     if (mutationObserver) mutationObserver.disconnect();
     mutationObserver = new MutationObserver(() => {
@@ -288,7 +320,7 @@
   chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
     if (msg && msg.type === "SHOW_OVERLAY") {
       currentDomain = msg.domain;
-      ensureBodyReady().then(() => injectOverlay(msg.domain));
+      ensureBodyReady().then(() => injectOverlay(msg.domain, msg.freePassesLeft || 0));
       sendResponse({ ok: true });
       return true;
     }

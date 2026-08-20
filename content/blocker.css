@@ -251,6 +251,37 @@
   border-color: var(--dt-amber);
 }
 
+/* free pass — the escape hatch. Deliberately quieter than either real choice:
+   it skips the wait, it is not a third equal option. Absent entirely when the
+   day's balance is empty (see gate-view.js buildGate). */
+#dopamine-toll-overlay .dt-freepass {
+  font-family: var(--dt-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: lowercase;
+  color: var(--dt-faint);
+  background: none;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  padding: 4px 2px;
+  /* the column's 30px gap would float it off on its own; pull it back under the
+     buttons it belongs to */
+  margin-top: -14px;
+  cursor: pointer;
+  transition: color 0.12s ease, border-color 0.12s ease;
+}
+#dopamine-toll-overlay .dt-freepass:hover {
+  color: var(--dt-dim);
+  border-bottom-color: var(--dt-line-2);
+}
+/* the second tap confirms — this is the one spend on the gate with no undo */
+#dopamine-toll-overlay .dt-freepass-confirm,
+#dopamine-toll-overlay .dt-freepass-confirm:hover {
+  color: var(--dt-terra);
+  border-bottom-color: var(--dt-terra);
+}
+
 @media (max-width: 540px) {
   #dopamine-toll-overlay .dt-phrase { font-size: 26px; }
   #dopamine-toll-overlay .dt-clock { font-size: 58px; }

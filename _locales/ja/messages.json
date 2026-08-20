@@ -15,9 +15,10 @@
   },
   "popupTollArmed": { "message": "通行料リスト・通行料あり" },
   "popupStat": {
-    "message": "今日 — <b>離脱 $WALKED$回</b>・支払い $PAID$回",
-    "placeholders": { "walked": { "content": "$1" }, "paid": { "content": "$2" } }
+    "message": "今日 — <b>離脱 $WALKED$回</b>・支払い $PAID$回・フリーパス $PASS$回",
+    "placeholders": { "walked": { "content": "$1" }, "paid": { "content": "$2" }, "pass": { "content": "$3" } }
   },
+  "popupFreePasses": { "message": "フリーパス" },
 
   "optionsTitle": { "message": "Dopamine Toll — 設定" },
   "optionsSubtitle": { "message": "設定は自動的に保存されます。<b>リストにあるサイトに着くたびに通行料が発生します。</b>" },
@@ -43,6 +44,13 @@
   "optionsUnlockDecAria": { "message": "開放ウィンドウを減らす" },
   "optionsUnlockIncAria": { "message": "開放ウィンドウを増やす" },
   "optionsTollEndnote": { "message": "ウィンドウが終わると、通行料が戻ってきます — 毎回。" },
+  "optionsFreePassH2": { "message": "フリーパス" },
+  "optionsFreePassHint": { "message": "フリーパスはカウントダウンを飛ばして、サイトをすぐに開きます。毎晩0時に補充され、繰り越しはなく、枚数を増やしても有効になるのは翌日からです。" },
+  "optionsFreePassK": { "message": "1日の枚数" },
+  "optionsFreePassD": { "message": "0なら、通行料はフリーパスを提示しません。" },
+  "optionsPerDay": { "message": "／日" },
+  "optionsFreePassDecAria": { "message": "フリーパスを減らす" },
+  "optionsFreePassIncAria": { "message": "フリーパスを増やす" },
   "optionsFrictionH2": { "message": "摩擦リマインダー" },
   "optionsFrictionHint": { "message": "通行料サイトを開いている間、小さなポップアップにあなたの言葉と、そのタブに滞在した時間が表示されます。時間はタブが手前にあるときだけカウントされます。" },
   "optionsRemindersK": { "message": "リマインダー" },
@@ -102,6 +110,11 @@
     "placeholders": { "sec": { "content": "$1" } }
   },
   "overlayBeLazy": { "message": "怠けよう" },
+  "overlayFreePass": {
+    "message": "フリーパス・残り $LEFT$",
+    "placeholders": { "left": { "content": "$1", "example": "2" } }
+  },
+  "overlayFreePassConfirm": { "message": "もう一度タップで使用" },
 
   "frictionEyebrow": { "message": "dopamine toll" },
   "frictionTimeOnTab": {
