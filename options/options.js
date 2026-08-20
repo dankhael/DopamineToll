@@ -1,8 +1,5 @@
 // Dopamine Toll settings page logic.
 
-const MAX_IMAGES = 8;
-const MAX_IMAGE_BYTES = 300 * 1024;
-const MAX_DIM = 600;
 
 // Stepper controls for "The toll". min/max preserve the original ranges.
 const LOCK_STEP = { key: "lockDuration", valId: "lock-val", decId: "lock-dec", incId: "lock-inc", min: 10, max: 120, step: 5, def: 30 };
@@ -142,35 +139,49 @@ function renderEmpty(listEl, messageKey) {
 }
 
 // ---------- Toll list (domains) ----------
+
+// Re-read rather than writing the list captured when the row was built: 30 seconds
+// of cooling-off is long enough for it to have changed underneath. Only this row is
+// dropped — re-rendering the whole list would destroy the other rows and, with them,
+// any cooling-off still counting down on one, and those are meant to be independent
+// (ADR-0003).
+async function removeDomain(entry, row, list) {
+  const { blockedDomains: latest = [] } = await chrome.storage.sync.get("blockedDomains");
+  await chrome.storage.sync.set({ blockedDomains: latest.filter((x) => x !== entry) });
+  toast();
+  row.remove();
+  if (!list.children.length) renderEmpty(list, "optionsEmptyDomains");
+}
+
+// Removing an entry weakens the toll, so it goes through the cooling-off; the row
+// itself is the control the countdown appears in.
+function buildDomainRow(entry, blockedDomains, list) {
+  const slash = entry.indexOf("/");
+  const { row, value, remove } = createRemovableRow("item dom");
+  value.textContent = slash === -1 ? entry : entry.slice(0, slash);
+  if (slash !== -1) value.appendChild(el("span", "path", entry.slice(slash)));
+
+  remove.addEventListener("click", () => {
+    const next = blockedDomains.filter((x) => x !== entry);
+    DTGuardedChange.apply(row, "blockedDomains", blockedDomains, next, () =>
+      removeDomain(entry, row, list)
+    );
+  });
+  return row;
+}
+
 async function renderDomains() {
   const { blockedDomains = [] } = await chrome.storage.sync.get("blockedDomains");
   const list = $("domain-list");
   // Rebuilding the rows would strand any cooling-off attached to one of them.
-  DTCoolOff.cancelWithin(list);
+  DTGuardedChange.cancelWithin(list);
   list.innerHTML = "";
   if (blockedDomains.length === 0) {
     renderEmpty(list, "optionsEmptyDomains");
     return;
   }
   for (const entry of blockedDomains) {
-    const slash = entry.indexOf("/");
-    const host = slash === -1 ? entry : entry.slice(0, slash);
-    const path = slash === -1 ? "" : entry.slice(slash);
-    const { row, value, remove } = createRemovableRow("item dom");
-    value.textContent = host;
-    if (path) value.appendChild(el("span", "path", path));
-    remove.addEventListener("click", () => {
-      const next = blockedDomains.filter((x) => x !== entry);
-      DTCoolOff.commit(row, "blockedDomains", blockedDomains, next, async () => {
-        // Re-read rather than writing the `next` captured above: 30 seconds is long
-        // enough for the list to have changed under this countdown.
-        const { blockedDomains: latest = [] } = await chrome.storage.sync.get("blockedDomains");
-        await chrome.storage.sync.set({ blockedDomains: latest.filter((x) => x !== entry) });
-        toast();
-        renderDomains();
-      });
-    });
-    list.appendChild(row);
+    list.appendChild(buildDomainRow(entry, blockedDomains, list));
   }
 }
 
@@ -226,112 +237,6 @@ async function addPhrase() {
   renderPhrases();
 }
 
-// ---------- North star photos ----------
-// Stored as {name, src}; legacy entries are bare base64 strings.
-function normImage(entry, i) {
-  const fallbackName = DTI18n.t("optionsPhotoLabel", [String(i + 1)]);
-  if (typeof entry === "string") return { name: fallbackName, src: entry };
-  return { name: entry.name || fallbackName, src: entry.src };
-}
-
-async function renderStars() {
-  const { goalImages = [] } = await chrome.storage.local.get("goalImages");
-  const grid = $("stars");
-  grid.innerHTML = "";
-
-  goalImages.forEach((entry, i) => {
-    const { name, src } = normImage(entry, i);
-    const star = document.createElement("div");
-    star.className = "star filled";
-    star.innerHTML = `<img alt=""><span class="lbl"></span><button class="del">✕</button>`;
-    star.querySelector("img").src = src;
-    star.querySelector(".lbl").textContent = name;
-    const del = star.querySelector(".del");
-    del.title = DTI18n.t("optionsRemove");
-    del.addEventListener("click", async () => {
-      const next = goalImages.filter((_, j) => j !== i);
-      await chrome.storage.local.set({ goalImages: next });
-      toast();
-      renderStars();
-    });
-    grid.appendChild(star);
-  });
-
-  if (goalImages.length < MAX_IMAGES) {
-    const add = el("div", "star add");
-    add.append(el("span", "plus", "+"), el("span", "lbl", DTI18n.t("optionsAddPhoto")));
-    add.addEventListener("click", () => $("file-input").click());
-    grid.appendChild(add);
-  }
-}
-
-function readFileAsDataURL(file) {
-  return new Promise((resolve, reject) => {
-    const r = new FileReader();
-    r.onload = () => resolve(r.result);
-    r.onerror = () => reject(r.error);
-    r.readAsDataURL(file);
-  });
-}
-
-function loadImageElement(src) {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => resolve(img);
-    img.onerror = () => reject(new Error(DTI18n.t("optionsDecodeError")));
-    img.src = src;
-  });
-}
-
-function resizeToBase64(img, maxDim) {
-  let { width, height } = img;
-  if (width > maxDim || height > maxDim) {
-    const scale = Math.min(maxDim / width, maxDim / height);
-    width = Math.round(width * scale);
-    height = Math.round(height * scale);
-  }
-  const c = document.createElement("canvas");
-  c.width = width;
-  c.height = height;
-  const ctx = c.getContext("2d");
-  ctx.drawImage(img, 0, 0, width, height);
-  return c.toDataURL("image/jpeg", 0.85);
-}
-
-async function handleUpload(file) {
-  const warn = $("upload-warn");
-  warn.style.display = "none";
-  warn.textContent = "";
-
-  const { goalImages = [] } = await chrome.storage.local.get("goalImages");
-  if (goalImages.length >= MAX_IMAGES) {
-    warn.style.display = "block";
-    warn.textContent = DTI18n.t("optionsLimitReached", [String(MAX_IMAGES)]);
-    return;
-  }
-
-  try {
-    const raw = await readFileAsDataURL(file);
-    const img = await loadImageElement(raw);
-    const compressed = resizeToBase64(img, MAX_DIM);
-    // base64 length * 0.75 ≈ bytes
-    const bytes = Math.floor((compressed.length - "data:image/jpeg;base64,".length) * 0.75);
-    if (bytes > MAX_IMAGE_BYTES) {
-      warn.style.display = "block";
-      const kb = String((bytes / 1024).toFixed(0));
-      const maxKb = String(Math.round(MAX_IMAGE_BYTES / 1024));
-      warn.textContent = DTI18n.t("optionsCompressWarn", [kb, maxKb]);
-    }
-    await chrome.storage.local.set({ goalImages: [...goalImages, { name: file.name, src: compressed }] });
-    toast();
-    renderStars();
-  } catch (err) {
-    warn.style.display = "block";
-    warn.textContent = DTI18n.t("optionsUploadFailed", [String(err.message || err)]);
-  }
-}
-
-// ---------- The toll (steppers) ----------
 // ---------- The toll (steppers) ----------
 function renderStepper(cfg, value) {
   $(cfg.valId).textContent = String(value);
@@ -350,7 +255,7 @@ async function bumpStepper(cfg, dir, host) {
   const current = typeof got[cfg.key] === "number" ? got[cfg.key] : cfg.def;
   const next = clamp(current + dir * cfg.step, cfg.min, cfg.max);
   if (next === current) return;
-  await DTCoolOff.commit(host, cfg.key, current, next, async () => {
+  await DTGuardedChange.apply(host, cfg.key, current, next, async () => {
     await chrome.storage.sync.set({ [cfg.key]: next });
     renderStepper(cfg, next);
     toast();
@@ -378,7 +283,7 @@ async function toggleFrictionReminders() {
   const { frictionEnabled } = await chrome.storage.sync.get("frictionEnabled");
   const next = frictionEnabled === false;
   const host = $("friction-toggle").closest(".ctrl");
-  await DTCoolOff.commit(host, "frictionEnabled", frictionEnabled, next, async () => {
+  await DTGuardedChange.apply(host, "frictionEnabled", frictionEnabled, next, async () => {
     await chrome.storage.sync.set({ frictionEnabled: next });
     toast();
     renderFrictionToggle();
@@ -398,7 +303,7 @@ function wireFrictionToggle() {
 
 // ---------- Cooling-off toggle ----------
 async function renderCoolOffToggle() {
-  const on = await DTCoolOff.isOn();
+  const on = await DTTollGuard.isOn(chrome.storage.sync);
   const btn = $("cooloff-toggle");
   btn.classList.toggle("on", on);
   btn.setAttribute("aria-checked", String(on));
@@ -407,9 +312,9 @@ async function renderCoolOffToggle() {
 // Turning the cooling-off off is itself a weakening change, so it pays the wait it
 // is about to remove. Turning it on is instant.
 async function toggleCoolOff() {
-  const current = await DTCoolOff.isOn();
+  const current = await DTTollGuard.isOn(chrome.storage.sync);
   const host = $("cooloff-toggle").closest(".ctrl");
-  await DTCoolOff.commit(host, "coolOffEnabled", current, !current, async () => {
+  await DTGuardedChange.apply(host, "coolOffEnabled", current, !current, async () => {
     await chrome.storage.sync.set({ coolOffEnabled: !current });
     toast();
     renderCoolOffToggle();
@@ -461,8 +366,7 @@ function wireThemes() {
 }
 
 // ---------- Wire-up ----------
-function init() {
-  DTI18n.applyI18n();
+function wireControls() {
   $("domain-add").addEventListener("click", addDomain);
   $("domain-input").addEventListener("keydown", (e) => {
     if (e.key === "Enter") addDomain();
@@ -473,12 +377,6 @@ function init() {
     if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) addPhrase();
   });
 
-  $("file-input").addEventListener("change", (e) => {
-    const f = e.target.files?.[0];
-    if (f) handleUpload(f);
-    e.target.value = "";
-  });
-
   wireStepper(LOCK_STEP);
   wireStepper(UNLOCK_STEP);
   wireStepper(FRICTION_STEP);
@@ -486,10 +384,12 @@ function init() {
   wireFrictionToggle();
   wireCoolOffToggle();
   wireThemes();
+}
 
+function renderAll() {
   renderDomains();
   renderPhrases();
-  renderStars();
+  DTNorthStar.init({ toast });
   loadStepper(LOCK_STEP);
   loadStepper(UNLOCK_STEP);
   loadStepper(FRICTION_STEP);
@@ -499,4 +399,8 @@ function init() {
   renderTheme();
 }
 
-document.addEventListener("DOMContentLoaded", init);
+document.addEventListener("DOMContentLoaded", () => {
+  DTI18n.applyI18n();
+  wireControls();
+  renderAll();
+});

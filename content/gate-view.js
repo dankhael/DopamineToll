@@ -72,10 +72,15 @@
     return actions;
   }
 
-  // The free pass sits below the two real choices and stays deliberately quiet: it
-  // is an escape hatch, not a third equal option. When the day's balance is empty it
-  // is absent rather than disabled — a gate someone is trying to walk away from
-  // should not advertise a door that is already shut.
+  /**
+   * The free-pass button. It sits below the two real choices and stays deliberately
+   * quiet: an escape hatch, not a third equal option. buildGate leaves it out
+   * entirely when the day's balance is empty — a gate someone is trying to walk away
+   * from should not advertise a door that is already shut.
+   *
+   * @example
+   *   buildFreePass(document, { freePass: "Free pass · 2 left" })
+   */
   function buildFreePass(doc, copy) {
     const pass = el(doc, "button", "dt-freepass", copy.freePass);
     pass.dataset.dtAction = "freepass";

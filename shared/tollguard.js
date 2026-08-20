@@ -57,5 +57,21 @@
     return false;
   }
 
-  return { COOL_OFF_SECONDS, isWeakening };
+  /**
+   * Is the cooling-off switched on? The storage area is a parameter so the settings
+   * page and the popup ask the identical question — they used to each carry their own
+   * copy of this — and so it can be tested against a fake.
+   *
+   * @example
+   *   if (await isOn(chrome.storage.sync)) startCoolOff();
+   */
+  async function isOn(syncStorage) {
+    if (!syncStorage || typeof syncStorage.get !== "function") {
+      throw new Error(`isOn needs a storage area with get(), got: ${typeof syncStorage}`);
+    }
+    const { coolOffEnabled } = await syncStorage.get("coolOffEnabled");
+    return coolOffEnabled === true;
+  }
+
+  return { COOL_OFF_SECONDS, isWeakening, isOn };
 });

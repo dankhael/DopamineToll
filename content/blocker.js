@@ -122,27 +122,29 @@
     if (el && el.parentNode) el.parentNode.removeChild(el);
   }
 
+  // Animate the meter draining to empty over the seconds still owed.
+  function drainMeter(meterBar, seconds) {
+    meterBar.style.transition = `width ${seconds}s linear`;
+    requestAnimationFrame(() => {
+      meterBar.style.width = "0%";
+    });
+  }
+
+  // Stop the meter mid-drain, at the fraction of the toll still owed.
+  function freezeMeter(meterBar, seconds, lockSeconds) {
+    meterBar.style.transition = "none";
+    meterBar.style.width = `${Math.max(0, (seconds / lockSeconds) * 100)}%`;
+  }
+
   // Paints the gate's meter and clock for the shared countdown, which is the same
-  // clock the settings page's cooling-off uses (shared/countdown.js, ADR-0003).
-  // The meter drains over the seconds still owed and freezes mid-drain the moment
-  // the user looks away, so stepping out of the tab never pays the toll.
+  // clock the settings page's cooling-off uses (shared/countdown.js, ADR-0003). The
+  // meter freezes mid-drain the moment the user looks away, so stepping out of the
+  // tab never pays the toll.
   function startTollCountdown({ clockEl, meterBar, lazyNote }, lockSeconds, onUnlock) {
-    function drainMeter(seconds) {
-      meterBar.style.transition = `width ${seconds}s linear`;
-      requestAnimationFrame(() => {
-        meterBar.style.width = "0%";
-      });
-    }
-
-    function freezeMeter(seconds) {
-      meterBar.style.transition = "none";
-      meterBar.style.width = `${Math.max(0, (seconds / lockSeconds) * 100)}%`;
-    }
-
     return DTCountdown.startFocusCountdown(lockSeconds, {
       ...DTCountdown.pageActivity(document, window),
-      onResume: drainMeter,
-      onPause: freezeMeter,
+      onResume: (remaining) => drainMeter(meterBar, remaining),
+      onPause: (remaining) => freezeMeter(meterBar, remaining, lockSeconds),
       onTick: (remaining) => {
         clockEl.textContent = fmtClock(remaining);
         if (remaining > 0) {
@@ -153,31 +155,32 @@
     });
   }
 
-  // Spending a free pass takes two taps: the first turns the button into its own
-  // confirmation. It is the only scarce thing on the gate — a mis-tap would burn a
-  // whole day's allowance, and there is no undo.
+  // Spend the pass and, if the worker agrees, drop the gate. A refusal means the
+  // balance emptied under an already-open gate — another tab took the last one.
+  async function redeemFreePass(btn, domain) {
+    const resp = await send({ type: "SPEND_FREE_PASS", domain });
+    if (!resp || !resp.ok) {
+      btn.remove();
+      return;
+    }
+    scheduleRelock(resp.unlockedUntil);
+    removeOverlay();
+    reportGateState(true, false);
+  }
+
+  // Spending takes two taps: the first turns the button into its own confirmation.
+  // It is the only scarce thing on the gate — a mis-tap would burn a whole day's
+  // allowance, and there is no undo.
   function wireFreePass(overlay, domain) {
     const btn = overlay.querySelector('[data-dt-action="freepass"]');
     if (!btn) return;
     let awaitingConfirm = false;
 
-    btn.addEventListener("click", async () => {
-      if (!awaitingConfirm) {
-        awaitingConfirm = true;
-        btn.textContent = DTI18n.t("overlayFreePassConfirm");
-        btn.classList.add("dt-freepass-confirm");
-        return;
-      }
-      const resp = await send({ type: "SPEND_FREE_PASS", domain });
-      // A refusal means the balance emptied under an already-open gate (another tab
-      // spent the last one). Drop the button rather than leave a dead control.
-      if (!resp || !resp.ok) {
-        btn.remove();
-        return;
-      }
-      scheduleRelock(resp.unlockedUntil);
-      removeOverlay();
-      reportGateState(true, false);
+    btn.addEventListener("click", () => {
+      if (awaitingConfirm) return redeemFreePass(btn, domain);
+      awaitingConfirm = true;
+      btn.textContent = DTI18n.t("overlayFreePassConfirm");
+      btn.classList.add("dt-freepass-confirm");
     });
   }
 

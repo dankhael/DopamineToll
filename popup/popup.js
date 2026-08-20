@@ -180,18 +180,13 @@ function startTurnOff() {
   });
 }
 
-async function coolOffIsOn() {
-  const { coolOffEnabled } = await chrome.storage.sync.get("coolOffEnabled");
-  return coolOffEnabled === true;
-}
-
 async function toggleEnabled() {
   // While a turn-off is counting down, the toggle is the second way to call it off.
   if (turnOffControl) return stopTurnOff();
 
   const { enabled = true } = await chrome.storage.sync.get("enabled");
   const next = !enabled;
-  if (DTTollGuard.isWeakening("enabled", enabled, next) && (await coolOffIsOn())) {
+  if (DTTollGuard.isWeakening("enabled", enabled, next) && (await DTTollGuard.isOn(chrome.storage.sync))) {
     startTurnOff();
     return;
   }

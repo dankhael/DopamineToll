@@ -8,7 +8,18 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
 
-const { COOL_OFF_SECONDS, isWeakening } = require("../shared/tollguard.js");
+const { COOL_OFF_SECONDS, isWeakening, isOn } = require("../shared/tollguard.js");
+
+// Named fake: the one call this module makes against a storage area.
+class FakeSyncStorage {
+  constructor(values) {
+    this.values = values;
+  }
+
+  async get(key) {
+    return key in this.values ? { [key]: this.values[key] } : {};
+  }
+}
 
 test("the cooling-off is thirty seconds", () => {
   // Deliberately short: it prices an impulse, it does not pretend to be a lock.
@@ -96,4 +107,29 @@ test("an unchanged value is not a weakening change", () => {
 test("names the offending key when it is missing", () => {
   assert.throws(() => isWeakening("", 1, 2), /needs a setting key, got: ""/);
   assert.throws(() => isWeakening(undefined, 1, 2), /needs a setting key, got: undefined/);
+});
+
+// ----- isOn -----
+
+test("the cooling-off is on only when it was explicitly switched on", () => {
+  return Promise.all([
+    isOn(new FakeSyncStorage({ coolOffEnabled: true })).then((v) => assert.equal(v, true)),
+    isOn(new FakeSyncStorage({ coolOffEnabled: false })).then((v) => assert.equal(v, false))
+  ]);
+});
+
+test("a fresh install has it off — nobody is opted in without asking", async () => {
+  assert.equal(await isOn(new FakeSyncStorage({})), false);
+});
+
+test("a garbled stored value reads as off rather than as on", async () => {
+  // Off is the honest default here: pretending the guard is up when the stored value
+  // is unreadable would make the settings claim a protection that is not running.
+  assert.equal(await isOn(new FakeSyncStorage({ coolOffEnabled: "yes" })), false);
+  assert.equal(await isOn(new FakeSyncStorage({ coolOffEnabled: 1 })), false);
+});
+
+test("names what it was handed when the storage area is unusable", async () => {
+  await assert.rejects(() => isOn(undefined), /needs a storage area with get\(\), got: undefined/);
+  await assert.rejects(() => isOn({}), /needs a storage area with get\(\)/);
 });

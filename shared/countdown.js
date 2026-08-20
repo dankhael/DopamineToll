@@ -48,6 +48,93 @@
     }
   }
 
+  // The three required hooks, plus no-op defaults for the optional ones, so every
+  // function below can call them without checking first.
+  function readHooks(hooks) {
+    const { isActive, watchActivity, onTick, onDone, onPause, onResume, timers } = hooks || {};
+    requireFn(isActive, "isActive");
+    requireFn(watchActivity, "watchActivity");
+    requireFn(onDone, "onDone");
+    const noop = () => {};
+    return {
+      isActive,
+      watchActivity,
+      onDone,
+      onTick: typeof onTick === "function" ? onTick : noop,
+      onPause: typeof onPause === "function" ? onPause : noop,
+      onResume: typeof onResume === "function" ? onResume : noop,
+      clock: timers || { setInterval, clearInterval }
+    };
+  }
+
+  function stopTicker(state) {
+    if (state.ticker === null) return;
+    state.hooks.clock.clearInterval(state.ticker);
+    state.ticker = null;
+  }
+
+  // Release everything the countdown holds: its timer and its activity listeners.
+  // Called on completion and on stop() alike, so neither leaves the page hooked.
+  function finish(state) {
+    state.finished = true;
+    stopTicker(state);
+    if (state.unwatch) state.unwatch();
+    state.unwatch = null;
+  }
+
+  function tick(state) {
+    state.remaining -= 1;
+    state.hooks.onTick(Math.max(0, state.remaining));
+    if (state.remaining > 0) return;
+    state.remaining = 0;
+    finish(state);
+    state.hooks.onDone();
+  }
+
+  function resume(state) {
+    if (state.finished || state.ticker !== null || state.remaining <= 0) return;
+    if (!state.hooks.isActive()) return;
+    state.hooks.onResume(state.remaining);
+    state.ticker = state.hooks.clock.setInterval(() => tick(state), 1000);
+  }
+
+  function pause(state) {
+    if (state.ticker === null) return;
+    stopTicker(state);
+    state.hooks.onPause(state.remaining);
+  }
+
+  // Start watching, and paint the initial state: running if the user is looking at
+  // it, frozen at full otherwise.
+  function arm(state) {
+    state.unwatch = state.hooks.watchActivity(() => {
+      if (state.hooks.isActive()) resume(state);
+      else pause(state);
+    });
+    if (state.hooks.isActive()) {
+      state.hooks.onResume(state.remaining);
+      state.ticker = state.hooks.clock.setInterval(() => tick(state), 1000);
+    } else {
+      state.hooks.onPause(state.remaining);
+    }
+  }
+
+  function makeControl(state) {
+    return {
+      stop: () => {
+        if (!state.finished) finish(state);
+      },
+      remaining: () => state.remaining
+    };
+  }
+
+  // A countdown of zero seconds is already over; report it without arming a timer.
+  function finishImmediately(state) {
+    state.finished = true;
+    state.hooks.onTick(0);
+    state.hooks.onDone();
+  }
+
   /**
    * Count `seconds` down to zero, freezing whenever `isActive()` goes false and
    * resuming from where it stopped. Returns a controller; call stop() to clear the
@@ -66,82 +153,16 @@
    *   control.stop();
    */
   function startFocusCountdown(seconds, hooks) {
-    const total = Math.max(0, Math.floor(seconds));
-    const { isActive, watchActivity, onTick, onDone, onPause, onResume, timers } = hooks || {};
-    requireFn(isActive, "isActive");
-    requireFn(watchActivity, "watchActivity");
-    requireFn(onDone, "onDone");
-
-    const clock = timers || { setInterval, clearInterval };
-    const tickOnce = typeof onTick === "function" ? onTick : () => {};
-    const freeze = typeof onPause === "function" ? onPause : () => {};
-    const thaw = typeof onResume === "function" ? onResume : () => {};
-
-    let remaining = total;
-    let ticker = null;
-    let finished = false;
-    let unwatch = null;
-
-    function stopTicker() {
-      if (ticker === null) return;
-      clock.clearInterval(ticker);
-      ticker = null;
-    }
-
-    function finish() {
-      finished = true;
-      stopTicker();
-      if (unwatch) unwatch();
-      unwatch = null;
-    }
-
-    function tick() {
-      remaining -= 1;
-      tickOnce(Math.max(0, remaining));
-      if (remaining > 0) return;
-      remaining = 0;
-      finish();
-      onDone();
-    }
-
-    function resume() {
-      if (finished || ticker !== null || remaining <= 0 || !isActive()) return;
-      thaw(remaining);
-      ticker = clock.setInterval(tick, 1000);
-    }
-
-    function pause() {
-      if (ticker === null) return;
-      stopTicker();
-      freeze(remaining);
-    }
-
-    function syncToActivity() {
-      if (isActive()) resume();
-      else pause();
-    }
-
-    function stop() {
-      if (finished) return;
-      finish();
-    }
-
-    // A zero-second countdown is already over; report it without arming a timer.
-    if (total === 0) {
-      tickOnce(0);
-      onDone();
-      return { stop, remaining: () => 0 };
-    }
-
-    unwatch = watchActivity(syncToActivity);
-    if (isActive()) {
-      thaw(remaining);
-      ticker = clock.setInterval(tick, 1000);
-    } else {
-      freeze(remaining);
-    }
-
-    return { stop, remaining: () => remaining };
+    const state = {
+      remaining: Math.max(0, Math.floor(seconds)),
+      ticker: null,
+      finished: false,
+      unwatch: null,
+      hooks: readHooks(hooks)
+    };
+    if (state.remaining === 0) finishImmediately(state);
+    else arm(state);
+    return makeControl(state);
   }
 
   return { pageActivity, startFocusCountdown };
