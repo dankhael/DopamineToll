@@ -8,6 +8,10 @@ const MAX_DIM = 600;
 const LOCK_STEP = { key: "lockDuration", valId: "lock-val", decId: "lock-dec", incId: "lock-inc", min: 10, max: 120, step: 5, def: 30 };
 const UNLOCK_STEP = { key: "unlockDuration", valId: "unlock-val", decId: "unlock-dec", incId: "unlock-inc", min: 1, max: 30, step: 1, def: 10 };
 const FRICTION_STEP = { key: "frictionMinutes", valId: "friction-val", decId: "friction-dec", incId: "friction-inc", min: 1, max: 60, step: 1, def: 5 };
+// Three a day is the ceiling; zero is the default, so nobody gets an escape hatch
+// they did not ask for. Raising this only lands at the next refill — see
+// shared/freepass.js and ADR-0004.
+const FREEPASS_STEP = { key: "freePassAllowance", valId: "freepass-val", decId: "freepass-dec", incId: "freepass-inc", min: 0, max: 3, step: 1, def: 0 };
 
 const THEMES = ["amber", "indigo", "emerald", "rose"];
 const THEME_ACCENT = {
@@ -141,6 +145,8 @@ function renderEmpty(listEl, messageKey) {
 async function renderDomains() {
   const { blockedDomains = [] } = await chrome.storage.sync.get("blockedDomains");
   const list = $("domain-list");
+  // Rebuilding the rows would strand any cooling-off attached to one of them.
+  DTCoolOff.cancelWithin(list);
   list.innerHTML = "";
   if (blockedDomains.length === 0) {
     renderEmpty(list, "optionsEmptyDomains");
@@ -153,11 +159,16 @@ async function renderDomains() {
     const { row, value, remove } = createRemovableRow("item dom");
     value.textContent = host;
     if (path) value.appendChild(el("span", "path", path));
-    remove.addEventListener("click", async () => {
+    remove.addEventListener("click", () => {
       const next = blockedDomains.filter((x) => x !== entry);
-      await chrome.storage.sync.set({ blockedDomains: next });
-      toast();
-      renderDomains();
+      DTCoolOff.commit(row, "blockedDomains", blockedDomains, next, async () => {
+        // Re-read rather than writing the `next` captured above: 30 seconds is long
+        // enough for the list to have changed under this countdown.
+        const { blockedDomains: latest = [] } = await chrome.storage.sync.get("blockedDomains");
+        await chrome.storage.sync.set({ blockedDomains: latest.filter((x) => x !== entry) });
+        toast();
+        renderDomains();
+      });
     });
     list.appendChild(row);
   }
@@ -321,6 +332,7 @@ async function handleUpload(file) {
 }
 
 // ---------- The toll (steppers) ----------
+// ---------- The toll (steppers) ----------
 function renderStepper(cfg, value) {
   $(cfg.valId).textContent = String(value);
   $(cfg.decId).disabled = value <= cfg.min;
@@ -333,19 +345,24 @@ async function loadStepper(cfg) {
   renderStepper(cfg, value);
 }
 
-async function bumpStepper(cfg, dir) {
+async function bumpStepper(cfg, dir, host) {
   const got = await chrome.storage.sync.get(cfg.key);
   const current = typeof got[cfg.key] === "number" ? got[cfg.key] : cfg.def;
   const next = clamp(current + dir * cfg.step, cfg.min, cfg.max);
   if (next === current) return;
-  await chrome.storage.sync.set({ [cfg.key]: next });
-  renderStepper(cfg, next);
-  toast();
+  await DTCoolOff.commit(host, cfg.key, current, next, async () => {
+    await chrome.storage.sync.set({ [cfg.key]: next });
+    renderStepper(cfg, next);
+    toast();
+  });
 }
 
 function wireStepper(cfg) {
-  $(cfg.decId).addEventListener("click", () => bumpStepper(cfg, -1));
-  $(cfg.incId).addEventListener("click", () => bumpStepper(cfg, +1));
+  // Whichever way a stepper moves, the countdown belongs to the control as a whole,
+  // not to the button that was pressed.
+  const host = $(cfg.decId).closest(".ctrl");
+  $(cfg.decId).addEventListener("click", () => bumpStepper(cfg, -1, host));
+  $(cfg.incId).addEventListener("click", () => bumpStepper(cfg, +1, host));
 }
 
 // ---------- Friction reminders ----------
@@ -359,9 +376,13 @@ async function renderFrictionToggle() {
 
 async function toggleFrictionReminders() {
   const { frictionEnabled } = await chrome.storage.sync.get("frictionEnabled");
-  await chrome.storage.sync.set({ frictionEnabled: frictionEnabled === false });
-  toast();
-  renderFrictionToggle();
+  const next = frictionEnabled === false;
+  const host = $("friction-toggle").closest(".ctrl");
+  await DTCoolOff.commit(host, "frictionEnabled", frictionEnabled, next, async () => {
+    await chrome.storage.sync.set({ frictionEnabled: next });
+    toast();
+    renderFrictionToggle();
+  });
 }
 
 function wireFrictionToggle() {
@@ -371,6 +392,37 @@ function wireFrictionToggle() {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
       toggleFrictionReminders();
+    }
+  });
+}
+
+// ---------- Cooling-off toggle ----------
+async function renderCoolOffToggle() {
+  const on = await DTCoolOff.isOn();
+  const btn = $("cooloff-toggle");
+  btn.classList.toggle("on", on);
+  btn.setAttribute("aria-checked", String(on));
+}
+
+// Turning the cooling-off off is itself a weakening change, so it pays the wait it
+// is about to remove. Turning it on is instant.
+async function toggleCoolOff() {
+  const current = await DTCoolOff.isOn();
+  const host = $("cooloff-toggle").closest(".ctrl");
+  await DTCoolOff.commit(host, "coolOffEnabled", current, !current, async () => {
+    await chrome.storage.sync.set({ coolOffEnabled: !current });
+    toast();
+    renderCoolOffToggle();
+  });
+}
+
+function wireCoolOffToggle() {
+  const btn = $("cooloff-toggle");
+  btn.addEventListener("click", toggleCoolOff);
+  btn.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      toggleCoolOff();
     }
   });
 }
@@ -430,7 +482,9 @@ function init() {
   wireStepper(LOCK_STEP);
   wireStepper(UNLOCK_STEP);
   wireStepper(FRICTION_STEP);
+  wireStepper(FREEPASS_STEP);
   wireFrictionToggle();
+  wireCoolOffToggle();
   wireThemes();
 
   renderDomains();
@@ -439,7 +493,9 @@ function init() {
   loadStepper(LOCK_STEP);
   loadStepper(UNLOCK_STEP);
   loadStepper(FRICTION_STEP);
+  loadStepper(FREEPASS_STEP);
   renderFrictionToggle();
+  renderCoolOffToggle();
   renderTheme();
 }
 

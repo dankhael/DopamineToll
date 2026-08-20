@@ -19,6 +19,11 @@
     "placeholders": { "walked": { "content": "$1" }, "paid": { "content": "$2" }, "pass": { "content": "$3" } }
   },
   "popupFreePasses": { "message": "フリーパス" },
+  "popupTurnOffIn": {
+    "message": "$SEC$秒後にオフ・タップで取り消し",
+    "placeholders": { "sec": { "content": "$1", "example": "30" } }
+  },
+  "popupTurnOffNote": { "message": "このウィンドウを閉じるとカウントは最初からになります" },
 
   "optionsTitle": { "message": "Dopamine Toll — 設定" },
   "optionsSubtitle": { "message": "設定は自動的に保存されます。<b>リストにあるサイトに着くたびに通行料が発生します。</b>" },
@@ -60,6 +65,15 @@
   "optionsEveryD": { "message": "ポップアップの間隔（タブ滞在の分数）。" },
   "optionsFrictionDecAria": { "message": "リマインダー間隔を減らす" },
   "optionsFrictionIncAria": { "message": "リマインダー間隔を増やす" },
+  "optionsCoolOffH2": { "message": "待機時間" },
+  "optionsCoolOffHint": { "message": "通行料を弱める変更 — オフにする、サイトを削除する、カウントダウンを短くする — は、適用まで30秒待ちます。通行料と同じく、このページが手前にあるときだけカウントが進みます。ブラウザーの拡張機能ページには及びません。そこではいつでも拡張機能を丸ごとオフにできます。" },
+  "optionsCoolOffK": { "message": "待機時間" },
+  "optionsCoolOffD": { "message": "通行料を弱めるのに30秒かかるようにする。" },
+  "optionsCoolOffToggleAria": { "message": "待機時間を切り替える" },
+  "optionsCoolOffWait": {
+    "message": "$SEC$秒・取り消し",
+    "placeholders": { "sec": { "content": "$1", "example": "30" } }
+  },
   "optionsThemeH2": { "message": "テーマ" },
   "optionsThemeHint": { "message": "通行料画面、ポップアップ、そしてこのページの色を変えます。" },
   "themeAmber": { "message": "アンバー" },

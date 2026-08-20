@@ -58,6 +58,15 @@
     "message": "free passes",
     "description": "Popup row label: free passes left today, shown only when the allowance is above zero."
   },
+  "popupTurnOffIn": {
+    "message": "turning off in $SEC$s · tap to cancel",
+    "description": "Popup label while the cooling-off before switching the extension off is counting down.",
+    "placeholders": { "sec": { "content": "$1", "example": "30" } }
+  },
+  "popupTurnOffNote": {
+    "message": "close this window and the count starts over",
+    "description": "Warning under the cooling-off countdown in the popup, which closes on blur."
+  },
 
   "optionsTitle": {
     "message": "Dopamine Toll — settings",
@@ -126,6 +135,16 @@
   "optionsEveryD": { "message": "Minutes on the tab between pop-ups." },
   "optionsFrictionDecAria": { "message": "decrease reminder interval" },
   "optionsFrictionIncAria": { "message": "increase reminder interval" },
+  "optionsCoolOffH2": { "message": "Cooling-off" },
+  "optionsCoolOffHint": { "message": "Changes that weaken the toll — switching it off, removing a site, shortening the countdown — sit through 30 seconds before they apply. Like the toll itself, the count only runs while this page is in front of you. It cannot cover your browser's own extensions page, where the extension can always be switched off outright." },
+  "optionsCoolOffK": { "message": "Cooling-off" },
+  "optionsCoolOffD": { "message": "Make weakening the toll cost 30 seconds." },
+  "optionsCoolOffToggleAria": { "message": "toggle cooling-off" },
+  "optionsCoolOffWait": {
+    "message": "$SEC$s · cancel",
+    "description": "Label on the in-place cooling-off countdown in settings; tapping it cancels.",
+    "placeholders": { "sec": { "content": "$1", "example": "30" } }
+  },
   "optionsThemeH2": { "message": "Theme" },
   "optionsThemeHint": { "message": "Recolors the toll screen, the popup, and this page." },
   "themeAmber": { "message": "Amber" },

@@ -19,6 +19,11 @@
     "placeholders": { "walked": { "content": "$1" }, "paid": { "content": "$2" }, "pass": { "content": "$3" } }
   },
   "popupFreePasses": { "message": "passes livres" },
+  "popupTurnOffIn": {
+    "message": "desligando em $SEC$s · toque para cancelar",
+    "placeholders": { "sec": { "content": "$1", "example": "30" } }
+  },
+  "popupTurnOffNote": { "message": "se fechar esta janela, a contagem recomeça" },
 
   "optionsTitle": { "message": "Dopamine Toll — configurações" },
   "optionsSubtitle": { "message": "Suas configurações são salvas automaticamente. <b>O pedágio é cobrado toda vez que você chega a um site da lista.</b>" },
@@ -60,6 +65,15 @@
   "optionsEveryD": { "message": "Minutos na aba entre um pop-up e outro." },
   "optionsFrictionDecAria": { "message": "diminuir intervalo dos lembretes" },
   "optionsFrictionIncAria": { "message": "aumentar intervalo dos lembretes" },
+  "optionsCoolOffH2": { "message": "Período de espera" },
+  "optionsCoolOffHint": { "message": "Mudanças que enfraquecem o pedágio — desligar, remover um site, encurtar a contagem — esperam 30 segundos antes de valer. Como o próprio pedágio, a contagem só corre enquanto esta página está à sua frente. Ela não alcança a página de extensões do navegador, onde a extensão sempre pode ser desligada de uma vez." },
+  "optionsCoolOffK": { "message": "Período de espera" },
+  "optionsCoolOffD": { "message": "Fazer com que enfraquecer o pedágio custe 30 segundos." },
+  "optionsCoolOffToggleAria": { "message": "alternar período de espera" },
+  "optionsCoolOffWait": {
+    "message": "$SEC$s · cancelar",
+    "placeholders": { "sec": { "content": "$1", "example": "30" } }
+  },
   "optionsThemeH2": { "message": "Tema" },
   "optionsThemeHint": { "message": "Recolore a tela de pedágio, o popup e esta página." },
   "themeAmber": { "message": "Âmbar" },

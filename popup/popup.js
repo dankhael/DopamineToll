@@ -30,15 +30,6 @@ async function applyThemeFromStorage() {
   try { localStorage.setItem("dt-theme", theme); } catch {}
 }
 
-// Local calendar day, e.g. "2026-06-01". Matches todayKey() in the service
-// worker so the popup and the counter agree on when "today" rolls over.
-function todayKey() {
-  const d = new Date();
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const dd = String(d.getDate()).padStart(2, "0");
-  return `${d.getFullYear()}-${mm}-${dd}`;
-}
-
 function setStatus({ host, meta, state }) {
   $("status-host").textContent = host;
   $("status-meta").textContent = meta || "";
@@ -49,9 +40,35 @@ function setStatus({ host, meta, state }) {
 
 async function refreshStat() {
   const { tollStats } = await chrome.storage.local.get("tollStats");
-  const fresh = tollStats && tollStats.date === todayKey() ? tollStats : { walkedAway: 0, paid: 0 };
+  const today = DTFreePass.dayKey(new Date());
+  const fresh = tollStats && tollStats.date === today ? tollStats : {};
   // Message carries the <b> wrapper and word order; counts are the substitutions.
-  $("stat").innerHTML = DTI18n.t("popupStat", [String(fresh.walkedAway || 0), String(fresh.paid || 0)]);
+  // Free passes are counted apart from "paid" so the tally of tolls actually waited
+  // out stays honest.
+  $("stat").innerHTML = DTI18n.t("popupStat", [
+    String(fresh.walkedAway || 0),
+    String(fresh.paid || 0),
+    String(fresh.spentFreePass || 0)
+  ]);
+}
+
+// Today's free-pass balance, read straight from the local ledger (ADR-0004) rather
+// than round-tripping through the worker. The row is absent when the user has not
+// asked for passes at all.
+async function refreshFreePasses() {
+  const [sync, local] = await Promise.all([
+    chrome.storage.sync.get("freePassAllowance"),
+    chrome.storage.local.get(DTFreePass.STORAGE_KEY)
+  ]);
+  const allowance = DTFreePass.clampAllowance(sync.freePassAllowance);
+  $("freepass-row").hidden = allowance === 0;
+  if (allowance === 0) return;
+  const ledger = DTFreePass.currentLedger(
+    local[DTFreePass.STORAGE_KEY],
+    DTFreePass.dayKey(new Date()),
+    allowance
+  );
+  $("freepass-count").textContent = `${DTFreePass.passesLeft(ledger, allowance)}/${allowance}`;
 }
 
 // Firefox grants <all_urls> at install, but lets the user revoke it per-site or
@@ -85,6 +102,7 @@ async function refresh() {
   $("toggle").classList.toggle("on", enabled);
   $("toggle").setAttribute("aria-checked", String(enabled));
   refreshStat();
+  refreshFreePasses();
 
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   if (!tab || !tab.url) {
@@ -131,9 +149,53 @@ async function refresh() {
   }
 }
 
+// Switching the extension off sits through the cooling-off first (ADR-0003). The
+// countdown lives in the popup and dies with it: on desktop the popup closes the
+// moment it loses focus, and abandoning the wait costs the wait — the same rule as
+// walking away from the gate. The note under the countdown says so out loud, so it
+// reads as the rule it is rather than as a bug.
+let turnOffControl = null;
+
+function stopTurnOff() {
+  if (turnOffControl) turnOffControl.stop();
+  turnOffControl = null;
+  $("turnoff").hidden = true;
+}
+
+function startTurnOff() {
+  const cancel = $("turnoff-cancel");
+  $("turnoff").hidden = false;
+  cancel.textContent = DTI18n.t("popupTurnOffIn", [String(DTTollGuard.COOL_OFF_SECONDS)]);
+
+  turnOffControl = DTCountdown.startFocusCountdown(DTTollGuard.COOL_OFF_SECONDS, {
+    ...DTCountdown.pageActivity(document, window),
+    onTick: (remaining) => {
+      cancel.textContent = DTI18n.t("popupTurnOffIn", [String(remaining)]);
+    },
+    onDone: async () => {
+      stopTurnOff();
+      await chrome.storage.sync.set({ enabled: false });
+      refresh();
+    }
+  });
+}
+
+async function coolOffIsOn() {
+  const { coolOffEnabled } = await chrome.storage.sync.get("coolOffEnabled");
+  return coolOffEnabled === true;
+}
+
 async function toggleEnabled() {
+  // While a turn-off is counting down, the toggle is the second way to call it off.
+  if (turnOffControl) return stopTurnOff();
+
   const { enabled = true } = await chrome.storage.sync.get("enabled");
-  await chrome.storage.sync.set({ enabled: !enabled });
+  const next = !enabled;
+  if (DTTollGuard.isWeakening("enabled", enabled, next) && (await coolOffIsOn())) {
+    startTurnOff();
+    return;
+  }
+  await chrome.storage.sync.set({ enabled: next });
   refresh();
 }
 
@@ -146,6 +208,7 @@ $("toggle").addEventListener("keydown", (e) => {
 });
 
 $("grant-access").addEventListener("click", requestSiteAccess);
+$("turnoff-cancel").addEventListener("click", stopTurnOff);
 
 // The settings page opens in a tab behind the popup. On desktop the popup closes
 // itself when it loses focus; on Android it is a full page that just sits there,

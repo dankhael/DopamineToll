@@ -149,3 +149,34 @@ html.android .popup {
   cursor: pointer;
 }
 .grantbtn[hidden] { display: none; }
+
+/* turn-off cooling-off — the wait before the extension actually switches off
+   (ADR-0003). It lives here, in the popup, and dies with it: the note spells that
+   out so a vanished countdown reads as the rule rather than as a bug. */
+.turnoff {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.turnoff[hidden] { display: none; }
+.turnoff-btn {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--terra);
+  color: var(--terra);
+  border-radius: var(--r-sm);
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  padding: 11px;
+  cursor: pointer;
+}
+.turnoff-btn:hover { background: rgba(207, 102, 56, 0.12); }
+.turnoff-note {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  line-height: 1.45;
+  color: var(--faint);
+  text-align: center;
+}

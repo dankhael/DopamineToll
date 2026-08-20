@@ -38,8 +38,24 @@ cue stay constant). The popup fills its window with no outer frame.
 - **North star photos** — user-uploaded, resized client-side to ≤600px and stored as
   `{name, src}` (base64) in `chrome.storage.local` (max 8, warns past 300KB). Legacy
   bare-string entries are still read.
-- **Daily tally** — the popup shows today's "walked away N× · paid M×", tracked in
-  `chrome.storage.local` under `tollStats` and reset on the local calendar day.
+- **Daily tally** — the popup shows today's "walked away N× · paid M× · free pass P×",
+  tracked in `chrome.storage.local` under `tollStats` and reset on the local calendar
+  day. Free passes are counted apart from paid tolls so the count of tolls actually
+  waited out stays honest.
+- **Free passes** — an optional daily allowance (0–3, default 0) that skips the
+  countdown and opens the site straight away. The balance lives per device in
+  `chrome.storage.local` under `freePassLedger`, refills lazily at local midnight and
+  never accumulates; raising the allowance only takes effect at the next refill. The
+  gate hides the button entirely once the day's balance is empty. See
+  [ADR-0004](docs/adr/0004-free-passes-in-local-storage.md).
+- **Cooling-off** — optional (default off). A change that *weakens* the toll — turning
+  the extension off, removing a site, shortening the countdown, granting more free
+  passes, muting friction reminders — sits through a 30-second countdown in place
+  before it applies; tightening changes are instant. The count obeys the same rule as
+  the gate's toll (it only runs while the page is in front of you), and countdowns on
+  different controls run independently. See
+  [ADR-0003](docs/adr/0003-cooling-off-30s-per-change.md) for what it deliberately
+  does **not** protect.
 - **Accent themes** — Amber / Indigo / Emerald / Rose, chosen in settings and applied
   across the overlay, popup, settings page, the **toolbar icon** (the service worker
   repaints the gauge in the active accent via OffscreenCanvas), and the **settings-tab
@@ -53,14 +69,19 @@ cue stay constant). The popup fills its window with no outer frame.
 manifest.json
 gen-icons.ps1           # regenerates the countdown-gauge toolbar icons
 background/
-  service-worker.js     # navigation listener, unlock state, daily tally, message router
+  service-worker.js     # navigation listener, unlock state, free-pass ledger, message router
 content/
   blocker.js            # SPA hooks, overlay injection, MutationObserver
   blocker.css           # "V1 Stark" overlay, scoped under #dopamine-toll-overlay
+shared/                 # classic scripts, no bundler — each attaches one DT* global
+  countdown.js          # the clock that only runs while you are looking at it
+  freepass.js           # the daily free-pass ledger: refill, balance, spend
+  tollguard.js          # which setting changes weaken the toll and must wait
 options/
   index.html
   options.css           # settings page styles
   options.js            # toll list, north star, phrases, steppers — autosave
+  cooloff.js            # makes a weakening change wait before it applies
 popup/
   popup.html
   popup.css             # popup styles
@@ -237,6 +258,15 @@ tests are manual interaction tests in a real browser. The checklist:
   be intercepted. Intentional, to avoid breaking embeds.
 - **Sync storage size** — phrases and domain lists go in `chrome.storage.sync`
   (~100KB total). Images are deliberately in `chrome.storage.local` to avoid this.
+- **The cooling-off cannot cover the browser's own extensions page.** No extension,
+  on any browser, can intercept or delay being disabled or removed from
+  `chrome://extensions` / `about:addons` — no such hook exists. Uninstalling clears
+  all storage, so a reinstall resets every guard. The cooling-off raises the price of
+  an impulse; it is not a lock, and does not pretend to be one
+  ([ADR-0003](docs/adr/0003-cooling-off-30s-per-change.md)).
+- **Free passes are per device.** The balance is deliberately not synced: sync
+  propagation is delayed and best-effort, so a shared counter would let two open
+  browsers spend the same pass twice ([ADR-0004](docs/adr/0004-free-passes-in-local-storage.md)).
 
 ## Privacy
 

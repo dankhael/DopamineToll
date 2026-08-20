@@ -18,11 +18,17 @@
 
     <div class="rows">
       <div class="row"><span class="l" data-i18n="popupTollList">toll list</span><span class="r amber" id="count">…</span></div>
+      <div class="row" id="freepass-row" hidden><span class="l" data-i18n="popupFreePasses">free passes</span><span class="r amber" id="freepass-count">…</span></div>
       <div class="row status" id="status">
         <div class="head2"><span class="dot"></span><span id="status-host" data-i18n="popupChecking">checking tab…</span></div>
         <div class="meta" id="status-meta"></div>
       </div>
       <div class="row stat"><span class="l" id="stat"></span></div>
+    </div>
+
+    <div class="turnoff" id="turnoff" hidden>
+      <button class="turnoff-btn" id="turnoff-cancel"></button>
+      <span class="turnoff-note" data-i18n="popupTurnOffNote">close this window and the count starts over</span>
     </div>
 
     <button class="grantbtn" id="grant-access" data-i18n="popupGrantAccess" hidden>Grant site access</button>
@@ -31,6 +37,9 @@
 
   <script src="../shared/i18n.js"></script>
   <script src="../shared/platform.js"></script>
+  <script src="../shared/freepass.js"></script>
+  <script src="../shared/countdown.js"></script>
+  <script src="../shared/tollguard.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>
