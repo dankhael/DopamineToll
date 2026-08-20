@@ -42,6 +42,17 @@
     };
   }
 
+  // Wrapped, never `{ setInterval, clearInterval }`. Detaching the globals into an
+  // object and calling them as `clock.setInterval(...)` passes `this` as that object,
+  // and the browser requires the real global — it throws `TypeError: Illegal
+  // invocation`. Node does not care, which is exactly why this got shipped: the tests
+  // inject fake timers, so the default clock was never exercised under a browser's
+  // rule. Calling through an arrow keeps the call a plain global one.
+  const DEFAULT_TIMERS = {
+    setInterval: (fn, ms) => setInterval(fn, ms),
+    clearInterval: (id) => clearInterval(id)
+  };
+
   function requireFn(fn, name) {
     if (typeof fn !== "function") {
       throw new Error(`startFocusCountdown needs ${name} to be a function, got: ${typeof fn}`);
@@ -63,7 +74,7 @@
       onTick: typeof onTick === "function" ? onTick : noop,
       onPause: typeof onPause === "function" ? onPause : noop,
       onResume: typeof onResume === "function" ? onResume : noop,
-      clock: timers || { setInterval, clearInterval }
+      clock: timers || DEFAULT_TIMERS
     };
   }
 

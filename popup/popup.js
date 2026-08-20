@@ -94,10 +94,13 @@ async function refresh() {
   }
   $("grant-access").hidden = true;
 
-  const { blockedDomains = [], enabled = true } = await chrome.storage.sync.get([
-    "blockedDomains",
-    "enabled"
-  ]);
+  const {
+    blockedDomains = [],
+    enabled = true,
+    coolOffEnabled = false
+  } = await chrome.storage.sync.get(["blockedDomains", "enabled", "coolOffEnabled"]);
+  lastEnabled = enabled;
+  lastCoolOffOn = coolOffEnabled === true;
   $("count").textContent = String(blockedDomains.length);
   $("toggle").classList.toggle("on", enabled);
   $("toggle").setAttribute("aria-checked", String(enabled));
@@ -155,6 +158,8 @@ async function refresh() {
 // walking away from the gate. The note under the countdown says so out loud, so it
 // reads as the rule it is rather than as a bug.
 let turnOffControl = null;
+let lastEnabled = true;
+let lastCoolOffOn = false;
 
 function stopTurnOff() {
   if (turnOffControl) turnOffControl.stop();
@@ -180,18 +185,21 @@ function startTurnOff() {
   });
 }
 
-async function toggleEnabled() {
+// Mirrored from the last refresh, which runs every second. Reading them per click
+// would put an await between "is a countdown already running?" and starting one, and
+// a second click landing inside that gap strands the first countdown — the same shape
+// of bug that let three cooling-offs stack on one setting in the options page.
+function toggleEnabled() {
   // While a turn-off is counting down, the toggle is the second way to call it off.
   if (turnOffControl) return stopTurnOff();
 
-  const { enabled = true } = await chrome.storage.sync.get("enabled");
-  const next = !enabled;
-  if (DTTollGuard.isWeakening("enabled", enabled, next) && (await DTTollGuard.isOn(chrome.storage.sync))) {
+  const next = !lastEnabled;
+  if (lastCoolOffOn && DTTollGuard.isWeakening("enabled", lastEnabled, next)) {
     startTurnOff();
     return;
   }
-  await chrome.storage.sync.set({ enabled: next });
-  refresh();
+  lastEnabled = next;
+  chrome.storage.sync.set({ enabled: next }).then(refresh);
 }
 
 $("toggle").addEventListener("click", toggleEnabled);

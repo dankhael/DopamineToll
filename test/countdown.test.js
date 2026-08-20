@@ -281,3 +281,48 @@ test("watchActivity listens on all three signals and unsubscribes cleanly", () =
   assert.equal(win.count("focus"), 0);
   assert.equal(win.count("blur"), 0);
 });
+
+// ----- the default clock, under a browser's rules -----
+
+test("the default clock works where the host demands a real global `this`", () => {
+  // Browsers back setInterval with a WebIDL operation that rejects any `this` other
+  // than the global — pulling it into an object and calling it as a method throws
+  // `TypeError: Illegal invocation`. Node does not enforce that, so this test
+  // installs the rule to catch a countdown that would only die in a real browser.
+  const realSet = globalThis.setInterval;
+  const realClear = globalThis.clearInterval;
+  const armed = [];
+  // A bare global call has `this === undefined` under strict mode and the browser
+  // accepts it; what it rejects is being called as a method on some other object.
+  const illegal = (self) => self !== undefined && self !== globalThis;
+  globalThis.setInterval = function guardedSetInterval(fn, ms) {
+    if (illegal(this)) throw new TypeError("Illegal invocation");
+    armed.push({ fn, ms });
+    return armed.length;
+  };
+  globalThis.clearInterval = function guardedClearInterval(id) {
+    if (illegal(this)) throw new TypeError("Illegal invocation");
+    armed[id - 1] = null;
+  };
+
+  try {
+    const activity = new FakeActivity();
+    let done = 0;
+    // No `timers` injected: this is the path every real surface actually takes.
+    const control = startFocusCountdown(30, {
+      ...activity.hooks,
+      onDone: () => {
+        done += 1;
+      }
+    });
+
+    assert.equal(armed.length, 1, "a real countdown was armed rather than throwing");
+    assert.equal(armed[0].ms, 1000);
+    control.stop();
+    assert.equal(armed[0], null, "and stopping it clears the timer the same way");
+    assert.equal(done, 0);
+  } finally {
+    globalThis.setInterval = realSet;
+    globalThis.clearInterval = realClear;
+  }
+});
