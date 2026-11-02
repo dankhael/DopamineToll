@@ -32,7 +32,7 @@
   "optionsDomainPlaceholder": { "message": "beispiel.com oder youtube.com/shorts" },
   "optionsAdd": { "message": "Hinzufügen" },
   "optionsNorthStarH2": { "message": "Dein Nordstern" },
-  "optionsNorthStarHint": { "message": "Das Bild, das du auf dem Maut-Bildschirm siehst — das, was du dir vorgenommen hast. Es wird eines nach dem anderen gezeigt, zufällig ausgewählt." },
+  "optionsNorthStarHint": { "message": "Das Bild, das du auf dem Maut-Bildschirm siehst — das, was du dir vorgenommen hast. Es wird eines nach dem anderen gezeigt, zufällig ausgewählt. Animierte GIFs bleiben in Bewegung." },
   "optionsPhrasesH2": { "message": "Was du dir selbst gesagt hast" },
   "optionsPhrasesHint": { "message": "In deinen eigenen Worten. Bei jeder Maut erscheint einer davon unter dem Foto." },
   "optionsPhrasePlaceholder": { "message": "schreib einen Satz, der trifft…" },
@@ -118,6 +118,20 @@
     "placeholders": { "err": { "content": "$1" } }
   },
   "optionsDecodeError": { "message": "Bild konnte nicht dekodiert werden" },
+  "optionsGifTooBig": {
+    "message": "dieses GIF hat $SIZE$KB — animierte GIFs werden Bild für Bild gespeichert, daher liegt die Grenze bei $MAX$KB. Nimm ein kürzeres oder kleineres",
+    "placeholders": {
+      "size": { "content": "$1", "example": "3420" },
+      "max": { "content": "$2", "example": "2048" }
+    }
+  },
+  "optionsPhotosFull": {
+    "message": "kein Platz mehr dafür — deine Fotos belegen schon $USED$KB von $MAX$KB. Entferne zuerst eines",
+    "placeholders": {
+      "used": { "content": "$1", "example": "7900" },
+      "max": { "content": "$2", "example": "8192" }
+    }
+  },
 
   "overlayNorthStarAlt": { "message": "dein Nordstern" },
   "overlayOnList": { "message": "auf deiner Maut-Liste" },

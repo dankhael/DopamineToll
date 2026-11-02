@@ -32,7 +32,7 @@
   "optionsDomainPlaceholder": { "message": "exemple.com ou youtube.com/shorts" },
   "optionsAdd": { "message": "Ajouter" },
   "optionsNorthStarH2": { "message": "Votre étoile polaire" },
-  "optionsNorthStarHint": { "message": "L'image que vous verrez sur l'écran de péage — ce que vous avez dit vouloir. Une seule à la fois, choisie au hasard." },
+  "optionsNorthStarHint": { "message": "L'image que vous verrez sur l'écran de péage — ce que vous avez dit vouloir. Une seule à la fois, choisie au hasard. Les GIF animés restent animés." },
   "optionsPhrasesH2": { "message": "Ce que vous vous êtes dit" },
   "optionsPhrasesHint": { "message": "Écrites avec vos propres mots. L'une apparaît sous la photo à chaque péage." },
   "optionsPhrasePlaceholder": { "message": "écrivez une phrase qui frappe…" },
@@ -118,6 +118,20 @@
     "placeholders": { "err": { "content": "$1" } }
   },
   "optionsDecodeError": { "message": "impossible de décoder l'image" },
+  "optionsGifTooBig": {
+    "message": "ce GIF fait $SIZE$KB — les GIF animés sont gardés image par image, la limite est donc de $MAX$KB. Essayez-en un plus court ou plus petit",
+    "placeholders": {
+      "size": { "content": "$1", "example": "3420" },
+      "max": { "content": "$2", "example": "2048" }
+    }
+  },
+  "optionsPhotosFull": {
+    "message": "plus de place pour celle-ci — vos photos occupent déjà $USED$KB sur $MAX$KB. Retirez-en une d'abord",
+    "placeholders": {
+      "used": { "content": "$1", "example": "7900" },
+      "max": { "content": "$2", "example": "8192" }
+    }
+  },
 
   "overlayNorthStarAlt": { "message": "votre étoile polaire" },
   "overlayOnList": { "message": "dans votre liste de péage" },

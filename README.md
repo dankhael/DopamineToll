@@ -40,7 +40,7 @@ on purpose.
   </tr>
   <tr>
     <td><b>A countdown you can't skip.</b> The gate drops before the page loads, and the clock pauses when you switch tabs, so you can't wait it out in the background.</td>
-    <td><b>Look at what you actually want.</b> Upload up to 8 photos of what you're working toward; one shows up on every toll.</td>
+    <td><b>Look at what you actually want.</b> Upload up to 8 photos of what you're working toward (animated GIFs keep moving); one shows up on every toll.</td>
   </tr>
   <tr>
     <td><img src="docs/readme/screenshot-3-phrases.jpg" alt="Your own phrases on the gate"></td>
@@ -79,6 +79,9 @@ on purpose.
   Reddit, Instagram and YouTube, not just full page loads.
 - **Per-tab unlocks.** Paying unlocks one site in one tab, and everything resets
   when the browser closes.
+- **North stars that move.** Photos are downscaled to keep storage light, but an
+  animated GIF (up to 2 MB) is kept as it is, so it plays on the gate
+  ([ADR-0005](docs/adr/0005-animated-gifs-stored-as-they-are.md)).
 - **Free passes.** An optional daily allowance (0–3, off by default) that skips the
   countdown outright. Passes refill at midnight and never stack up, and raising
   the number only counts from tomorrow

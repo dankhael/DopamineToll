@@ -41,6 +41,15 @@ checklist for that.
 - `mobile.twitter.com` and `m.instagram.com` should be tolled when the bare domain
   is on the list.
 
+**Animated north star**
+1. Upload an animated GIF under 2 MB → its thumbnail moves in settings, and it
+   moves on the gate (remove the other photos so it is the one picked).
+2. Upload a single-frame GIF → it is stored as a JPEG like any photo (it shows,
+   still).
+3. Upload an animated GIF over 2 MB → refused, with its size and the limit.
+4. Keep adding GIFs near 2 MB → once photos would pass 8 MB, the upload is refused
+   with how much is in use, and nothing is saved.
+
 **Storage edge cases**
 1. Remove all phrases in options → overlay falls back to the default phrase set.
 2. Remove all north star photos → overlay shows the striped placeholder card.

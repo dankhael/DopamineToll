@@ -85,7 +85,7 @@
   "optionsAdd": { "message": "Add" },
   "optionsNorthStarH2": { "message": "Your north star" },
   "optionsNorthStarHint": {
-    "message": "The picture you'll see on the toll screen — what you said you wanted. One shows at a time, picked at random."
+    "message": "The picture you'll see on the toll screen — what you said you wanted. One shows at a time, picked at random. Animated GIFs keep moving."
   },
   "optionsPhrasesH2": { "message": "Things you told yourself" },
   "optionsPhrasesHint": {
@@ -204,6 +204,22 @@
     "placeholders": { "err": { "content": "$1", "example": "could not decode image" } }
   },
   "optionsDecodeError": { "message": "could not decode image" },
+  "optionsGifTooBig": {
+    "message": "this GIF is $SIZE$KB — animated GIFs are kept frame for frame, so the limit is $MAX$KB. Try a shorter or smaller one",
+    "description": "Shown when an animated GIF north star is over the size kept without re-encoding.",
+    "placeholders": {
+      "size": { "content": "$1", "example": "3420" },
+      "max": { "content": "$2", "example": "2048" }
+    }
+  },
+  "optionsPhotosFull": {
+    "message": "no room left for this one — your photos already take $USED$KB of $MAX$KB. Remove one first",
+    "description": "Shown when a new north star photo would push all photos past their storage budget.",
+    "placeholders": {
+      "used": { "content": "$1", "example": "7900" },
+      "max": { "content": "$2", "example": "8192" }
+    }
+  },
 
   "overlayNorthStarAlt": { "message": "your north star" },
   "overlayOnList": { "message": "on your toll list" },

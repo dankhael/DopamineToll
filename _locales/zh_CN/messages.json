@@ -32,7 +32,7 @@
   "optionsDomainPlaceholder": { "message": "example.com 或 youtube.com/shorts" },
   "optionsAdd": { "message": "添加" },
   "optionsNorthStarH2": { "message": "你的北极星" },
-  "optionsNorthStarHint": { "message": "你会在过路费界面看到的图片 — 你说过你想要的东西。每次随机显示一张。" },
+  "optionsNorthStarHint": { "message": "你会在过路费界面看到的图片 — 你说过你想要的东西。每次随机显示一张。动图会保持动态。" },
   "optionsPhrasesH2": { "message": "你对自己说过的话" },
   "optionsPhrasesHint": { "message": "用你自己的话写下。每次收取过路费时，都会在照片下方显示一句。" },
   "optionsPhrasePlaceholder": { "message": "写一句能打动你的话…" },
@@ -118,6 +118,20 @@
     "placeholders": { "err": { "content": "$1" } }
   },
   "optionsDecodeError": { "message": "无法解码图片" },
+  "optionsGifTooBig": {
+    "message": "此 GIF 为 $SIZE$KB — 动图会按原样保存，上限为 $MAX$KB。请换一个更短或更小的",
+    "placeholders": {
+      "size": { "content": "$1", "example": "3420" },
+      "max": { "content": "$2", "example": "2048" }
+    }
+  },
+  "optionsPhotosFull": {
+    "message": "空间不足 — 照片已占用 $MAX$KB 中的 $USED$KB。请先删除一张",
+    "placeholders": {
+      "used": { "content": "$1", "example": "7900" },
+      "max": { "content": "$2", "example": "8192" }
+    }
+  },
 
   "overlayNorthStarAlt": { "message": "你的北极星" },
   "overlayOnList": { "message": "在你的过路费清单中" },
