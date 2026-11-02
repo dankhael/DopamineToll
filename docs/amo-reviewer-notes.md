@@ -40,8 +40,9 @@ code, no analytics, no telemetry, no accounts, no ads, and no server operated by
 developer. `data_collection_permissions` is declared as `required: ["none"]`. Full
 policy: https://github.com/dankhael/DopamineToll/blob/main/PRIVACY.md
 
-**Storage:** `storage.sync` for settings, `storage.local` for user-uploaded images and
-the daily counter, `storage.session` for per-tab unlock state. All browser-local.
+**Storage:** `storage.sync` for settings, `storage.local` for user-uploaded images, the
+daily counter and the day's free-pass balance, `storage.session` for per-tab unlock
+state. All browser-local.
 
 **About the three `innerHTML` assignments flagged by the linter**
 (`content/friction.js`, `popup/popup.js`, `shared/i18n.js`): these render localized

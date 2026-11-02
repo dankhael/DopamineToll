@@ -10,7 +10,7 @@ Page content is never read, inspected, stored or transmitted. The content script
 
 **Network:** none. No remote code, analytics, telemetry, accounts, ads, or developer-run server. data_collection_permissions is declared as required: ["none"]. Policy: https://github.com/dankhael/DopamineToll/blob/main/PRIVACY.md
 
-**Storage:** storage.sync for settings, storage.local for user-uploaded images and the daily counter, storage.session for per-tab unlock state. All browser-local.
+**Storage:** storage.sync for settings, storage.local for user-uploaded images, the daily counter and the day's free-pass balance, storage.session for per-tab unlock state. All browser-local.
 
 **The three innerHTML assignments the linter flags** (content/gate-view.js, popup/popup.js, shared/i18n.js): these render localized strings from the extension's own _locales catalogs, which contain <b> markup so translators control emphasis and word order — required for ja/de/zh_CN, where splitting the sentence breaks grammatical order. The substituted values are never user input: they are integers (String(count)) and the extension's own formatted elapsed-time string. Every value originating from the user — block-list entries, phrases, image data, the current domain — is written with textContent or assigned to img.src, never interpolated into markup. All other overlay and list rendering was converted to DOM construction for this release.
 
