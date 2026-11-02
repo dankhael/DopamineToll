@@ -100,6 +100,26 @@ assets/
 3. Click **Load unpacked** and select this project's root folder.
 4. The Dopamine Toll icon should appear in the toolbar. Pin it for easier access.
 
+**Throwaway dev browser** — skips all of the above, and keeps your own profile out
+of it:
+
+```bash
+npm run dev                         # Helium (else Chromium), fresh profile
+npm run dev -- https://x.com        # also open a tolled site once the extension is up
+npm run dev -- --keep               # reuse one profile, so settings survive restarts
+npm run dev -- --browser chromium   # pick the browser (name or path)
+```
+
+It starts the browser with the extension loaded, developer mode on and the icon
+pinned, in a temp profile with no history, logins or other extensions. It opens the
+extension's card on `chrome://extensions` and its settings page, and deletes the
+profile when the browser closes. So every run is a first install, with the default
+toll list seeded again. `--keep` stores the profile in
+`~/.cache/dopamine-toll/dev-profile` instead (outside the repo, where `web-ext`
+would pick it up). Branded Google Chrome 137+ ignores `--load-extension`, so it is
+not on the list. Helium's bundled uBlock Origin stays on, because it is a component
+extension.
+
 **Firefox** — one manifest serves both browsers (see `docs/adr/0001`), so the same
 folder loads as-is:
 
