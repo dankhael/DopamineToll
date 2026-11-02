@@ -1,4 +1,5 @@
-// The north star photos: upload, downscale, store, render, remove.
+// The north star photos: upload, downscale, store, render, remove. An animated GIF
+// skips the downscale and is stored as it is, so it keeps moving on the gate.
 //
 // Split out of options.js so that file stays about the settings and this one owns
 // one thing — the photos. `toast` is passed in rather than reached for, so this
@@ -83,39 +84,77 @@
     return c.toDataURL("image/jpeg", 0.85);
   }
 
-  async function handleUpload(file) {
+  // Shown under the grid; an empty message hides it.
+  function showWarn(message) {
     const warn = $("upload-warn");
-    warn.style.display = "none";
-    warn.textContent = "";
-
-    const { goalImages = [] } = await chrome.storage.local.get("goalImages");
-    if (goalImages.length >= MAX_IMAGES) {
-      warn.style.display = "block";
-      warn.textContent = DTI18n.t("optionsLimitReached", [String(MAX_IMAGES)]);
-      return;
-    }
-
-    try {
-      const raw = await readFileAsDataURL(file);
-      const img = await loadImageElement(raw);
-      const compressed = resizeToBase64(img, MAX_DIM);
-      // base64 length * 0.75 ≈ bytes
-      const bytes = Math.floor((compressed.length - "data:image/jpeg;base64,".length) * 0.75);
-      if (bytes > MAX_IMAGE_BYTES) {
-        warn.style.display = "block";
-        const kb = String((bytes / 1024).toFixed(0));
-        const maxKb = String(Math.round(MAX_IMAGE_BYTES / 1024));
-        warn.textContent = DTI18n.t("optionsCompressWarn", [kb, maxKb]);
-      }
-      await chrome.storage.local.set({ goalImages: [...goalImages, { name: file.name, src: compressed }] });
-      toast();
-      renderStars();
-    } catch (err) {
-      warn.style.display = "block";
-      warn.textContent = DTI18n.t("optionsUploadFailed", [String(err.message || err)]);
-    }
+    warn.textContent = message || "";
+    warn.style.display = message ? "block" : "none";
   }
 
+  const kb = (bytes) => String(Math.round(bytes / 1024));
+
+  // A refusal from DTPhotoBudget, as the sentence the user reads.
+  function refusalMessage(refusal) {
+    if (refusal.reason === "tooBig") {
+      return DTI18n.t("optionsGifTooBig", [kb(refusal.size), kb(refusal.max)]);
+    }
+    return DTI18n.t("optionsPhotosFull", [kb(refusal.used), kb(refusal.max)]);
+  }
+
+  // A still is downscaled to a JPEG, as photos always were.
+  async function stillDataUrl(file) {
+    const raw = await readFileAsDataURL(file);
+    const img = await loadImageElement(raw);
+    return resizeToBase64(img, MAX_DIM);
+  }
+
+  // An animated GIF goes in byte for byte, because a canvas keeps only its first
+  // frame. The type comes from the sniffed bytes, not the file's extension.
+  function animatedDataUrl(bytes) {
+    return readFileAsDataURL(new Blob([bytes], { type: "image/gif" }));
+  }
+
+  // The entry the file will be stored as, or why it can't be.
+  async function buildEntry(file) {
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    if (!DTGif.isAnimated(bytes)) {
+      return { entry: { name: file.name, src: await stillDataUrl(file) }, animated: false };
+    }
+    const refusal = DTPhotoBudget.refuseTooBig(bytes.length);
+    if (refusal) return { refusal };
+    return { entry: { name: file.name, src: await animatedDataUrl(bytes) }, animated: true };
+  }
+
+  // A still that came out heavy is saved anyway, with a nudge to pick a lighter one.
+  function warnIfHeavy(src) {
+    // base64 length * 0.75 ≈ bytes
+    const bytes = Math.floor((src.length - "data:image/jpeg;base64,".length) * 0.75);
+    if (bytes <= MAX_IMAGE_BYTES) return;
+    showWarn(DTI18n.t("optionsCompressWarn", [kb(bytes), kb(MAX_IMAGE_BYTES)]));
+  }
+
+  async function saveUpload(file, goalImages) {
+    const { entry, animated, refusal } = await buildEntry(file);
+    const refused = refusal || DTPhotoBudget.refuseForRoom(goalImages, entry);
+    if (refused) return showWarn(refusalMessage(refused));
+    if (!animated) warnIfHeavy(entry.src);
+    await chrome.storage.local.set({ goalImages: [...goalImages, entry] });
+    toast();
+    renderStars();
+  }
+
+  async function handleUpload(file) {
+    showWarn("");
+    const { goalImages = [] } = await chrome.storage.local.get("goalImages");
+    if (goalImages.length >= MAX_IMAGES) {
+      return showWarn(DTI18n.t("optionsLimitReached", [String(MAX_IMAGES)]));
+    }
+    try {
+      await saveUpload(file, goalImages);
+    } catch (err) {
+      showWarn(DTI18n.t("optionsUploadFailed", [String(err.message || err)]));
+    }
+  }
 
   /**
    * Render the grid and wire the file picker. `toast` reports each save.

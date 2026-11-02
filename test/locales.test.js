@@ -91,6 +91,7 @@ test("manifest default_locale resolves to a shipped locale folder", () => {
 const SOURCE_FILES = [
   "popup/popup.js",
   "options/options.js",
+  "options/northstar.js",
   "content/blocker.js",
   "content/friction.js",
   "background/service-worker.js",

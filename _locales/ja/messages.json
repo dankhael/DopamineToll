@@ -32,7 +32,7 @@
   "optionsDomainPlaceholder": { "message": "example.com または youtube.com/shorts" },
   "optionsAdd": { "message": "追加" },
   "optionsNorthStarH2": { "message": "あなたの北極星" },
-  "optionsNorthStarHint": { "message": "通行料の画面に表示される画像 — あなたが望んだもの。一度に1枚、ランダムに表示されます。" },
+  "optionsNorthStarHint": { "message": "通行料の画面に表示される画像 — あなたが望んだもの。一度に1枚、ランダムに表示されます。アニメーション GIF は動いたまま表示されます。" },
   "optionsPhrasesH2": { "message": "自分に言い聞かせた言葉" },
   "optionsPhrasesHint": { "message": "あなた自身の言葉で。通行料が発生するたびに、写真の下に1つ表示されます。" },
   "optionsPhrasePlaceholder": { "message": "心に刺さる言葉を書く…" },
@@ -118,6 +118,20 @@
     "placeholders": { "err": { "content": "$1" } }
   },
   "optionsDecodeError": { "message": "画像をデコードできませんでした" },
+  "optionsGifTooBig": {
+    "message": "この GIF は $SIZE$KB です — アニメーション GIF はそのまま保存するため、上限は $MAX$KB です。短いものか小さいものをお試しください",
+    "placeholders": {
+      "size": { "content": "$1", "example": "3420" },
+      "max": { "content": "$2", "example": "2048" }
+    }
+  },
+  "optionsPhotosFull": {
+    "message": "空き容量が足りません — 写真ですでに $MAX$KB 中 $USED$KB を使っています。先に1枚削除してください",
+    "placeholders": {
+      "used": { "content": "$1", "example": "7900" },
+      "max": { "content": "$2", "example": "8192" }
+    }
+  },
 
   "overlayNorthStarAlt": { "message": "あなたの北極星" },
   "overlayOnList": { "message": "通行料リストにあります" },
