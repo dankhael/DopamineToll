@@ -15,9 +15,15 @@
   },
   "popupTollArmed": { "message": "在你的过路费清单中 · 过路费已就绪" },
   "popupStat": {
-    "message": "今天 — <b>离开 $WALKED$ 次</b> · 付费 $PAID$ 次",
-    "placeholders": { "walked": { "content": "$1" }, "paid": { "content": "$2" } }
+    "message": "今天 — <b>离开 $WALKED$ 次</b> · 付费 $PAID$ 次 · 免费通行证 $PASS$ 次",
+    "placeholders": { "walked": { "content": "$1" }, "paid": { "content": "$2" }, "pass": { "content": "$3" } }
   },
+  "popupFreePasses": { "message": "免费通行证" },
+  "popupTurningOffIn": {
+    "message": "$SEC$ 秒后关闭",
+    "placeholders": { "sec": { "content": "$1", "example": "30" } }
+  },
+  "popupTurnOffNote": { "message": "关闭此窗口，计时将重新开始。" },
 
   "optionsTitle": { "message": "Dopamine Toll — 设置" },
   "optionsSubtitle": { "message": "你的设置会自动保存。<b>每次你到达清单中的网站时都会收取过路费。</b>" },
@@ -43,6 +49,13 @@
   "optionsUnlockDecAria": { "message": "减少开放时段" },
   "optionsUnlockIncAria": { "message": "增加开放时段" },
   "optionsTollEndnote": { "message": "时段结束后，过路费会再次出现 — 每一次都是。" },
+  "optionsFreePassH2": { "message": "免费通行证" },
+  "optionsFreePassHint": { "message": "免费通行证会跳过倒计时，直接打开网站。它们在午夜补充，从不累积，调高数量也要从明天才生效。" },
+  "optionsFreePassK": { "message": "每天的张数" },
+  "optionsFreePassD": { "message": "为零时，过路费不会提供通行证。" },
+  "optionsPerDay": { "message": "每天" },
+  "optionsFreePassDecAria": { "message": "减少免费通行证" },
+  "optionsFreePassIncAria": { "message": "增加免费通行证" },
   "optionsFrictionH2": { "message": "阻力提醒" },
   "optionsFrictionHint": { "message": "当过路费网站打开时，一个小弹窗会显示你的一句话以及你在该标签页停留的时长。只有标签页在你面前时才计时。" },
   "optionsRemindersK": { "message": "提醒" },
@@ -52,6 +65,26 @@
   "optionsEveryD": { "message": "两次弹窗之间的标签页停留分钟数。" },
   "optionsFrictionDecAria": { "message": "减少提醒间隔" },
   "optionsFrictionIncAria": { "message": "增加提醒间隔" },
+  "optionsCoolOffH2": { "message": "冷静期" },
+  "optionsCoolOffHint": { "message": "削弱过路费的改动 — 关闭它、移除网站、缩短倒计时 — 需要等待 30 秒才会生效。和过路费一样，只有本页在你面前时才计时。它无法覆盖浏览器自带的扩展页面，在那里扩展随时可以被直接关闭。" },
+  "optionsCoolOffK": { "message": "冷静期" },
+  "optionsCoolOffD": { "message": "让削弱过路费这件事花掉 30 秒。" },
+  "optionsCoolOffToggleAria": { "message": "切换冷静期" },
+  "coolOffSeconds": {
+    "message": "$SEC$ 秒",
+    "placeholders": { "sec": { "content": "$1", "example": "30" } }
+  },
+  "coolOffCancel": {
+    "message": "取消"
+  },
+  "coolOffRemovesIn": {
+    "message": "$SEC$ 秒后移除",
+    "placeholders": { "sec": { "content": "$1", "example": "30" } }
+  },
+  "coolOffSwitchesOffIn": {
+    "message": "$SEC$ 秒后关闭",
+    "placeholders": { "sec": { "content": "$1", "example": "30" } }
+  },
   "optionsThemeH2": { "message": "主题" },
   "optionsThemeHint": { "message": "为过路费界面、弹窗和本页面重新配色。" },
   "themeAmber": { "message": "琥珀" },
@@ -102,6 +135,11 @@
     "placeholders": { "sec": { "content": "$1" } }
   },
   "overlayBeLazy": { "message": "偷个懒" },
+  "overlayFreePass": {
+    "message": "免费通行证 · 还剩 $LEFT$ 张",
+    "placeholders": { "left": { "content": "$1", "example": "2" } }
+  },
+  "overlayFreePassConfirm": { "message": "再点一次即可使用" },
 
   "frictionEyebrow": { "message": "dopamine toll" },
   "frictionTimeOnTab": {

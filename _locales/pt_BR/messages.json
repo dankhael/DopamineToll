@@ -15,9 +15,15 @@
   },
   "popupTollArmed": { "message": "na sua lista de pedágio · pedágio armado" },
   "popupStat": {
-    "message": "hoje — <b>desistiu $WALKED$×</b> · pagou $PAID$×",
-    "placeholders": { "walked": { "content": "$1" }, "paid": { "content": "$2" } }
+    "message": "hoje — <b>desistiu $WALKED$×</b> · pagou $PAID$× · passe livre $PASS$×",
+    "placeholders": { "walked": { "content": "$1" }, "paid": { "content": "$2" }, "pass": { "content": "$3" } }
   },
+  "popupFreePasses": { "message": "passes livres" },
+  "popupTurningOffIn": {
+    "message": "Desligando em $SEC$s",
+    "placeholders": { "sec": { "content": "$1", "example": "30" } }
+  },
+  "popupTurnOffNote": { "message": "Se fechar esta janela, a contagem recomeça." },
 
   "optionsTitle": { "message": "Dopamine Toll — configurações" },
   "optionsSubtitle": { "message": "Suas configurações são salvas automaticamente. <b>O pedágio é cobrado toda vez que você chega a um site da lista.</b>" },
@@ -43,6 +49,13 @@
   "optionsUnlockDecAria": { "message": "diminuir janela de acesso" },
   "optionsUnlockIncAria": { "message": "aumentar janela de acesso" },
   "optionsTollEndnote": { "message": "Quando a janela acaba, o pedágio volta — toda vez." },
+  "optionsFreePassH2": { "message": "Passes livres" },
+  "optionsFreePassHint": { "message": "Um passe livre pula a contagem e abre o site na hora. Os passes recarregam à meia-noite, nunca acumulam, e aumentar o número só vale a partir de amanhã." },
+  "optionsFreePassK": { "message": "Passes por dia" },
+  "optionsFreePassD": { "message": "Em zero, o pedágio nunca oferece um." },
+  "optionsPerDay": { "message": "por dia" },
+  "optionsFreePassDecAria": { "message": "diminuir passes livres" },
+  "optionsFreePassIncAria": { "message": "aumentar passes livres" },
   "optionsFrictionH2": { "message": "Lembretes de atrito" },
   "optionsFrictionHint": { "message": "Enquanto um site com pedágio está aberto, um pequeno pop-up mostra uma das suas frases e há quanto tempo você está na aba. O tempo só conta enquanto a aba está à sua frente." },
   "optionsRemindersK": { "message": "Lembretes" },
@@ -52,6 +65,26 @@
   "optionsEveryD": { "message": "Minutos na aba entre um pop-up e outro." },
   "optionsFrictionDecAria": { "message": "diminuir intervalo dos lembretes" },
   "optionsFrictionIncAria": { "message": "aumentar intervalo dos lembretes" },
+  "optionsCoolOffH2": { "message": "Período de espera" },
+  "optionsCoolOffHint": { "message": "Mudanças que enfraquecem o pedágio — desligar, remover um site, encurtar a contagem — esperam 30 segundos antes de valer. Como o próprio pedágio, a contagem só corre enquanto esta página está à sua frente. Ela não alcança a página de extensões do navegador, onde a extensão sempre pode ser desligada de uma vez." },
+  "optionsCoolOffK": { "message": "Período de espera" },
+  "optionsCoolOffD": { "message": "Fazer com que enfraquecer o pedágio custe 30 segundos." },
+  "optionsCoolOffToggleAria": { "message": "alternar período de espera" },
+  "coolOffSeconds": {
+    "message": "$SEC$s",
+    "placeholders": { "sec": { "content": "$1", "example": "30" } }
+  },
+  "coolOffCancel": {
+    "message": "cancelar"
+  },
+  "coolOffRemovesIn": {
+    "message": "sai em $SEC$s",
+    "placeholders": { "sec": { "content": "$1", "example": "30" } }
+  },
+  "coolOffSwitchesOffIn": {
+    "message": "desliga em $SEC$s",
+    "placeholders": { "sec": { "content": "$1", "example": "30" } }
+  },
   "optionsThemeH2": { "message": "Tema" },
   "optionsThemeHint": { "message": "Recolore a tela de pedágio, o popup e esta página." },
   "themeAmber": { "message": "Âmbar" },
@@ -102,6 +135,11 @@
     "placeholders": { "sec": { "content": "$1" } }
   },
   "overlayBeLazy": { "message": "seja preguiçoso" },
+  "overlayFreePass": {
+    "message": "Passe livre · restam $LEFT$",
+    "placeholders": { "left": { "content": "$1", "example": "2" } }
+  },
+  "overlayFreePassConfirm": { "message": "toque de novo para usar" },
 
   "frictionEyebrow": { "message": "dopamine toll" },
   "frictionTimeOnTab": {

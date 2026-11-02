@@ -15,9 +15,15 @@
   },
   "popupTollArmed": { "message": "通行料リスト・通行料あり" },
   "popupStat": {
-    "message": "今日 — <b>離脱 $WALKED$回</b>・支払い $PAID$回",
-    "placeholders": { "walked": { "content": "$1" }, "paid": { "content": "$2" } }
+    "message": "今日 — <b>離脱 $WALKED$回</b>・支払い $PAID$回・フリーパス $PASS$回",
+    "placeholders": { "walked": { "content": "$1" }, "paid": { "content": "$2" }, "pass": { "content": "$3" } }
   },
+  "popupFreePasses": { "message": "フリーパス" },
+  "popupTurningOffIn": {
+    "message": "$SEC$秒後にオフになります",
+    "placeholders": { "sec": { "content": "$1", "example": "30" } }
+  },
+  "popupTurnOffNote": { "message": "このウィンドウを閉じるとカウントは最初からになります。" },
 
   "optionsTitle": { "message": "Dopamine Toll — 設定" },
   "optionsSubtitle": { "message": "設定は自動的に保存されます。<b>リストにあるサイトに着くたびに通行料が発生します。</b>" },
@@ -43,6 +49,13 @@
   "optionsUnlockDecAria": { "message": "開放ウィンドウを減らす" },
   "optionsUnlockIncAria": { "message": "開放ウィンドウを増やす" },
   "optionsTollEndnote": { "message": "ウィンドウが終わると、通行料が戻ってきます — 毎回。" },
+  "optionsFreePassH2": { "message": "フリーパス" },
+  "optionsFreePassHint": { "message": "フリーパスはカウントダウンを飛ばして、サイトをすぐに開きます。毎晩0時に補充され、繰り越しはなく、枚数を増やしても有効になるのは翌日からです。" },
+  "optionsFreePassK": { "message": "1日の枚数" },
+  "optionsFreePassD": { "message": "0なら、通行料はフリーパスを提示しません。" },
+  "optionsPerDay": { "message": "／日" },
+  "optionsFreePassDecAria": { "message": "フリーパスを減らす" },
+  "optionsFreePassIncAria": { "message": "フリーパスを増やす" },
   "optionsFrictionH2": { "message": "摩擦リマインダー" },
   "optionsFrictionHint": { "message": "通行料サイトを開いている間、小さなポップアップにあなたの言葉と、そのタブに滞在した時間が表示されます。時間はタブが手前にあるときだけカウントされます。" },
   "optionsRemindersK": { "message": "リマインダー" },
@@ -52,6 +65,26 @@
   "optionsEveryD": { "message": "ポップアップの間隔（タブ滞在の分数）。" },
   "optionsFrictionDecAria": { "message": "リマインダー間隔を減らす" },
   "optionsFrictionIncAria": { "message": "リマインダー間隔を増やす" },
+  "optionsCoolOffH2": { "message": "待機時間" },
+  "optionsCoolOffHint": { "message": "通行料を弱める変更 — オフにする、サイトを削除する、カウントダウンを短くする — は、適用まで30秒待ちます。通行料と同じく、このページが手前にあるときだけカウントが進みます。ブラウザーの拡張機能ページには及びません。そこではいつでも拡張機能を丸ごとオフにできます。" },
+  "optionsCoolOffK": { "message": "待機時間" },
+  "optionsCoolOffD": { "message": "通行料を弱めるのに30秒かかるようにする。" },
+  "optionsCoolOffToggleAria": { "message": "待機時間を切り替える" },
+  "coolOffSeconds": {
+    "message": "$SEC$秒",
+    "placeholders": { "sec": { "content": "$1", "example": "30" } }
+  },
+  "coolOffCancel": {
+    "message": "取り消し"
+  },
+  "coolOffRemovesIn": {
+    "message": "$SEC$秒後に削除",
+    "placeholders": { "sec": { "content": "$1", "example": "30" } }
+  },
+  "coolOffSwitchesOffIn": {
+    "message": "$SEC$秒後にオフ",
+    "placeholders": { "sec": { "content": "$1", "example": "30" } }
+  },
   "optionsThemeH2": { "message": "テーマ" },
   "optionsThemeHint": { "message": "通行料画面、ポップアップ、そしてこのページの色を変えます。" },
   "themeAmber": { "message": "アンバー" },
@@ -102,6 +135,11 @@
     "placeholders": { "sec": { "content": "$1" } }
   },
   "overlayBeLazy": { "message": "怠けよう" },
+  "overlayFreePass": {
+    "message": "フリーパス・残り $LEFT$",
+    "placeholders": { "left": { "content": "$1", "example": "2" } }
+  },
+  "overlayFreePassConfirm": { "message": "もう一度タップで使用" },
 
   "frictionEyebrow": { "message": "dopamine toll" },
   "frictionTimeOnTab": {

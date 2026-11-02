@@ -160,12 +160,17 @@ textarea.input { resize: none; min-height: 64px; line-height: 1.5; }
 
 /* the toll — stepper controls */
 .toll-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+/* a section with a single control fills the row instead of leaving a gap beside it */
+.toll-grid.solo { grid-template-columns: 1fr; }
 .ctrl { background: #060504; border: 1px solid var(--line); border-radius: var(--r-sm); padding: 16px 16px 14px; }
 .ctrl .k { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
 .ctrl .d { font-size: 11.5px; color: var(--faint); line-height: 1.5; margin-bottom: 14px; }
-.stepper { display: flex; align-items: center; justify-content: space-between; }
-.stepper .num { font-family: var(--mono); font-weight: 700; font-size: 30px; color: var(--amber); font-variant-numeric: tabular-nums; }
-.stepper .num span { font-size: 13px; color: var(--dim); font-weight: 500; margin-left: 3px; }
+.stepper { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 36px; }
+/* Classed spans rather than `.num span`, which also caught the value itself and
+   shrank the 30px number to the 13px of its unit. */
+.stepper .num { display: flex; align-items: baseline; gap: 6px; font-family: var(--mono); font-weight: 700; font-size: 30px; color: var(--amber); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.stepper .num .unit { font-family: var(--sans); font-size: 13px; color: var(--dim); font-weight: 500; }
+.stepper .num .next { display: none; }
 .pm { display: flex; gap: 7px; }
 .pm button {
   width: 32px;
@@ -181,37 +186,13 @@ textarea.input { resize: none; min-height: 64px; line-height: 1.5; }
 }
 .pm button:hover { border-color: var(--amber); color: var(--amber-soft); }
 .pm button:disabled { opacity: 0.35; cursor: not-allowed; }
+/* the line a switch sits on; a pending wait's status and cancel join it */
+.ctrl-line { display: flex; align-items: center; gap: 12px; min-height: 32px; }
 .endnote { font-size: 12px; color: var(--dim); margin-top: 14px; display: flex; align-items: center; gap: 8px; }
 .endnote .dotsep { width: 4px; height: 4px; border-radius: 50%; background: var(--terra); flex: none; }
 .warn { color: var(--terra); font-size: 12px; margin-top: 10px; }
 
-/* friction reminders — on/off switch (mirrors popup.css .toggle) */
-.toggle {
-  width: 42px;
-  height: 24px;
-  border-radius: 12px;
-  background: var(--surface-3);
-  border: none;
-  position: relative;
-  cursor: pointer;
-  transition: background 0.2s ease;
-  flex: none;
-  display: block;
-  padding: 0;
-}
-.toggle::after {
-  content: "";
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: var(--faint);
-  transition: left 0.2s ease, background 0.2s ease;
-}
-.toggle.on { background: var(--amber); }
-.toggle.on::after { left: 21px; background: var(--amber-ink); }
+/* the on/off switch and its cooling-off state live in ../assets/controls.css */
 
 /* theme picker */
 .themes { display: flex; gap: 10px; flex-wrap: wrap; }
@@ -277,3 +258,44 @@ textarea.input { resize: none; min-height: 64px; line-height: 1.5; }
   pointer-events: none;
 }
 #toast.show { opacity: 1; transform: translateY(0); }
+
+/* cooling-off — what each settings control previews while a weakening change
+   waits (ADR-0003). The pending card, the fuse and the status + cancel pair are
+   shared, in ../assets/controls.css; these rules decide what the control itself
+   shows meanwhile. */
+
+/* A row being removed reads as already struck out, and the status takes the
+   remove button's place — same side of the row, nothing reflows. */
+.item.cooloff-pending { padding-right: 11px; }
+.item.cooloff-pending .remove { display: none; }
+/* the remove button's height, so the row does not grow by a pixel or two */
+.item .cooloff-cancel { height: 28px; }
+.item.cooloff-pending .val {
+  color: var(--faint);
+  text-decoration: line-through;
+  text-decoration-color: var(--terra);
+}
+.item.cooloff-pending .val .path { color: inherit; }
+
+/* A switch's status sits right after it; cancel goes to the far edge. */
+.ctrl-line .cooloff { flex: 1; }
+.ctrl-line .cooloff-cancel { margin-left: auto; }
+
+/* A stepper previews the value it is waiting to land on — "30 → 25" — and the
+   −/+ pair gives its place to the status. */
+.cooloff-pending .stepper .pm { display: none; }
+.cooloff-pending .stepper .cur {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--faint);
+  text-decoration: line-through;
+}
+.cooloff-pending .stepper .next { display: inline; color: var(--terra-soft); }
+.cooloff-pending .stepper .next::before {
+  content: "→";
+  margin-right: 6px;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--dim);
+}
+.stepper .cooloff-cancel { height: 32px; border-radius: 8px; }

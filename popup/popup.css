@@ -48,30 +48,7 @@ html.android .popup {
   letter-spacing: -0.01em;
 }
 
-/* enable toggle */
-.toggle {
-  width: 42px;
-  height: 24px;
-  border-radius: 12px;
-  background: var(--surface-3);
-  position: relative;
-  cursor: pointer;
-  transition: background 0.2s ease;
-  flex: none;
-}
-.toggle::after {
-  content: "";
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: var(--faint);
-  transition: left 0.2s ease, background 0.2s ease;
-}
-.toggle.on { background: var(--amber); }
-.toggle.on::after { left: 21px; background: var(--amber-ink); }
+/* the enable switch and its cooling-off state live in ../assets/controls.css */
 
 .rows {
   display: flex;
@@ -88,6 +65,9 @@ html.android .popup {
   align-items: center;
   justify-content: space-between;
 }
+/* .row's display:flex outranks the [hidden] attribute's display:none, so the
+   free-pass row showed "…" at an allowance of zero, when it should be absent. */
+.row[hidden] { display: none; }
 .row .l { font-size: 13px; color: var(--dim); }
 .row .r { font-family: var(--mono); font-size: 13px; font-weight: 600; }
 .row .r.amber { color: var(--amber); }
@@ -149,3 +129,44 @@ html.android .popup {
   cursor: pointer;
 }
 .grantbtn[hidden] { display: none; }
+
+/* turn-off cooling-off (ADR-0003). While switching off waits, this card opens
+   under the header with what is happening, the rule that governs it and a cancel
+   button; the fuse along its bottom edge comes from ../assets/controls.css. The
+   countdown dies with the popup, and the note says so out loud so a vanished
+   countdown reads as the rule rather than as a bug.
+
+   The status and cancel button arrive inside a .cooloff wrapper; display:contents
+   lets them sit in this card's grid beside the note. */
+.turnoff { display: none; }
+.turnoff.cooloff-pending {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: "status cancel" "note cancel";
+  align-items: center;
+  column-gap: 12px;
+  row-gap: 3px;
+  padding: 11px 10px 14px 13px;
+  background: #060504;
+  /* colour comes from .cooloff-pending; this card only exists while waiting */
+  border-width: 1px;
+  border-style: solid;
+  border-radius: var(--r-sm);
+  animation: cooloff-in 0.18s ease-out;
+}
+.turnoff .cooloff { display: contents; }
+.turnoff .cooloff-secs {
+  grid-area: status;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: normal;
+}
+.turnoff .cooloff-cancel { grid-area: cancel; }
+.turnoff-note {
+  grid-area: note;
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--dim);
+}

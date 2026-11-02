@@ -30,15 +30,6 @@ async function applyThemeFromStorage() {
   try { localStorage.setItem("dt-theme", theme); } catch {}
 }
 
-// Local calendar day, e.g. "2026-06-01". Matches todayKey() in the service
-// worker so the popup and the counter agree on when "today" rolls over.
-function todayKey() {
-  const d = new Date();
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const dd = String(d.getDate()).padStart(2, "0");
-  return `${d.getFullYear()}-${mm}-${dd}`;
-}
-
 function setStatus({ host, meta, state }) {
   $("status-host").textContent = host;
   $("status-meta").textContent = meta || "";
@@ -49,9 +40,35 @@ function setStatus({ host, meta, state }) {
 
 async function refreshStat() {
   const { tollStats } = await chrome.storage.local.get("tollStats");
-  const fresh = tollStats && tollStats.date === todayKey() ? tollStats : { walkedAway: 0, paid: 0 };
+  const today = DTFreePass.dayKey(new Date());
+  const fresh = tollStats && tollStats.date === today ? tollStats : {};
   // Message carries the <b> wrapper and word order; counts are the substitutions.
-  $("stat").innerHTML = DTI18n.t("popupStat", [String(fresh.walkedAway || 0), String(fresh.paid || 0)]);
+  // Free passes are counted apart from "paid" so the tally of tolls actually waited
+  // out stays honest.
+  $("stat").innerHTML = DTI18n.t("popupStat", [
+    String(fresh.walkedAway || 0),
+    String(fresh.paid || 0),
+    String(fresh.spentFreePass || 0)
+  ]);
+}
+
+// Today's free-pass balance, read straight from the local ledger (ADR-0004) rather
+// than round-tripping through the worker. The row is absent when the user has not
+// asked for passes at all.
+async function refreshFreePasses() {
+  const [sync, local] = await Promise.all([
+    chrome.storage.sync.get("freePassAllowance"),
+    chrome.storage.local.get(DTFreePass.STORAGE_KEY)
+  ]);
+  const allowance = DTFreePass.clampAllowance(sync.freePassAllowance);
+  $("freepass-row").hidden = allowance === 0;
+  if (allowance === 0) return;
+  const ledger = DTFreePass.currentLedger(
+    local[DTFreePass.STORAGE_KEY],
+    DTFreePass.dayKey(new Date()),
+    allowance
+  );
+  $("freepass-count").textContent = `${DTFreePass.passesLeft(ledger, allowance)}/${allowance}`;
 }
 
 // Firefox grants <all_urls> at install, but lets the user revoke it per-site or
@@ -81,10 +98,12 @@ async function refresh() {
     "blockedDomains",
     "enabled"
   ]);
+  lastEnabled = enabled;
   $("count").textContent = String(blockedDomains.length);
   $("toggle").classList.toggle("on", enabled);
   $("toggle").setAttribute("aria-checked", String(enabled));
   refreshStat();
+  refreshFreePasses();
 
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   if (!tab || !tab.url) {
@@ -131,10 +150,30 @@ async function refresh() {
   }
 }
 
-async function toggleEnabled() {
-  const { enabled = true } = await chrome.storage.sync.get("enabled");
-  await chrome.storage.sync.set({ enabled: !enabled });
+// Switching the extension off sits through the cooling-off first (ADR-0003), through
+// the same guarded path as the settings page: the switch flips at once, the wait
+// opens in the #turnoff card under the header, and clicking the switch again (or
+// cancel) puts it back. The countdown lives in the popup and dies with it: on
+// desktop the popup closes the moment it loses focus, and abandoning the wait costs
+// the wait — the same rule as walking away from the gate. The card's note says so
+// out loud, so it reads as the rule it is rather than as a bug.
+let lastEnabled = true;
+
+async function saveEnabled(next) {
+  lastEnabled = next;
+  await chrome.storage.sync.set({ enabled: next });
   refresh();
+}
+
+// Mirrored from the last refresh, which runs every second. Reading it per click
+// would put an await between "is a countdown already running?" and starting one, and
+// a second click landing inside that gap strands the first countdown — the same shape
+// of bug that let three cooling-offs stack on one setting in the options page.
+function toggleEnabled() {
+  const next = !lastEnabled;
+  DTGuardedChange.apply($("turnoff"), "enabled", lastEnabled, next, () =>
+    saveEnabled(next)
+  );
 }
 
 $("toggle").addEventListener("click", toggleEnabled);

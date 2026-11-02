@@ -22,10 +22,30 @@ test("declares a background entry point for both Chrome and Firefox", () => {
     "string",
     "Chrome MV3 requires background.service_worker"
   );
+  const scripts = manifest.background.scripts;
+  assert.ok(Array.isArray(scripts) && scripts.length > 0, "Firefox reads background.scripts");
+  assert.equal(
+    scripts[scripts.length - 1],
+    manifest.background.service_worker,
+    "the worker must come last in background.scripts, after anything it depends on"
+  );
+});
+
+test("Firefox is handed every shared file the worker importScripts on Chrome", () => {
+  // Chrome runs a classic service worker, where importScripts is the only way to
+  // pull a shared file in. Firefox runs an event page, which has no importScripts
+  // at all — there the same files must be listed ahead of the worker in
+  // background.scripts (ADR-0001, ADR-0004). Adding one loader and forgetting the
+  // other breaks exactly one browser, silently, which is what this pins.
+  const workerPath = manifest.background.service_worker;
+  const worker = fs.readFileSync(path.join(ROOT, workerPath), "utf8");
+  const imported = [...worker.matchAll(/importScripts\("([^"]+)"\)/g)].map((m) =>
+    path.posix.normalize(path.posix.join(path.posix.dirname(workerPath), m[1]))
+  );
   assert.deepEqual(
-    manifest.background.scripts,
-    [manifest.background.service_worker],
-    "Firefox reads background.scripts and must point at the same file as service_worker"
+    imported,
+    manifest.background.scripts.slice(0, -1),
+    "importScripts() and background.scripts must name the same files, in the same order"
   );
 });
 
@@ -90,6 +110,7 @@ test("every path the packagers ship actually exists", () => {
 test("every file the manifest references is inside a shipped path", () => {
   const referenced = [
     manifest.background.service_worker,
+    ...manifest.background.scripts,
     manifest.action.default_popup,
     manifest.options_ui.page,
     ...manifest.content_scripts.flatMap((script) => [...script.js, ...script.css]),

@@ -15,9 +15,15 @@
   },
   "popupTollArmed": { "message": "auf deiner Maut-Liste · Maut aktiv" },
   "popupStat": {
-    "message": "heute — <b>abgewandt $WALKED$×</b> · bezahlt $PAID$×",
-    "placeholders": { "walked": { "content": "$1" }, "paid": { "content": "$2" } }
+    "message": "heute — <b>abgewandt $WALKED$×</b> · bezahlt $PAID$× · Freifahrschein $PASS$×",
+    "placeholders": { "walked": { "content": "$1" }, "paid": { "content": "$2" }, "pass": { "content": "$3" } }
   },
+  "popupFreePasses": { "message": "Freifahrscheine" },
+  "popupTurningOffIn": {
+    "message": "Wird in $SEC$s ausgeschaltet",
+    "placeholders": { "sec": { "content": "$1", "example": "30" } }
+  },
+  "popupTurnOffNote": { "message": "Schließt du dieses Fenster, beginnt die Zählung von vorn." },
 
   "optionsTitle": { "message": "Dopamine Toll — Einstellungen" },
   "optionsSubtitle": { "message": "Deine Einstellungen werden automatisch gespeichert. <b>Die Maut wird jedes Mal fällig, wenn du eine gelistete Seite erreichst.</b>" },
@@ -43,6 +49,13 @@
   "optionsUnlockDecAria": { "message": "Freigabe-Fenster verringern" },
   "optionsUnlockIncAria": { "message": "Freigabe-Fenster erhöhen" },
   "optionsTollEndnote": { "message": "Wenn das Fenster endet, kehrt die Maut zurück — jedes Mal." },
+  "optionsFreePassH2": { "message": "Freifahrscheine" },
+  "optionsFreePassHint": { "message": "Ein Freifahrschein überspringt den Countdown und öffnet die Seite sofort. Sie füllen sich um Mitternacht auf, sammeln sich nie an, und eine Erhöhung gilt erst ab morgen." },
+  "optionsFreePassK": { "message": "Scheine pro Tag" },
+  "optionsFreePassD": { "message": "Bei null bietet die Maut nie einen an." },
+  "optionsPerDay": { "message": "pro Tag" },
+  "optionsFreePassDecAria": { "message": "Freifahrscheine verringern" },
+  "optionsFreePassIncAria": { "message": "Freifahrscheine erhöhen" },
   "optionsFrictionH2": { "message": "Reibungs-Erinnerungen" },
   "optionsFrictionHint": { "message": "Solange eine Maut-Seite geöffnet ist, zeigt ein kleines Pop-up einen deiner Sätze und wie lange du schon auf dem Tab bist. Die Zeit zählt nur, wenn der Tab vor dir ist." },
   "optionsRemindersK": { "message": "Erinnerungen" },
@@ -52,6 +65,26 @@
   "optionsEveryD": { "message": "Minuten auf dem Tab zwischen den Pop-ups." },
   "optionsFrictionDecAria": { "message": "Erinnerungsintervall verringern" },
   "optionsFrictionIncAria": { "message": "Erinnerungsintervall erhöhen" },
+  "optionsCoolOffH2": { "message": "Bedenkzeit" },
+  "optionsCoolOffHint": { "message": "Änderungen, die die Maut schwächen — sie auszuschalten, eine Seite zu entfernen, den Countdown zu verkürzen — warten 30 Sekunden, bevor sie greifen. Wie die Maut selbst läuft die Zählung nur, solange diese Seite vor dir ist. Die Erweiterungsseite deines Browsers erreicht sie nicht — dort lässt sich die Erweiterung jederzeit ganz abschalten." },
+  "optionsCoolOffK": { "message": "Bedenkzeit" },
+  "optionsCoolOffD": { "message": "Das Schwächen der Maut 30 Sekunden kosten lassen." },
+  "optionsCoolOffToggleAria": { "message": "Bedenkzeit umschalten" },
+  "coolOffSeconds": {
+    "message": "$SEC$s",
+    "placeholders": { "sec": { "content": "$1", "example": "30" } }
+  },
+  "coolOffCancel": {
+    "message": "abbrechen"
+  },
+  "coolOffRemovesIn": {
+    "message": "entfernt in $SEC$s",
+    "placeholders": { "sec": { "content": "$1", "example": "30" } }
+  },
+  "coolOffSwitchesOffIn": {
+    "message": "aus in $SEC$s",
+    "placeholders": { "sec": { "content": "$1", "example": "30" } }
+  },
   "optionsThemeH2": { "message": "Design" },
   "optionsThemeHint": { "message": "Färbt den Maut-Bildschirm, das Popup und diese Seite neu ein." },
   "themeAmber": { "message": "Bernstein" },
@@ -102,6 +135,11 @@
     "placeholders": { "sec": { "content": "$1" } }
   },
   "overlayBeLazy": { "message": "sei faul" },
+  "overlayFreePass": {
+    "message": "Freifahrschein · noch $LEFT$",
+    "placeholders": { "left": { "content": "$1", "example": "2" } }
+  },
+  "overlayFreePassConfirm": { "message": "zum Einlösen erneut tippen" },
 
   "frictionEyebrow": { "message": "dopamine toll" },
   "frictionTimeOnTab": {

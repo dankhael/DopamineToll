@@ -1,9 +1,21 @@
 // Dopamine Toll background service worker (MV3).
+//
+// shared/freepass.js carries the free-pass ledger rules (ADR-0004) and has to be
+// loaded two different ways, because the two browsers run this file in two
+// different contexts (ADR-0001): Chrome runs a classic service worker, where
+// importScripts is the only way to pull a file in, while Firefox runs an event
+// page, which has no importScripts at all — there the manifest's
+// background.scripts array has already loaded it by the time this line runs.
+if (typeof importScripts === "function") {
+  importScripts("../shared/freepass.js");
+}
+
 // Responsibilities:
 //   - Seed default config on install.
 //   - Track per-tab unlocks in chrome.storage.session.
 //   - Tell content scripts when a navigation lands on a blocked domain.
 //   - Clean up unlock state when tabs close.
+//   - Keep the daily free-pass ledger and spend from it.
 //   - Paint the toolbar icon in the active theme's accent.
 
 // Built fresh (not a top-level const) so the seeded phrases pick up the
@@ -21,6 +33,8 @@ function defaultConfig() {
     unlockDuration: 10,
     frictionEnabled: true,
     frictionMinutes: 5,
+    freePassAllowance: 0,
+    coolOffEnabled: false,
     enabled: true,
     theme: "amber"
   };
@@ -122,8 +136,12 @@ chrome.runtime.onInstalled.addListener(async () => {
 
 // Repaint the toolbar icon the moment the theme changes in settings.
 chrome.storage.onChanged.addListener((changes, area) => {
-  if (area === "sync" && changes.theme) {
+  if (area !== "sync") return;
+  if (changes.theme) {
     applyThemeIcon(changes.theme.newValue || "amber").catch(() => {});
+  }
+  if (changes.freePassAllowance) {
+    pinAllowanceBefore(changes.freePassAllowance.oldValue).catch(() => {});
   }
 });
 
@@ -205,25 +223,83 @@ async function registerUnlock(tabId, domain) {
   return until;
 }
 
-// ---- daily stats: walked away (closed the tab) vs paid (unlocked) ----
-// Kept in chrome.storage.local under "tollStats" and reset when the local
-// calendar day rolls over. The popup reads this to show today's tally.
-function todayKey() {
-  const d = new Date();
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const dd = String(d.getDate()).padStart(2, "0");
-  return `${d.getFullYear()}-${mm}-${dd}`;
-}
-
+// ---- daily stats: walked away vs paid vs spent a free pass ----
+// Kept in chrome.storage.local under "tollStats" and reset when the local calendar
+// day rolls over. The popup reads this to show today's tally. Records written before
+// free passes existed simply have no spentFreePass key, which reads as zero.
 async function bumpStat(kind) {
-  const today = todayKey();
+  const today = DTFreePass.dayKey(new Date());
   const { tollStats } = await chrome.storage.local.get("tollStats");
   const stats =
     tollStats && tollStats.date === today
       ? tollStats
-      : { date: today, walkedAway: 0, paid: 0 };
+      : { date: today, walkedAway: 0, paid: 0, spentFreePass: 0 };
   stats[kind] = (stats[kind] || 0) + 1;
   await chrome.storage.local.set({ tollStats: stats });
+}
+
+// ---- the daily free-pass ledger ----
+// The balance is per device and never synced (ADR-0004). The refill is lazy: the
+// ledger is only rewritten when a pass is actually spent, so a day that rolls over
+// costs no storage write until the user reaches for a pass.
+const LEDGER_KEY = DTFreePass.STORAGE_KEY;
+
+// Reading also *pins* the day: a stale or missing ledger is written back at the
+// allowance in force right now. Without that snapshot on disk, raising the allowance
+// later today would open a fresh ledger at the new number and grant the passes
+// immediately — the very bypass the cooling-off in front of that setting exists to
+// slow down (ADR-0004). Costs one write per day, on the first read.
+async function readLedger() {
+  const [local, sync] = await Promise.all([
+    chrome.storage.local.get(LEDGER_KEY),
+    chrome.storage.sync.get("freePassAllowance")
+  ]);
+  const allowance = DTFreePass.clampAllowance(sync.freePassAllowance);
+  const today = DTFreePass.dayKey(new Date());
+  const pin = DTFreePass.ledgerToPin(local[LEDGER_KEY], today, allowance);
+  if (pin) await chrome.storage.local.set({ [LEDGER_KEY]: pin });
+  return { ledger: pin || DTFreePass.currentLedger(local[LEDGER_KEY], today, allowance), allowance };
+}
+
+async function countFreePasses() {
+  const { ledger, allowance } = await readLedger();
+  return DTFreePass.passesLeft(ledger, allowance);
+}
+
+// The other half of the same guarantee: a user who has not hit a blocked site yet
+// today has no ledger for readLedger() to have pinned, so an allowance change pins
+// one itself — at the value being replaced, not the new one.
+async function pinAllowanceBefore(previousAllowance) {
+  const local = await chrome.storage.local.get(LEDGER_KEY);
+  const today = DTFreePass.dayKey(new Date());
+  const pin = DTFreePass.ledgerToPin(local[LEDGER_KEY], today, previousAllowance);
+  if (pin) await chrome.storage.local.set({ [LEDGER_KEY]: pin });
+}
+
+// Returns what is left after the attempt, and whether one was actually spent —
+// the gate hides its button at zero, so a false here means the balance changed
+// under an already-open gate.
+async function applySpend() {
+  const { ledger, allowance } = await readLedger();
+  if (DTFreePass.passesLeft(ledger, allowance) <= 0) return { spent: false, left: 0 };
+  const next = DTFreePass.spendPass(ledger, allowance);
+  await chrome.storage.local.set({ [LEDGER_KEY]: next });
+  return { spent: true, left: DTFreePass.passesLeft(next, allowance) };
+}
+
+// Spends are serialised. The worker is single-threaded, but every await inside
+// applySpend yields, so two gates spending at the same moment could both read a
+// balance of one, both write a spend, and both be let through — handing out the same
+// pass twice and breaking the one guarantee ADR-0004 rests on.
+let spendChain = Promise.resolve();
+
+function spendFreePass() {
+  const spend = spendChain.then(applySpend, applySpend);
+  spendChain = spend.then(
+    () => {},
+    () => {}
+  );
+  return spend;
 }
 
 async function cleanupTab(tabId) {
@@ -268,7 +344,8 @@ async function handleNavigation(details) {
     await chrome.tabs.sendMessage(details.tabId, {
       type: "SHOW_OVERLAY",
       domain: matched,
-      hostname: url.hostname
+      hostname: url.hostname,
+      freePassesLeft: await countFreePasses()
     });
   } catch {
     // Content script may not yet be ready; it will request status on its own.
@@ -291,19 +368,32 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
           blocked: true,
           domain: matched,
           unlocked: status.unlocked,
-          unlockedUntil: status.unlockedUntil ?? null
+          unlockedUntil: status.unlockedUntil ?? null,
+          // The gate needs this to decide whether to offer a free pass at all: at
+          // zero it shows nothing rather than a disabled button, which would only
+          // taunt someone already trying to leave.
+          freePassesLeft: await countFreePasses()
         });
       } else if (msg.type === "REGISTER_UNLOCK") {
         const until = await registerUnlock(tabId, msg.domain);
         await bumpStat("paid");
         sendResponse({ ok: true, unlockedUntil: until });
+      } else if (msg.type === "SPEND_FREE_PASS") {
+        // A free pass buys the same unlock window paying the toll buys — it skips
+        // the wait, it does not buy a bigger reward.
+        const { spent, left } = await spendFreePass();
+        if (!spent) return sendResponse({ ok: false, freePassesLeft: 0 });
+        const until = await registerUnlock(tabId, msg.domain);
+        await bumpStat("spentFreePass");
+        sendResponse({ ok: true, unlockedUntil: until, freePassesLeft: left });
       } else if (msg.type === "GET_TAB_STATUS") {
         // Used by popup. msg.tabId + msg.hostname provided by caller.
+        const freePassesLeft = await countFreePasses();
         const blockedList = await getBlockedDomains();
         const matched = findBlockedEntry(msg.hostname || "", msg.pathname, blockedList);
-        if (!matched) return sendResponse({ blocked: false });
+        if (!matched) return sendResponse({ blocked: false, freePassesLeft });
         const status = await isUnlocked(msg.tabId, matched);
-        sendResponse({ blocked: true, domain: matched, ...status });
+        sendResponse({ blocked: true, domain: matched, freePassesLeft, ...status });
       } else if (msg.type === "CLOSE_TAB") {
         await bumpStat("walkedAway");
         if (tabId !== undefined) {

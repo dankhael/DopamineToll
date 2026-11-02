@@ -106,7 +106,7 @@
     }
     currentDomain = resp.domain;
     await ensureBodyReady();
-    await injectOverlay(resp.domain);
+    await injectOverlay(resp.domain, resp.freePassesLeft || 0);
   }
 
   function removeOverlay() {
@@ -122,92 +122,69 @@
     if (el && el.parentNode) el.parentNode.removeChild(el);
   }
 
-  // The gate is "active" only while its tab is visible and its window focused.
-  // Switching tabs flips document.hidden; Alt+Tab to another app blurs the
-  // window without hiding the tab — so we need both signals.
-  function isGateActive() {
-    return !document.hidden && document.hasFocus();
+  // Animate the meter draining to empty over the seconds still owed.
+  function drainMeter(meterBar, seconds) {
+    meterBar.style.transition = `width ${seconds}s linear`;
+    requestAnimationFrame(() => {
+      meterBar.style.width = "0%";
+    });
   }
 
-  // Runs the toll clock, but only while the gate is in front of the user.
-  // Leaving the tab/window freezes the clock and the meter; returning resumes
-  // from where it stopped, so stepping away doesn't pay the toll. Returns a
-  // controller whose stop() clears the timer and detaches the focus listeners.
+  // Stop the meter mid-drain, at the fraction of the toll still owed.
+  function freezeMeter(meterBar, seconds, lockSeconds) {
+    meterBar.style.transition = "none";
+    meterBar.style.width = `${Math.max(0, (seconds / lockSeconds) * 100)}%`;
+  }
+
+  // Paints the gate's meter and clock for the shared countdown, which is the same
+  // clock the settings page's cooling-off uses (shared/countdown.js, ADR-0003). The
+  // meter freezes mid-drain the moment the user looks away, so stepping out of the
+  // tab never pays the toll.
   function startTollCountdown({ clockEl, meterBar, lazyNote }, lockSeconds, onUnlock) {
-    let remaining = lockSeconds;
-    let ticker = null;
-
-    // Animate the meter draining to empty over the seconds still owed.
-    function drainMeter(seconds) {
-      meterBar.style.transition = `width ${seconds}s linear`;
-      requestAnimationFrame(() => {
-        meterBar.style.width = "0%";
-      });
-    }
-
-    // Stop the meter mid-drain at the fraction of time still remaining.
-    function freezeMeter() {
-      meterBar.style.transition = "none";
-      meterBar.style.width = `${Math.max(0, (remaining / lockSeconds) * 100)}%`;
-    }
-
-    function stopTicker() {
-      if (!ticker) return;
-      clearInterval(ticker);
-      ticker = null;
-    }
-
-    function tick() {
-      remaining -= 1;
-      if (remaining > 0) {
+    return DTCountdown.startFocusCountdown(lockSeconds, {
+      ...DTCountdown.pageActivity(document, window),
+      onResume: (remaining) => drainMeter(meterBar, remaining),
+      onPause: (remaining) => freezeMeter(meterBar, remaining, lockSeconds),
+      onTick: (remaining) => {
         clockEl.textContent = fmtClock(remaining);
-        lazyNote.textContent = DTI18n.t("overlayUnlocksIn", [String(remaining)]);
-        return;
-      }
-      stopTicker();
-      clockEl.textContent = fmtClock(0);
-      onUnlock();
-    }
-
-    function resume() {
-      if (ticker || remaining <= 0 || !isGateActive()) return;
-      drainMeter(remaining);
-      ticker = setInterval(tick, 1000);
-    }
-
-    function pause() {
-      if (!ticker) return;
-      stopTicker();
-      freezeMeter();
-    }
-
-    function syncToFocus() {
-      if (isGateActive()) resume();
-      else pause();
-    }
-
-    function stop() {
-      stopTicker();
-      document.removeEventListener("visibilitychange", syncToFocus);
-      window.removeEventListener("focus", syncToFocus);
-      window.removeEventListener("blur", syncToFocus);
-    }
-
-    document.addEventListener("visibilitychange", syncToFocus);
-    window.addEventListener("focus", syncToFocus);
-    window.addEventListener("blur", syncToFocus);
-
-    if (isGateActive()) {
-      drainMeter(lockSeconds);
-      ticker = setInterval(tick, 1000);
-    } else {
-      freezeMeter();
-    }
-
-    return { pause, resume, stop };
+        if (remaining > 0) {
+          lazyNote.textContent = DTI18n.t("overlayUnlocksIn", [String(remaining)]);
+        }
+      },
+      onDone: onUnlock
+    });
   }
 
-  async function injectOverlay(domain) {
+  // Spend the pass and, if the worker agrees, drop the gate. A refusal means the
+  // balance emptied under an already-open gate — another tab took the last one.
+  async function redeemFreePass(btn, domain) {
+    const resp = await send({ type: "SPEND_FREE_PASS", domain });
+    if (!resp || !resp.ok) {
+      btn.remove();
+      return;
+    }
+    scheduleRelock(resp.unlockedUntil);
+    removeOverlay();
+    reportGateState(true, false);
+  }
+
+  // Spending takes two taps: the first turns the button into its own confirmation.
+  // It is the only scarce thing on the gate — a mis-tap would burn a whole day's
+  // allowance, and there is no undo.
+  function wireFreePass(overlay, domain) {
+    const btn = overlay.querySelector('[data-dt-action="freepass"]');
+    if (!btn) return;
+    let awaitingConfirm = false;
+
+    btn.addEventListener("click", () => {
+      if (awaitingConfirm) return redeemFreePass(btn, domain);
+      awaitingConfirm = true;
+      btn.textContent = DTI18n.t("overlayFreePassConfirm");
+      btn.classList.add("dt-freepass-confirm");
+    });
+  }
+
+  async function injectOverlay(domain, freePasses = 0) {
     reportGateState(true, true);
     const cfg = await loadConfig();
     const phrase = pickRandom(cfg.phrases) || FALLBACK_PHRASES[0];
@@ -237,6 +214,7 @@
         phrase,
         imgSrc,
         clockText: fmtClock(lockSeconds),
+        freePasses,
         copy: {
           onList: DTI18n.t("overlayOnList"),
           northStarAlt: DTI18n.t("overlayNorthStarAlt"),
@@ -245,7 +223,8 @@
           closeTab: DTI18n.t("overlayCloseTab"),
           beProductive: DTI18n.t("overlayBeProductive"),
           openAnyway: DTI18n.t("overlayOpenAnyway", [String(unlockMinutes)]),
-          unlocksIn: DTI18n.t("overlayUnlocksIn", [String(lockSeconds)])
+          unlocksIn: DTI18n.t("overlayUnlocksIn", [String(lockSeconds)]),
+          freePass: DTI18n.t("overlayFreePass", [String(freePasses)])
         }
       })
     );
@@ -296,6 +275,8 @@
       }
     });
 
+    wireFreePass(overlay, domain);
+
     // Re-inject if the host page (or DevTools) removes the overlay.
     if (mutationObserver) mutationObserver.disconnect();
     mutationObserver = new MutationObserver(() => {
@@ -342,7 +323,7 @@
   chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
     if (msg && msg.type === "SHOW_OVERLAY") {
       currentDomain = msg.domain;
-      ensureBodyReady().then(() => injectOverlay(msg.domain));
+      ensureBodyReady().then(() => injectOverlay(msg.domain, msg.freePassesLeft || 0));
       sendResponse({ ok: true });
       return true;
     }

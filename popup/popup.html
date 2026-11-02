@@ -8,6 +8,9 @@
   <title data-i18n="appName">Dopamine Toll</title>
   <link rel="stylesheet" href="../assets/theme.css">
   <link rel="stylesheet" href="popup.css">
+  <!-- After the page's own CSS on purpose: a card waiting through a cooling-off
+       must win over that card's resting border, at equal specificity. -->
+  <link rel="stylesheet" href="../assets/controls.css">
 </head>
 <body>
   <div class="popup">
@@ -17,7 +20,14 @@
     </div>
 
     <div class="rows">
+      <!-- Holds the wait while switching off is cooling off; empty and hidden
+           otherwise. The status and cancel button are dropped in by
+           shared/cooloff.js beside this note. -->
+      <div class="turnoff" id="turnoff" data-cooloff-label="popupTurningOffIn">
+        <span class="turnoff-note" data-i18n="popupTurnOffNote">Close this window and the count starts over.</span>
+      </div>
       <div class="row"><span class="l" data-i18n="popupTollList">toll list</span><span class="r amber" id="count">…</span></div>
+      <div class="row" id="freepass-row" hidden><span class="l" data-i18n="popupFreePasses">free passes</span><span class="r amber" id="freepass-count">…</span></div>
       <div class="row status" id="status">
         <div class="head2"><span class="dot"></span><span id="status-host" data-i18n="popupChecking">checking tab…</span></div>
         <div class="meta" id="status-meta"></div>
@@ -31,6 +41,12 @@
 
   <script src="../shared/i18n.js"></script>
   <script src="../shared/platform.js"></script>
+  <script src="../shared/freepass.js"></script>
+  <script src="../shared/countdown.js"></script>
+  <script src="../shared/tollguard.js"></script>
+  <script src="../shared/dom.js"></script>
+  <script src="../shared/cooloff.js"></script>
+  <script src="../shared/guardedchange.js"></script>
   <script src="popup.js"></script>
 </body>
 </html>

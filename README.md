@@ -79,8 +79,19 @@ on purpose.
   Reddit, Instagram and YouTube, not just full page loads.
 - **Per-tab unlocks.** Paying unlocks one site in one tab, and everything resets
   when the browser closes.
-- **Daily tally.** The toolbar popup shows today's "walked away N× · paid M×",
-  plus the current tab's status and the size of your toll list.
+- **Free passes.** An optional daily allowance (0–3, off by default) that skips the
+  countdown outright. Passes refill at midnight and never stack up, and raising
+  the number only counts from tomorrow
+  ([ADR-0004](docs/adr/0004-free-passes-in-local-storage.md)).
+- **A cooling-off for weak moments.** Optional, off by default. Any change that
+  weakens the toll (switching it off, removing a site, shortening the countdown,
+  granting more passes, muting reminders) waits 30 seconds before it applies,
+  counted only while the page is in front of you. Tightening is instant. It
+  can't reach the browser's own extensions page, and says so
+  ([ADR-0003](docs/adr/0003-cooling-off-30s-per-change.md)).
+- **Daily tally.** The toolbar popup shows today's "walked away N× · paid M× ·
+  free pass P×", plus the current tab's status and the size of your toll list.
+  Free passes are counted apart, so the tolls you actually waited out stay honest.
 - **Make it yours.** Four accent themes (**Amber**, **Indigo**, **Emerald**,
   **Rose**) applied to the gate, popup, settings and even the toolbar icon, and the
   interface in six languages.
@@ -118,12 +129,12 @@ any of it under **Settings** (the gear in the popup, or right-click the icon →
 Dopamine Toll makes **zero network requests**. No server, no account, no ads, no
 analytics, and no web fonts (type falls back to the system grotesque and
 monospace). Phrases, the toll list and settings sync only through your own
-browser's sync account, if you have it on; north star photos and the daily tally
-never leave the device.
+browser's sync account, if you have it on; north star photos, the daily tally and
+the free-pass balance never leave the device.
 
 | Permission | Why |
 |---|---|
-| `storage` | Settings (`sync`), north star photos and the daily tally (`local`), per-tab unlocks (`session`) |
+| `storage` | Settings (`sync`), north star photos, the daily tally and the free-pass balance (`local`), per-tab unlocks (`session`) |
 | `webNavigation` | `onCommitted` + `onHistoryStateUpdated` see a tolled site *before* it paints, and on SPA route changes |
 | `<all_urls>` | The gate has to be able to appear on any site you add. It also makes `tab.url` readable, so no `tabs` permission is needed |
 
@@ -135,10 +146,21 @@ Vanilla JS and CSS: no bundler, no transpiler, no runtime dependencies. Edit a
 file, reload the extension.
 
 ```bash
-npm test             # node --test: locales, manifest, packager, DOM builders, gate view, platform
+npm test             # node --test: locales, manifest, packager, DOM builders, gate view, platform,
+                     #   the countdown clock, free passes, the cooling-off
+npm run dev          # a throwaway browser with the extension loaded (below)
 npm run build        # -> web-ext-artifacts/dopamine-toll-<version>.zip (one ZIP for both stores)
 npm run lint:amo     # the same linter addons.mozilla.org runs at review time
 ```
+
+`npm run dev` opens Helium (else Chromium) with the extension loaded, developer
+mode on and the icon pinned, in a temp profile with no history, logins or other
+extensions, and deletes the profile when the browser closes. So every run is a
+first install, with the default toll list seeded again. `--keep` reuses one
+profile in `~/.cache/dopamine-toll/dev-profile` (outside the repo, where `web-ext`
+would pick it up), `--browser <name|path>` picks another Chromium build, and any
+`https://` URL given is opened once the extension is up. Branded Google Chrome
+137+ ignores `--load-extension`, so it is not on the list.
 
 `./package.ps1` is the Windows equivalent of `npm run build`. Both read the shipped
 file list from [`build-manifest.json`](build-manifest.json), so they can't drift
@@ -153,16 +175,17 @@ isolation) is covered by the checklist in
 ```
 manifest.json           # one manifest for Chrome and Firefox (docs/adr/0001)
 background/
-  service-worker.js     # navigation listener, unlocks, daily tally, toolbar icon, message router
+  service-worker.js     # navigation listener, unlocks, daily tally, free-pass ledger, toolbar icon, message router
 content/
   blocker.js            # SPA hooks, overlay injection, MutationObserver
   gate-view.js          # builds the gate's DOM
   friction.js           # friction reminder waves on unlocked sites
   blocker.css  friction.css
-shared/                 # i18n, formatting, DOM and platform helpers used across surfaces
+shared/                 # i18n, formatting, DOM and platform helpers used across surfaces, plus
+                        #   the focus-aware countdown, the free-pass ledger and the cooling-off
 popup/                  # enable toggle, current-tab status, daily tally
 options/                # toll list, north star, phrases, toll, friction, theme — autosaves
-assets/                 # theme.css design tokens + countdown-gauge icons
+assets/                 # theme.css design tokens, controls.css (switch + cooling-off), icons
 _locales/               # en, de, fr, pt_BR, ja, zh_CN
 test/                   # node --test suites
 ```
@@ -228,6 +251,13 @@ new version.
   another page still loads. Intentional, so embeds don't break.
 - **Sync quota.** Phrases and the toll list share `chrome.storage.sync`'s ~100KB;
   photos are kept in `local` on purpose.
+- **The cooling-off can't cover the browser's extensions page.** No extension can
+  intercept or delay being disabled or removed from `chrome://extensions` /
+  `about:addons`, and uninstalling clears every guard. It raises the price of an
+  impulse; it is not a lock ([ADR-0003](docs/adr/0003-cooling-off-30s-per-change.md)).
+- **Free passes are per device.** The balance is deliberately not synced: sync is
+  delayed and best-effort, so a shared counter would let two browsers spend the
+  same pass twice ([ADR-0004](docs/adr/0004-free-passes-in-local-storage.md)).
 
 ## License
 

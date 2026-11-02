@@ -79,7 +79,8 @@ const COPY = {
   closeTab: "Close the tab",
   beProductive: "be productive",
   openAnyway: "Open anyway for 10 min",
-  unlocksIn: "unlocks in 30s"
+  unlocksIn: "unlocks in 30s",
+  freePass: "Free pass · 2 left"
 };
 
 function gate(overrides = {}) {
@@ -184,6 +185,37 @@ test("buildGate lays the five sections out in reading order", () => {
   assert.deepEqual(
     column.children.map((child) => child.className),
     ["dt-eyebrow", "dt-photo", "dt-phrase", "dt-toll", "dt-actions"]
+  );
+});
+
+// ----- the free pass -----
+
+test("buildFreePass labels itself from the copy and tags its action", () => {
+  const pass = view.buildFreePass(doc, COPY);
+  assert.equal(pass.tagName, "BUTTON");
+  assert.equal(pass.className, "dt-freepass");
+  assert.equal(pass.textContent, "Free pass · 2 left");
+  assert.equal(pass.dataset.dtAction, "freepass");
+});
+
+test("buildGate carries no free pass when the day's balance is empty", () => {
+  // Absent, not disabled: a gate someone is trying to walk away from should not
+  // advertise a door that is already shut.
+  const column = gate({ freePasses: 0 }).children[0].children[0];
+  assert.equal(column.children.at(-1).className, "dt-actions");
+});
+
+test("buildGate defaults to no free pass when the balance is not given at all", () => {
+  const column = gate().children[0].children[0];
+  assert.equal(column.children.some((c) => c.className === "dt-freepass"), false);
+});
+
+test("buildGate hangs the free pass below both real choices", () => {
+  const column = gate({ freePasses: 2 }).children[0].children[0];
+  assert.deepEqual(
+    column.children.map((child) => child.className),
+    ["dt-eyebrow", "dt-photo", "dt-phrase", "dt-toll", "dt-actions", "dt-freepass"],
+    "it is an escape hatch under the two choices, not a third equal option"
   );
 });
 
