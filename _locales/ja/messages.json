@@ -19,11 +19,11 @@
     "placeholders": { "walked": { "content": "$1" }, "paid": { "content": "$2" }, "pass": { "content": "$3" } }
   },
   "popupFreePasses": { "message": "フリーパス" },
-  "popupTurnOffIn": {
-    "message": "$SEC$秒後にオフ・タップで取り消し",
+  "popupTurningOffIn": {
+    "message": "$SEC$秒後にオフになります",
     "placeholders": { "sec": { "content": "$1", "example": "30" } }
   },
-  "popupTurnOffNote": { "message": "このウィンドウを閉じるとカウントは最初からになります" },
+  "popupTurnOffNote": { "message": "このウィンドウを閉じるとカウントは最初からになります。" },
 
   "optionsTitle": { "message": "Dopamine Toll — 設定" },
   "optionsSubtitle": { "message": "設定は自動的に保存されます。<b>リストにあるサイトに着くたびに通行料が発生します。</b>" },
@@ -70,8 +70,19 @@
   "optionsCoolOffK": { "message": "待機時間" },
   "optionsCoolOffD": { "message": "通行料を弱めるのに30秒かかるようにする。" },
   "optionsCoolOffToggleAria": { "message": "待機時間を切り替える" },
-  "optionsCoolOffWait": {
-    "message": "$SEC$秒・取り消し",
+  "coolOffSeconds": {
+    "message": "$SEC$秒",
+    "placeholders": { "sec": { "content": "$1", "example": "30" } }
+  },
+  "coolOffCancel": {
+    "message": "取り消し"
+  },
+  "coolOffRemovesIn": {
+    "message": "$SEC$秒後に削除",
+    "placeholders": { "sec": { "content": "$1", "example": "30" } }
+  },
+  "coolOffSwitchesOffIn": {
+    "message": "$SEC$秒後にオフ",
     "placeholders": { "sec": { "content": "$1", "example": "30" } }
   },
   "optionsThemeH2": { "message": "テーマ" },

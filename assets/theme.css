@@ -28,6 +28,7 @@
   --amber:      #e9a24c; /* warm amber (primary) */
   --amber-soft: #f0bd78;
   --terra:      #cf6638; /* deeper terracotta (cost / warning) */
+  --terra-soft: #e8865c; /* terracotta for small text: --terra itself is too dark to read at 12px */
   --amber-ink:  #1a1305; /* text on amber */
 
   --r:    14px; /* card radius */

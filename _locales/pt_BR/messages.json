@@ -19,11 +19,11 @@
     "placeholders": { "walked": { "content": "$1" }, "paid": { "content": "$2" }, "pass": { "content": "$3" } }
   },
   "popupFreePasses": { "message": "passes livres" },
-  "popupTurnOffIn": {
-    "message": "desligando em $SEC$s · toque para cancelar",
+  "popupTurningOffIn": {
+    "message": "Desligando em $SEC$s",
     "placeholders": { "sec": { "content": "$1", "example": "30" } }
   },
-  "popupTurnOffNote": { "message": "se fechar esta janela, a contagem recomeça" },
+  "popupTurnOffNote": { "message": "Se fechar esta janela, a contagem recomeça." },
 
   "optionsTitle": { "message": "Dopamine Toll — configurações" },
   "optionsSubtitle": { "message": "Suas configurações são salvas automaticamente. <b>O pedágio é cobrado toda vez que você chega a um site da lista.</b>" },
@@ -70,8 +70,19 @@
   "optionsCoolOffK": { "message": "Período de espera" },
   "optionsCoolOffD": { "message": "Fazer com que enfraquecer o pedágio custe 30 segundos." },
   "optionsCoolOffToggleAria": { "message": "alternar período de espera" },
-  "optionsCoolOffWait": {
-    "message": "$SEC$s · cancelar",
+  "coolOffSeconds": {
+    "message": "$SEC$s",
+    "placeholders": { "sec": { "content": "$1", "example": "30" } }
+  },
+  "coolOffCancel": {
+    "message": "cancelar"
+  },
+  "coolOffRemovesIn": {
+    "message": "sai em $SEC$s",
+    "placeholders": { "sec": { "content": "$1", "example": "30" } }
+  },
+  "coolOffSwitchesOffIn": {
+    "message": "desliga em $SEC$s",
     "placeholders": { "sec": { "content": "$1", "example": "30" } }
   },
   "optionsThemeH2": { "message": "Tema" },

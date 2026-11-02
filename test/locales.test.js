@@ -95,6 +95,7 @@ const SOURCE_FILES = [
   "content/friction.js",
   "background/service-worker.js",
   "shared/format.js",
+  "shared/guardedchange.js",
   "popup/popup.html",
   "options/index.html"
 ];
@@ -103,6 +104,9 @@ const SOURCE_FILES = [
 // (including DTI18n.t and the injected `t` in shared/format.js).
 const JS_KEY = /(?:i18n\.getMessage|\bt)\(\s*"([^"]+)"/g;
 const HTML_KEY = /data-i18n(?:-html|-placeholder|-label|-title)?="([^"]+)"/g;
+// A control names the message its cooling-off status reads from, in markup or in
+// script; shared/guardedchange.js looks the key up when the wait starts.
+const COOLOFF_KEY = /(?:data-cooloff-label="|cooloffLabel\s*=\s*")([^"]+)"/g;
 
 function keysReferencedInSource() {
   const keys = new Set();
@@ -110,6 +114,7 @@ function keysReferencedInSource() {
     const text = fs.readFileSync(path.join(ROOT, rel), "utf8");
     for (const match of text.matchAll(JS_KEY)) keys.add(match[1]);
     for (const match of text.matchAll(HTML_KEY)) keys.add(match[1]);
+    for (const match of text.matchAll(COOLOFF_KEY)) keys.add(match[1]);
   }
   return keys;
 }

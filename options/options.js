@@ -2,13 +2,13 @@
 
 
 // Stepper controls for "The toll". min/max preserve the original ranges.
-const LOCK_STEP = { key: "lockDuration", valId: "lock-val", decId: "lock-dec", incId: "lock-inc", min: 10, max: 120, step: 5, def: 30 };
-const UNLOCK_STEP = { key: "unlockDuration", valId: "unlock-val", decId: "unlock-dec", incId: "unlock-inc", min: 1, max: 30, step: 1, def: 10 };
-const FRICTION_STEP = { key: "frictionMinutes", valId: "friction-val", decId: "friction-dec", incId: "friction-inc", min: 1, max: 60, step: 1, def: 5 };
+const LOCK_STEP = { key: "lockDuration", valId: "lock-val", nextId: "lock-next", decId: "lock-dec", incId: "lock-inc", min: 10, max: 120, step: 5, def: 30 };
+const UNLOCK_STEP = { key: "unlockDuration", valId: "unlock-val", nextId: "unlock-next", decId: "unlock-dec", incId: "unlock-inc", min: 1, max: 30, step: 1, def: 10 };
+const FRICTION_STEP = { key: "frictionMinutes", valId: "friction-val", nextId: "friction-next", decId: "friction-dec", incId: "friction-inc", min: 1, max: 60, step: 1, def: 5 };
 // Three a day is the ceiling; zero is the default, so nobody gets an escape hatch
 // they did not ask for. Raising this only lands at the next refill — see
 // shared/freepass.js and ADR-0004.
-const FREEPASS_STEP = { key: "freePassAllowance", valId: "freepass-val", decId: "freepass-dec", incId: "freepass-inc", min: 0, max: 3, step: 1, def: 0 };
+const FREEPASS_STEP = { key: "freePassAllowance", valId: "freepass-val", nextId: "freepass-next", decId: "freepass-dec", incId: "freepass-inc", min: 0, max: 3, step: 1, def: 0 };
 
 const THEMES = ["amber", "indigo", "emerald", "rose"];
 const THEME_ACCENT = {
@@ -158,6 +158,7 @@ async function removeDomain(entry, row, list) {
 function buildDomainRow(entry, blockedDomains, list) {
   const slash = entry.indexOf("/");
   const { row, value, remove } = createRemovableRow("item dom");
+  row.dataset.cooloffLabel = "coolOffRemovesIn";
   value.textContent = slash === -1 ? entry : entry.slice(0, slash);
   if (slash !== -1) value.appendChild(el("span", "path", entry.slice(slash)));
 
@@ -255,6 +256,8 @@ async function bumpStepper(cfg, dir, host) {
   const current = typeof got[cfg.key] === "number" ? got[cfg.key] : cfg.def;
   const next = clamp(current + dir * cfg.step, cfg.min, cfg.max);
   if (next === current) return;
+  // Shown by options.css only while the change waits, to preview it as "30 → 25".
+  $(cfg.nextId).textContent = String(next);
   await DTGuardedChange.apply(host, cfg.key, current, next, async () => {
     await chrome.storage.sync.set({ [cfg.key]: next });
     renderStepper(cfg, next);
@@ -263,8 +266,8 @@ async function bumpStepper(cfg, dir, host) {
 }
 
 function wireStepper(cfg) {
-  // Whichever way a stepper moves, the countdown belongs to the control as a whole,
-  // not to the button that was pressed.
+  // Whichever way a stepper moves, the wait belongs to its card as a whole, not to
+  // the button that was pressed: the −/+ pair gives its place to the status.
   const host = $(cfg.decId).closest(".ctrl");
   $(cfg.decId).addEventListener("click", () => bumpStepper(cfg, -1, host));
   $(cfg.incId).addEventListener("click", () => bumpStepper(cfg, +1, host));

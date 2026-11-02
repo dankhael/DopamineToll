@@ -13,6 +13,9 @@
   <link rel="icon" type="image/png" id="favicon" href="../assets/icon128.png">
   <link rel="stylesheet" href="../assets/theme.css">
   <link rel="stylesheet" href="options.css">
+  <!-- After the page's own CSS on purpose: a card waiting through a cooling-off
+       must win over that card's resting border, at equal specificity. -->
+  <link rel="stylesheet" href="../assets/controls.css">
 </head>
 <body>
   <div class="wrap">
@@ -61,8 +64,8 @@
         <div class="ctrl">
           <div class="k" data-i18n="optionsCountdownK">Countdown</div>
           <div class="d" data-i18n="optionsCountdownD">The wait before the “open anyway” button unlocks.</div>
-          <div class="stepper">
-            <div class="num"><span id="lock-val">30</span><span data-i18n="optionsSec">sec</span></div>
+          <div class="stepper cooloff-slot">
+            <div class="num"><span class="cur" id="lock-val">30</span><span class="next" id="lock-next"></span><span class="unit" data-i18n="optionsSec">sec</span></div>
             <div class="pm">
               <button id="lock-dec" data-i18n-label="optionsCountdownDecAria" aria-label="decrease countdown">−</button>
               <button id="lock-inc" data-i18n-label="optionsCountdownIncAria" aria-label="increase countdown">+</button>
@@ -72,8 +75,8 @@
         <div class="ctrl">
           <div class="k" data-i18n="optionsUnlockK">Unlock window</div>
           <div class="d" data-i18n="optionsUnlockD">How long the site stays open once you pay the toll.</div>
-          <div class="stepper">
-            <div class="num"><span id="unlock-val">10</span><span data-i18n="optionsMin">min</span></div>
+          <div class="stepper cooloff-slot">
+            <div class="num"><span class="cur" id="unlock-val">10</span><span class="next" id="unlock-next"></span><span class="unit" data-i18n="optionsMin">min</span></div>
             <div class="pm">
               <button id="unlock-dec" data-i18n-label="optionsUnlockDecAria" aria-label="decrease unlock window">−</button>
               <button id="unlock-inc" data-i18n-label="optionsUnlockIncAria" aria-label="increase unlock window">+</button>
@@ -92,8 +95,8 @@
         <div class="ctrl">
           <div class="k" data-i18n="optionsFreePassK">Passes a day</div>
           <div class="d" data-i18n="optionsFreePassD">At zero, the gate never offers one.</div>
-          <div class="stepper">
-            <div class="num"><span id="freepass-val">0</span><span data-i18n="optionsPerDay">a day</span></div>
+          <div class="stepper cooloff-slot">
+            <div class="num"><span class="cur" id="freepass-val">0</span><span class="next" id="freepass-next"></span><span class="unit" data-i18n="optionsPerDay">a day</span></div>
             <div class="pm">
               <button id="freepass-dec" data-i18n-label="optionsFreePassDecAria" aria-label="decrease free passes">−</button>
               <button id="freepass-inc" data-i18n-label="optionsFreePassIncAria" aria-label="increase free passes">+</button>
@@ -108,16 +111,18 @@
       <h2 data-i18n="optionsFrictionH2">Friction reminders</h2>
       <p class="hint" data-i18n="optionsFrictionHint">While a toll site is open, a small pop-up shows one of your phrases and how long you've been on the tab. Time only counts while the tab is in front of you.</p>
       <div class="toll-grid">
-        <div class="ctrl">
+        <div class="ctrl" data-cooloff-label="coolOffSwitchesOffIn">
           <div class="k" data-i18n="optionsRemindersK">Reminders</div>
           <div class="d" data-i18n="optionsRemindersD">Show the pop-up while you're on a toll site.</div>
-          <button class="toggle" id="friction-toggle" role="switch" aria-checked="true" data-i18n-label="optionsFrictionToggleAria" aria-label="toggle friction reminders"></button>
+          <div class="ctrl-line cooloff-slot">
+            <button class="toggle" id="friction-toggle" role="switch" aria-checked="true" data-i18n-label="optionsFrictionToggleAria" aria-label="toggle friction reminders"></button>
+          </div>
         </div>
         <div class="ctrl">
           <div class="k" data-i18n="optionsEveryK">Every</div>
           <div class="d" data-i18n="optionsEveryD">Minutes on the tab between pop-ups.</div>
-          <div class="stepper">
-            <div class="num"><span id="friction-val">5</span><span data-i18n="optionsMin">min</span></div>
+          <div class="stepper cooloff-slot">
+            <div class="num"><span class="cur" id="friction-val">5</span><span class="next" id="friction-next"></span><span class="unit" data-i18n="optionsMin">min</span></div>
             <div class="pm">
               <button id="friction-dec" data-i18n-label="optionsFrictionDecAria" aria-label="decrease reminder interval">−</button>
               <button id="friction-inc" data-i18n-label="optionsFrictionIncAria" aria-label="increase reminder interval">+</button>
@@ -132,10 +137,12 @@
       <h2 data-i18n="optionsCoolOffH2">Cooling-off</h2>
       <p class="hint" data-i18n="optionsCoolOffHint">Changes that weaken the toll — switching it off, removing a site, shortening the countdown — sit through 30 seconds before they apply. Like the toll itself, the count only runs while this page is in front of you. It cannot cover your browser's own extensions page, where the extension can always be switched off outright.</p>
       <div class="toll-grid solo">
-        <div class="ctrl">
+        <div class="ctrl" data-cooloff-label="coolOffSwitchesOffIn">
           <div class="k" data-i18n="optionsCoolOffK">Cooling-off</div>
           <div class="d" data-i18n="optionsCoolOffD">Make weakening the toll cost 30 seconds.</div>
-          <button class="toggle" id="cooloff-toggle" role="switch" aria-checked="false" data-i18n-label="optionsCoolOffToggleAria" aria-label="toggle cooling-off"></button>
+          <div class="ctrl-line cooloff-slot">
+            <button class="toggle" id="cooloff-toggle" role="switch" aria-checked="false" data-i18n-label="optionsCoolOffToggleAria" aria-label="toggle cooling-off"></button>
+          </div>
         </div>
       </div>
     </div>
@@ -169,7 +176,7 @@
   <script src="../shared/countdown.js"></script>
   <script src="../shared/tollguard.js"></script>
   <script src="../shared/cooloff.js"></script>
-  <script src="cooloff.js"></script>
+  <script src="../shared/guardedchange.js"></script>
   <script src="northstar.js"></script>
   <script src="options.js"></script>
 </body>

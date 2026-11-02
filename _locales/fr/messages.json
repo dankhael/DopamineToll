@@ -19,11 +19,11 @@
     "placeholders": { "walked": { "content": "$1" }, "paid": { "content": "$2" }, "pass": { "content": "$3" } }
   },
   "popupFreePasses": { "message": "laissez-passer" },
-  "popupTurnOffIn": {
-    "message": "désactivation dans $SEC$s · touchez pour annuler",
+  "popupTurningOffIn": {
+    "message": "Désactivation dans $SEC$s",
     "placeholders": { "sec": { "content": "$1", "example": "30" } }
   },
-  "popupTurnOffNote": { "message": "fermez cette fenêtre et le compte repart de zéro" },
+  "popupTurnOffNote": { "message": "Fermez cette fenêtre et le compte repart de zéro." },
 
   "optionsTitle": { "message": "Dopamine Toll — paramètres" },
   "optionsSubtitle": { "message": "Vos paramètres sont enregistrés automatiquement. <b>Le péage s'applique chaque fois que vous atteignez un site de la liste.</b>" },
@@ -70,8 +70,19 @@
   "optionsCoolOffK": { "message": "Délai de réflexion" },
   "optionsCoolOffD": { "message": "Faire en sorte qu'affaiblir le péage coûte 30 secondes." },
   "optionsCoolOffToggleAria": { "message": "activer ou désactiver le délai de réflexion" },
-  "optionsCoolOffWait": {
-    "message": "$SEC$s · annuler",
+  "coolOffSeconds": {
+    "message": "$SEC$s",
+    "placeholders": { "sec": { "content": "$1", "example": "30" } }
+  },
+  "coolOffCancel": {
+    "message": "annuler"
+  },
+  "coolOffRemovesIn": {
+    "message": "retiré dans $SEC$s",
+    "placeholders": { "sec": { "content": "$1", "example": "30" } }
+  },
+  "coolOffSwitchesOffIn": {
+    "message": "arrêt dans $SEC$s",
     "placeholders": { "sec": { "content": "$1", "example": "30" } }
   },
   "optionsThemeH2": { "message": "Thème" },

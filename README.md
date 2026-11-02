@@ -77,17 +77,19 @@ shared/                 # classic scripts, no bundler — each attaches one DT* 
   countdown.js          # the clock that only runs while you are looking at it
   freepass.js           # the daily free-pass ledger: refill, balance, spend
   tollguard.js          # which setting changes weaken the toll and must wait
+  cooloff.js            # turns the control you touched into the cooling-off countdown
+  guardedchange.js      # makes a weakening change wait before it applies (popup + options)
 options/
   index.html
   options.css           # settings page styles
   options.js            # toll list, north star, phrases, steppers — autosave
-  cooloff.js            # makes a weakening change wait before it applies
 popup/
   popup.html
   popup.css             # popup styles
   popup.js              # enable toggle, current-tab status, daily tally
 assets/
   theme.css             # shared design tokens (popup + options)
+  controls.css          # the switch and the cooling-off states (popup + options)
   icon16.png  icon48.png  icon128.png
 ```
 

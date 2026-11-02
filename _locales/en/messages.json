@@ -58,14 +58,14 @@
     "message": "free passes",
     "description": "Popup row label: free passes left today, shown only when the allowance is above zero."
   },
-  "popupTurnOffIn": {
-    "message": "turning off in $SEC$s · tap to cancel",
-    "description": "Popup label while the cooling-off before switching the extension off is counting down.",
+  "popupTurningOffIn": {
+    "message": "Turning off in $SEC$s",
+    "description": "Popup card title while switching the extension off waits through the cooling-off.",
     "placeholders": { "sec": { "content": "$1", "example": "30" } }
   },
   "popupTurnOffNote": {
-    "message": "close this window and the count starts over",
-    "description": "Warning under the cooling-off countdown in the popup, which closes on blur."
+    "message": "Close this window and the count starts over.",
+    "description": "Second line of the popup's turn-off note, under popupTurningOffIn. The popup closes on blur, which abandons the countdown."
   },
 
   "optionsTitle": {
@@ -140,9 +140,23 @@
   "optionsCoolOffK": { "message": "Cooling-off" },
   "optionsCoolOffD": { "message": "Make weakening the toll cost 30 seconds." },
   "optionsCoolOffToggleAria": { "message": "toggle cooling-off" },
-  "optionsCoolOffWait": {
-    "message": "$SEC$s · cancel",
-    "description": "Label on the in-place cooling-off countdown in settings; tapping it cancels.",
+  "coolOffSeconds": {
+    "message": "$SEC$s",
+    "description": "Seconds still owed on an in-place cooling-off countdown, e.g. \"28s\". Shown inside a switch, so keep it short.",
+    "placeholders": { "sec": { "content": "$1", "example": "30" } }
+  },
+  "coolOffCancel": {
+    "message": "cancel",
+    "description": "Word beside the seconds on a cooling-off countdown; tapping it cancels the change."
+  },
+  "coolOffRemovesIn": {
+    "message": "removed in $SEC$s",
+    "description": "Status on a blocked-list row while its removal waits through the cooling-off.",
+    "placeholders": { "sec": { "content": "$1", "example": "30" } }
+  },
+  "coolOffSwitchesOffIn": {
+    "message": "off in $SEC$s",
+    "description": "Status beside a switch while turning it off waits through the cooling-off. Keep it short: it shares a line with the switch and a cancel button.",
     "placeholders": { "sec": { "content": "$1", "example": "30" } }
   },
   "optionsThemeH2": { "message": "Theme" },

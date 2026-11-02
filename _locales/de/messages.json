@@ -19,11 +19,11 @@
     "placeholders": { "walked": { "content": "$1" }, "paid": { "content": "$2" }, "pass": { "content": "$3" } }
   },
   "popupFreePasses": { "message": "Freifahrscheine" },
-  "popupTurnOffIn": {
-    "message": "wird in $SEC$s ausgeschaltet · zum Abbrechen tippen",
+  "popupTurningOffIn": {
+    "message": "Wird in $SEC$s ausgeschaltet",
     "placeholders": { "sec": { "content": "$1", "example": "30" } }
   },
-  "popupTurnOffNote": { "message": "Schließt du dieses Fenster, beginnt die Zählung von vorn" },
+  "popupTurnOffNote": { "message": "Schließt du dieses Fenster, beginnt die Zählung von vorn." },
 
   "optionsTitle": { "message": "Dopamine Toll — Einstellungen" },
   "optionsSubtitle": { "message": "Deine Einstellungen werden automatisch gespeichert. <b>Die Maut wird jedes Mal fällig, wenn du eine gelistete Seite erreichst.</b>" },
@@ -70,8 +70,19 @@
   "optionsCoolOffK": { "message": "Bedenkzeit" },
   "optionsCoolOffD": { "message": "Das Schwächen der Maut 30 Sekunden kosten lassen." },
   "optionsCoolOffToggleAria": { "message": "Bedenkzeit umschalten" },
-  "optionsCoolOffWait": {
-    "message": "$SEC$s · abbrechen",
+  "coolOffSeconds": {
+    "message": "$SEC$s",
+    "placeholders": { "sec": { "content": "$1", "example": "30" } }
+  },
+  "coolOffCancel": {
+    "message": "abbrechen"
+  },
+  "coolOffRemovesIn": {
+    "message": "entfernt in $SEC$s",
+    "placeholders": { "sec": { "content": "$1", "example": "30" } }
+  },
+  "coolOffSwitchesOffIn": {
+    "message": "aus in $SEC$s",
     "placeholders": { "sec": { "content": "$1", "example": "30" } }
   },
   "optionsThemeH2": { "message": "Design" },

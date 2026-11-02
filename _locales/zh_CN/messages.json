@@ -19,11 +19,11 @@
     "placeholders": { "walked": { "content": "$1" }, "paid": { "content": "$2" }, "pass": { "content": "$3" } }
   },
   "popupFreePasses": { "message": "免费通行证" },
-  "popupTurnOffIn": {
-    "message": "$SEC$ 秒后关闭 · 点击取消",
+  "popupTurningOffIn": {
+    "message": "$SEC$ 秒后关闭",
     "placeholders": { "sec": { "content": "$1", "example": "30" } }
   },
-  "popupTurnOffNote": { "message": "关闭此窗口，计时将重新开始" },
+  "popupTurnOffNote": { "message": "关闭此窗口，计时将重新开始。" },
 
   "optionsTitle": { "message": "Dopamine Toll — 设置" },
   "optionsSubtitle": { "message": "你的设置会自动保存。<b>每次你到达清单中的网站时都会收取过路费。</b>" },
@@ -70,8 +70,19 @@
   "optionsCoolOffK": { "message": "冷静期" },
   "optionsCoolOffD": { "message": "让削弱过路费这件事花掉 30 秒。" },
   "optionsCoolOffToggleAria": { "message": "切换冷静期" },
-  "optionsCoolOffWait": {
-    "message": "$SEC$ 秒 · 取消",
+  "coolOffSeconds": {
+    "message": "$SEC$ 秒",
+    "placeholders": { "sec": { "content": "$1", "example": "30" } }
+  },
+  "coolOffCancel": {
+    "message": "取消"
+  },
+  "coolOffRemovesIn": {
+    "message": "$SEC$ 秒后移除",
+    "placeholders": { "sec": { "content": "$1", "example": "30" } }
+  },
+  "coolOffSwitchesOffIn": {
+    "message": "$SEC$ 秒后关闭",
     "placeholders": { "sec": { "content": "$1", "example": "30" } }
   },
   "optionsThemeH2": { "message": "主题" },

@@ -94,13 +94,11 @@ async function refresh() {
   }
   $("grant-access").hidden = true;
 
-  const {
-    blockedDomains = [],
-    enabled = true,
-    coolOffEnabled = false
-  } = await chrome.storage.sync.get(["blockedDomains", "enabled", "coolOffEnabled"]);
+  const { blockedDomains = [], enabled = true } = await chrome.storage.sync.get([
+    "blockedDomains",
+    "enabled"
+  ]);
   lastEnabled = enabled;
-  lastCoolOffOn = coolOffEnabled === true;
   $("count").textContent = String(blockedDomains.length);
   $("toggle").classList.toggle("on", enabled);
   $("toggle").setAttribute("aria-checked", String(enabled));
@@ -152,54 +150,30 @@ async function refresh() {
   }
 }
 
-// Switching the extension off sits through the cooling-off first (ADR-0003). The
-// countdown lives in the popup and dies with it: on desktop the popup closes the
-// moment it loses focus, and abandoning the wait costs the wait — the same rule as
-// walking away from the gate. The note under the countdown says so out loud, so it
-// reads as the rule it is rather than as a bug.
-let turnOffControl = null;
+// Switching the extension off sits through the cooling-off first (ADR-0003), through
+// the same guarded path as the settings page: the switch flips at once, the wait
+// opens in the #turnoff card under the header, and clicking the switch again (or
+// cancel) puts it back. The countdown lives in the popup and dies with it: on
+// desktop the popup closes the moment it loses focus, and abandoning the wait costs
+// the wait — the same rule as walking away from the gate. The card's note says so
+// out loud, so it reads as the rule it is rather than as a bug.
 let lastEnabled = true;
-let lastCoolOffOn = false;
 
-function stopTurnOff() {
-  if (turnOffControl) turnOffControl.stop();
-  turnOffControl = null;
-  $("turnoff").hidden = true;
+async function saveEnabled(next) {
+  lastEnabled = next;
+  await chrome.storage.sync.set({ enabled: next });
+  refresh();
 }
 
-function startTurnOff() {
-  const cancel = $("turnoff-cancel");
-  $("turnoff").hidden = false;
-  cancel.textContent = DTI18n.t("popupTurnOffIn", [String(DTTollGuard.COOL_OFF_SECONDS)]);
-
-  turnOffControl = DTCountdown.startFocusCountdown(DTTollGuard.COOL_OFF_SECONDS, {
-    ...DTCountdown.pageActivity(document, window),
-    onTick: (remaining) => {
-      cancel.textContent = DTI18n.t("popupTurnOffIn", [String(remaining)]);
-    },
-    onDone: async () => {
-      stopTurnOff();
-      await chrome.storage.sync.set({ enabled: false });
-      refresh();
-    }
-  });
-}
-
-// Mirrored from the last refresh, which runs every second. Reading them per click
+// Mirrored from the last refresh, which runs every second. Reading it per click
 // would put an await between "is a countdown already running?" and starting one, and
 // a second click landing inside that gap strands the first countdown — the same shape
 // of bug that let three cooling-offs stack on one setting in the options page.
 function toggleEnabled() {
-  // While a turn-off is counting down, the toggle is the second way to call it off.
-  if (turnOffControl) return stopTurnOff();
-
   const next = !lastEnabled;
-  if (lastCoolOffOn && DTTollGuard.isWeakening("enabled", lastEnabled, next)) {
-    startTurnOff();
-    return;
-  }
-  lastEnabled = next;
-  chrome.storage.sync.set({ enabled: next }).then(refresh);
+  DTGuardedChange.apply($("turnoff"), "enabled", lastEnabled, next, () =>
+    saveEnabled(next)
+  );
 }
 
 $("toggle").addEventListener("click", toggleEnabled);
@@ -211,7 +185,6 @@ $("toggle").addEventListener("keydown", (e) => {
 });
 
 $("grant-access").addEventListener("click", requestSiteAccess);
-$("turnoff-cancel").addEventListener("click", stopTurnOff);
 
 // The settings page opens in a tab behind the popup. On desktop the popup closes
 // itself when it loses focus; on Android it is a full page that just sits there,
