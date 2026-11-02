@@ -42,13 +42,14 @@ checklist for that.
   is on the list.
 
 **Animated north star**
-1. Upload an animated GIF under 2 MB → its thumbnail moves in settings, and it
-   moves on the gate (remove the other photos so it is the one picked).
-2. Upload a single-frame GIF → it is stored as a JPEG like any photo (it shows,
-   still).
-3. Upload an animated GIF over 2 MB → refused, with its size and the limit.
-4. Keep adding GIFs near 2 MB → once photos would pass 8 MB, the upload is refused
-   with how much is in use, and nothing is saved.
+1. Upload an animated GIF, an animated WebP and an APNG, each under 2 MB → their
+   thumbnails move in settings, and each moves on the gate (remove the other photos
+   so the one under test is picked).
+2. Upload a single-frame GIF, WebP and PNG → each is stored as a JPEG like any
+   photo (it shows, still).
+3. Upload an animation over 2 MB → refused, with its size and the limit.
+4. Keep adding animations near 2 MB → once photos would pass 8 MB, the upload is
+   refused with how much is in use, and nothing is saved.
 
 **Storage edge cases**
 1. Remove all phrases in options → overlay falls back to the default phrase set.

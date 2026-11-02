@@ -10,43 +10,7 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 
 const { isGif, frameCount, isAnimated } = require("../shared/gif.js");
-
-// ----- a named builder for real GIF bytes -----
-
-// Builds a well-formed GIF one block at a time. Each frame is a 1×1 image whose
-// LZW data (02 02 44 01 00) is the classic minimal one browsers decode.
-class GifBytes {
-  constructor({ signature = "GIF89a", globalTable = true } = {}) {
-    this.parts = [...Buffer.from(signature, "ascii")];
-    // 1×1 screen; packed: global table flag + size 0 (two colours, six bytes).
-    this.parts.push(1, 0, 1, 0, globalTable ? 0x80 : 0x00, 0, 0);
-    if (globalTable) this.parts.push(0, 0, 0, 255, 255, 255);
-  }
-
-  loop() {
-    this.parts.push(0x21, 0xff, 0x0b, ...Buffer.from("NETSCAPE2.0", "ascii"), 0x03, 0x01, 0, 0, 0x00);
-    return this;
-  }
-
-  comment(text) {
-    const body = [...Buffer.from(text, "ascii")];
-    this.parts.push(0x21, 0xfe, body.length, ...body, 0x00);
-    return this;
-  }
-
-  // A graphic control extension (10/100 s delay) and one image.
-  frame({ localTable = false, data = [0x44, 0x01] } = {}) {
-    this.parts.push(0x21, 0xf9, 0x04, 0x00, 0x0a, 0x00, 0x00, 0x00);
-    this.parts.push(0x2c, 0, 0, 0, 0, 1, 0, 1, 0, localTable ? 0x81 : 0x00);
-    if (localTable) this.parts.push(...new Array(12).fill(0x2c));
-    this.parts.push(0x02, data.length, ...data, 0x00);
-    return this;
-  }
-
-  bytes({ trailer = true } = {}) {
-    return Uint8Array.from(trailer ? [...this.parts, 0x3b] : this.parts);
-  }
-}
+const { GifBytes } = require("./fakes/image-bytes.js");
 
 const PNG_SIGNATURE = Uint8Array.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0, 0, 0, 0x0d, 0x49]);
 
