@@ -1,6 +1,6 @@
 # Privacy Policy — Dopamine Toll
 
-**Effective date:** August 15, 2026
+**Effective date:** November 2, 2026
 
 Dopamine Toll does **not collect, transmit, sell, or share any personal data**, and
 makes **no network requests of any kind**. There is no analytics, no tracking, and no
@@ -16,8 +16,8 @@ Everything you create stays inside your own browser, via the standard
 
 | Data | Storage area | Leaves your device? |
 |---|---|---|
-| Block list, phrases, countdown / unlock timers, theme | `storage.sync` | No — see "Browser sync" below |
-| Uploaded "north star" images, daily counter | `storage.local` | No |
+| Block list, phrases, countdown / unlock timers, friction reminder and free-pass settings, cooling-off switch, theme | `storage.sync` | No — see "Browser sync" below |
+| Uploaded "north star" images (photos and animations), daily counter, today's free-pass balance | `storage.local` | No |
 | Per-tab unlock state | `storage.session` | No (cleared when the browser closes) |
 
 ## Browser sync
