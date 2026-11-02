@@ -60,7 +60,7 @@ _Avoid_: loosening, unsafe change, downgrade
 
 **North star**:
 A photo of a goal the user uploaded, shown on the gate as the reason to walk away.
-An animated GIF counts as a photo, and keeps moving on the gate.
+An animation (GIF, WebP or APNG) counts as a photo, and keeps moving on the gate.
 _Avoid_: goal image, motivation picture, wallpaper
 
 **Phrase**:

@@ -1,7 +1,9 @@
 // Reads a GIF's structure straight from its bytes, to tell an animated one from a
 // still. The settings page needs to know before it touches the file: a still is
 // downscaled to a JPEG through a canvas, and a canvas keeps only the first frame,
-// so an animated GIF sent down that path would freeze on the gate.
+// so an animated GIF sent down that path would freeze on the gate. One of three
+// sniffers, with shared/webp.js and shared/apng.js; shared/animation.js asks all
+// three.
 //
 // Only the block structure is walked — header, colour tables, extensions, image
 // descriptors — never the pixel data, so this stays a few hops per frame and needs
@@ -10,10 +12,12 @@
 // Dual export: attaches window.DTGif as a classic script; under Node (require)
 // it returns the same API via module.exports.
 (function (root, factory) {
-  const api = factory();
+  const api = factory(
+    typeof module !== "undefined" && module.exports ? require("./bytes.js") : root.DTBytes
+  );
   if (typeof module !== "undefined" && module.exports) module.exports = api;
   else root.DTGif = api;
-})(typeof self !== "undefined" ? self : this, function () {
+})(typeof self !== "undefined" ? self : this, function (DTBytes) {
   "use strict";
 
   const SIGNATURES = ["GIF87a", "GIF89a"];
@@ -25,12 +29,6 @@
   // An image descriptor after its separator: left, top, width, height, packed.
   const DESCRIPTOR_BYTES = 9;
 
-  function requireBytes(bytes) {
-    if (!(bytes instanceof Uint8Array)) {
-      throw new Error(`expected the file's bytes as a Uint8Array, got: ${Object.prototype.toString.call(bytes)}`);
-    }
-  }
-
   /**
    * Does this file start with a GIF signature? Sniffed rather than trusted from
    * the file's MIME type, which comes from its extension and can be anything.
@@ -39,10 +37,9 @@
    *   isGif(new Uint8Array(await file.arrayBuffer()))  // true for GIF87a / GIF89a
    */
   function isGif(bytes) {
-    requireBytes(bytes);
+    DTBytes.requireBytes(bytes);
     if (bytes.length < SCREEN_END) return false;
-    const signature = String.fromCharCode(...bytes.subarray(0, 6));
-    return SIGNATURES.includes(signature);
+    return SIGNATURES.includes(DTBytes.ascii(bytes, 0, 6));
   }
 
   // A packed field's colour table: present when the top bit is set, holding

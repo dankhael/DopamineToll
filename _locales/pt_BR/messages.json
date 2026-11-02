@@ -32,7 +32,7 @@
   "optionsDomainPlaceholder": { "message": "exemplo.com ou youtube.com/shorts" },
   "optionsAdd": { "message": "Adicionar" },
   "optionsNorthStarH2": { "message": "Sua estrela-guia" },
-  "optionsNorthStarHint": { "message": "A imagem que você verá na tela de pedágio — o que você disse que queria. Uma aparece por vez, escolhida ao acaso. GIFs animados continuam se mexendo." },
+  "optionsNorthStarHint": { "message": "A imagem que você verá na tela de pedágio — o que você disse que queria. Uma aparece por vez, escolhida ao acaso. GIFs, WebPs e PNGs animados continuam se mexendo." },
   "optionsPhrasesH2": { "message": "Coisas que você disse a si mesmo" },
   "optionsPhrasesHint": { "message": "Escritas com suas próprias palavras. Uma aparece sob a foto sempre que o pedágio é cobrado." },
   "optionsPhrasePlaceholder": { "message": "escreva uma frase que te acerte…" },
@@ -118,8 +118,8 @@
     "placeholders": { "err": { "content": "$1" } }
   },
   "optionsDecodeError": { "message": "não foi possível decodificar a imagem" },
-  "optionsGifTooBig": {
-    "message": "este GIF tem $SIZE$KB — GIFs animados são guardados quadro a quadro, então o limite é $MAX$KB. Tente um mais curto ou menor",
+  "optionsAnimationTooBig": {
+    "message": "esta animação tem $SIZE$KB — imagens animadas são guardadas quadro a quadro, então o limite é $MAX$KB. Tente uma mais curta ou menor",
     "placeholders": {
       "size": { "content": "$1", "example": "3420" },
       "max": { "content": "$2", "example": "2048" }

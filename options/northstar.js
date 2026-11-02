@@ -1,5 +1,6 @@
-// The north star photos: upload, downscale, store, render, remove. An animated GIF
-// skips the downscale and is stored as it is, so it keeps moving on the gate.
+// The north star photos: upload, downscale, store, render, remove. An animated
+// GIF, WebP or PNG skips the downscale and is stored as it is, so it keeps moving
+// on the gate (ADR-0005).
 //
 // Split out of options.js so that file stays about the settings and this one owns
 // one thing — the photos. `toast` is passed in rather than reached for, so this
@@ -96,7 +97,7 @@
   // A refusal from DTPhotoBudget, as the sentence the user reads.
   function refusalMessage(refusal) {
     if (refusal.reason === "tooBig") {
-      return DTI18n.t("optionsGifTooBig", [kb(refusal.size), kb(refusal.max)]);
+      return DTI18n.t("optionsAnimationTooBig", [kb(refusal.size), kb(refusal.max)]);
     }
     return DTI18n.t("optionsPhotosFull", [kb(refusal.used), kb(refusal.max)]);
   }
@@ -108,21 +109,22 @@
     return resizeToBase64(img, MAX_DIM);
   }
 
-  // An animated GIF goes in byte for byte, because a canvas keeps only its first
-  // frame. The type comes from the sniffed bytes, not the file's extension.
-  function animatedDataUrl(bytes) {
-    return readFileAsDataURL(new Blob([bytes], { type: "image/gif" }));
+  // An animation goes in byte for byte, because a canvas keeps only its first
+  // frame. `mime` comes from the sniffed bytes, not the file's extension.
+  function animatedDataUrl(bytes, mime) {
+    return readFileAsDataURL(new Blob([bytes], { type: mime }));
   }
 
   // The entry the file will be stored as, or why it can't be.
   async function buildEntry(file) {
     const bytes = new Uint8Array(await file.arrayBuffer());
-    if (!DTGif.isAnimated(bytes)) {
+    const mime = DTAnimation.animatedType(bytes);
+    if (!mime) {
       return { entry: { name: file.name, src: await stillDataUrl(file) }, animated: false };
     }
     const refusal = DTPhotoBudget.refuseTooBig(bytes.length);
     if (refusal) return { refusal };
-    return { entry: { name: file.name, src: await animatedDataUrl(bytes) }, animated: true };
+    return { entry: { name: file.name, src: await animatedDataUrl(bytes, mime) }, animated: true };
   }
 
   // A still that came out heavy is saved anyway, with a nudge to pick a lighter one.

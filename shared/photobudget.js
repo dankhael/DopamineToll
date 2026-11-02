@@ -1,9 +1,9 @@
 // How much north star photo the extension can keep, and whether one more fits.
 //
 // A still photo is downscaled to a small JPEG, so it never strains anything. An
-// animated GIF is kept byte for byte (shrinking one means re-encoding every frame,
-// with a GIF encoder this extension does not ship), so its size is whatever the
-// user picked. That makes room a real question: Chrome caps storage.local at 10 MB
+// animation — GIF, WebP or APNG — is kept byte for byte (shrinking one means
+// re-encoding every frame, with an encoder no browser ships), so its size is
+// whatever the user picked. That makes room a real question: Chrome caps storage.local at 10 MB
 // unless the extension asks for unlimitedStorage, which Firefox shows users as a
 // new permission warning on update. See ADR-0005.
 //
@@ -16,8 +16,8 @@
 })(typeof self !== "undefined" ? self : this, function () {
   "use strict";
 
-  // The file size of one animated GIF. Already a long, wide GIF, for a frame the
-  // gate draws at 300×200.
+  // The file size of one animation. Already a long, wide GIF, for a frame the gate
+  // draws at 300×200; the same animation as WebP usually comes in well under it.
   const MAX_ANIMATED_BYTES = 2 * 1024 * 1024;
   // Every photo together, as stored. Leaves 2 MB of the 10 MB quota for the tally,
   // the free-pass ledger and what comes next — and every gate reads the whole list
@@ -56,8 +56,8 @@
   }
 
   /**
-   * null when an animated GIF of `fileBytes` is small enough to keep as it is;
-   * otherwise why not. Checked before room, because only a different GIF fixes
+   * null when an animation of `fileBytes` is small enough to keep as it is;
+   * otherwise why not. Checked before room, because only a different file fixes
    * this one — removing photos would not.
    *
    * @example
